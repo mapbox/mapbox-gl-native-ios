@@ -33,6 +33,10 @@ workflows:
       - ios-debug
       #- ios-sanitize-address
       - ios-sanitize-thread
+      - ios-release:
+          filters:
+            tags:
+              only: /ios-.*/
       - macos-debug
       - macos-debug-qt5
       - macos-release-node4:
@@ -704,6 +708,26 @@ jobs:
       - run:
           name: Build and run SDK unit tests with thread sanitizer
           command: make ios-sanitize-thread
+      - *show-ccache-stats
+      - *save-cache
+
+# ------------------------------------------------------------------------------
+  ios-release:
+    macos:
+      xcode: "9.2.0"
+    environment:
+      BUILDTYPE: Release
+    steps:
+      - checkout
+      - *install-macos-dependencies
+      - *generate-cache-key
+      - *restore-cache
+      - *reset-ccache-stats
+      - run:
+          name: Build, package, and upload ${CIRCLE_TAG}
+          command: |
+            export VERSION_TAG=${CIRCLE_TAG}
+            platform/ios/scripts/deploy-packages.sh
       - *show-ccache-stats
       - *save-cache
 
