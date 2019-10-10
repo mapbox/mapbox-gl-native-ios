@@ -2,4 +2,4 @@
 
 Migration in progress. 
 
-See https://github.com/mapbox/mapbox-gl-native/commit/63116154fe7e1f49d7751c002e2abe5422fd22ee for previous history.
+See https://github.com/mapbox/mapbox-gl-native/commit/bf61274b2a64bfa5d3b13ba988a97e9d32934713 for previous history.
