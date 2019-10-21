@@ -119,7 +119,7 @@ pod 'Mapbox-iOS-SDK', '~> x.x.x-alpha.1'
 To test a snapshot dynamic framework build, update your app’s `Podfile` to point to:
 
 ```rb
-pod 'Mapbox-iOS-SDK-snapshot-dynamic', podspec: 'https://raw.githubusercontent.com/mapbox/mapbox-gl-native/master/platform/ios/Mapbox-iOS-SDK-snapshot-dynamic.podspec'
+pod 'Mapbox-iOS-SDK-snapshot-dynamic', podspec: 'https://raw.githubusercontent.com/mapbox/mapbox-gl-native-ios/master/platform/ios/Mapbox-iOS-SDK-snapshot-dynamic.podspec'
 ```
 
 ##### Using your own build with CocoaPods

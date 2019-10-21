@@ -12,7 +12,7 @@ If you want to contribute code:
   * [Mapbox Maps SDK for iOS](platform/ios/CHANGELOG.md)
   * [Mapbox Maps SDK for macOS](platform/macos/CHANGELOG.md)
 
-1. Prefix your commit messages with the platform(s) your changes affect: `[ios]`, `[macos]`, or `[darwin]`.
+1. Prefix your commit messages with the platform(s) your changes affect: `[ios]` or `[macos]`.
 
 Please note the special instructions for contributing new source code files, asset files, or user-facing strings to the [iOS SDK](platform/ios/DEVELOPING.md#contributing) or [macOS SDK](platform/macos/DEVELOPING.md#contributing).
 
