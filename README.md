@@ -4,7 +4,6 @@ The Mapbox Maps SDK for iOS is an open-source framework for embedding interactiv
 
 | SDK                                     | Languages                          | Build status                             |
 | --------------------------------------- | ---------------------------------- | ---------------------------------------- |
-| [Mapbox GL Native](INSTALL.md)          | C++14                              | [![Circle CI build status](https://circleci.com/gh/mapbox/mapbox-gl-native.svg?style=shield)](https://circleci.com/gh/mapbox/workflows/mapbox-gl-native/tree/master) [![Coverage Status](https://codecov.io/gh/mapbox/mapbox-gl-native/branch/master/graph/badge.svg)](https://codecov.io/gh/mapbox/mapbox-gl-native) |
 | [Mapbox Maps SDK for iOS](platform/ios/)         | Objective-C or Swift               | [![Circle CI build status](https://circleci.com/gh/mapbox/mapbox-gl-native-ios.svg?style=shield)](https://circleci.com/gh/mapbox/workflows/mapbox-gl-native-ios/tree/master) |
 | [Mapbox Maps SDK for macOS](platform/macos/)     | Objective-C, Swift, or AppleScript | [![Circle CI build status](https://circleci.com/gh/mapbox/mapbox-gl-native-ios.svg?style=shield)](https://circleci.com/gh/mapbox/workflows/mapbox-gl-native-ios/tree/master) |
 
