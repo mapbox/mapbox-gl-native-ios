@@ -93,6 +93,6 @@ script AppDelegate
 end script
 ```
 
-Full API documentation is included in this package, within the `documentation` folder, and [online](https://mapbox.github.io/mapbox-gl-native-ios/macos/). The [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) has [API documentation](https://docs.mapbox.com/ios/api/maps/) and [online examples](https://docs.mapbox.com/ios/maps/examples/) that apply to the Mapbox Maps SDK for macOS with few differences, mostly around unimplemented features like user location tracking.
+Full API documentation is included in this package, within the `documentation` folder, and [online](https://mapbox.github.io/mapbox-gl-native/macos/). The [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/) has [API documentation](https://docs.mapbox.com/ios/api/maps/) and [online examples](https://docs.mapbox.com/ios/maps/examples/) that apply to the Mapbox Maps SDK for macOS with few differences, mostly around unimplemented features like user location tracking.
 
 Mapbox does not officially support the macOS SDK to the same extent as the iOS SDK; however, [bug reports and pull requests](https://github.com/mapbox/mapbox-gl-native-ios/issues/) are certainly welcome.

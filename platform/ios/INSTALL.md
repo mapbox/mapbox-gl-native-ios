@@ -75,7 +75,7 @@ bash "${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework/strip-fra
 
 ##### Snapshot builds
 
-A snapshot build of the dynamic framework, based on the latest commit to the master branch, is available for download [here](https://mapbox.s3.amazonaws.com/mapbox-gl-native-ios/ios/builds/mapbox-ios-sdk-snapshot-dynamic.zip).
+A snapshot build of the dynamic framework, based on the latest commit to the master branch, is available for download [here](https://mapbox.s3.amazonaws.com/mapbox-gl-native/ios/builds/mapbox-ios-sdk-snapshot-dynamic.zip).
 
 #### Static framework
 
