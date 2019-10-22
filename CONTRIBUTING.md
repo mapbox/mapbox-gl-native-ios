@@ -1,6 +1,6 @@
 # Contributing
 
-If you have a usage question for a product built on Mapbox GL (such as our iOS or Android SDKs), please visit https://www.mapbox.com/help/.
+If you have a usage question for a the Mapbox Maps SDK for iOS, please visit https://www.mapbox.com/help/.
 
 If you want to contribute code:
 
@@ -8,7 +8,7 @@ If you want to contribute code:
 
 1. Ensure that existing [pull requests](https://github.com/mapbox/mapbox-gl-native-ios/pulls) and [issues](https://github.com/mapbox/mapbox-gl-native-ios/issues) don’t already cover your contribution or question.
 
-1. Pull requests are gladly accepted. If there are any changes that developers using one of the GL SDKs should be aware of, please update the **master** section of the relevant changelog(s):
+1. Pull requests are gladly accepted. If there are any changes that developers using the SDKs should be aware of, please update the **master** section of the relevant changelog(s):
   * [Mapbox Maps SDK for iOS](platform/ios/CHANGELOG.md)
   * [Mapbox Maps SDK for macOS](platform/macos/CHANGELOG.md)
 
