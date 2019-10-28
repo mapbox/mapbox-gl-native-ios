@@ -10,7 +10,10 @@ Hello and thanks for contributing to the Mapbox Maps SDK! To help us diagnose yo
  - Ensure you can reproduce the bug using the latest release.
  - Only post to report a bug or request a feature; direct all other questions to: https://stackoverflow.com/questions/tagged/mapbox
  
- For cross-platform issues or issues not related to the work in this repo, please open an issue in the Mapbox GL Native Repo: https://www.github/com/mapbox-gl-native
+ For cross-platform requests, such as issues related to rendering cross-platform feature requests, please open an issue in the Mapbox GL Native Repo: https://www.github/com/mapbox-gl-native
+ For issues related to the Mapbox Maps SDK for Android, please see https://www.github/com/mapbox-gl-native-android
+ 
+ Otherwise, use this template to report issues related to anything in this repo not directly related to the iOS or macOS SDKs, such as CI issues.
 -->
 
 **Platform:**
