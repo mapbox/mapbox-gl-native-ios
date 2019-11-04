@@ -4,6 +4,11 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ## master
 
+### Other changes
+* Convert GeoJSON features to tiles for the loaded source description in a background thread and thus unblock the UI thread ([#15885](https://github.com/mapbox/mapbox-gl-native/pull/15885))
+
+### Bug fixes
+* Fixed the rendering bug caused by redundant pending requests for already requested images [#15864](https://github.com/mapbox/mapbox-gl-native/pull/15864)
 * Fix ornaments' view constraints bug when devices change to bold-text mode. ([#57](https://github.com/mapbox/mapbox-gl-native-ios/pull/57))
 
 ## 5.5.0 - November 5, 2019
