@@ -142,6 +142,7 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 
 - (void)commonInit {
     _size = CGSizeZero;
+    _maximumWidthRatio = 0.5;
     
     _primaryColor = [UIColor colorWithRed:18.0/255.0 green:45.0/255.0 blue:17.0/255.0 alpha:1];
     _secondaryColor = [UIColor colorWithRed:247.0/255.0 green:247.0/255.0 blue:247.0/255.0 alpha:1];
@@ -229,7 +230,21 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 - (CGFloat)maximumWidth {
     // TODO: Consider taking Scale Bar margins into account here.
     CGFloat fullWidth = CGRectGetWidth(self.superview.bounds);
-    return floorf(fullWidth / 2);
+    
+    if(self.maximumWidthRatio < 0.2) {
+        self.maximumWidthRatio = 0.2;
+    }
+    else if (self.maximumWidthRatio > 1) {
+        self.maximumWidthRatio = 1;
+    }
+    
+    CGFloat result = floorf(fullWidth * self.maximumWidthRatio);
+    return result > fullWidth - (self.margins.x * 2) ? fullWidth - (self.margins.x * 2) : result;
+}
+
+- (void)setMaximumWidthRatio:(CGFloat)maximumWidthRatio {
+    _maximumWidthRatio = maximumWidthRatio;
+    self.recalculateSize = YES;
 }
 
 - (CGFloat)unitsPerPoint {

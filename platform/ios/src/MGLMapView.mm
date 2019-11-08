@@ -800,7 +800,18 @@ public:
 - (void)setScaleBarMargins:(CGPoint)scaleBarMargins {
     MGLLogDebug(@"Setting scaleBarMargins: (x:%f, y:%f)", scaleBarMargins.x, scaleBarMargins.y);
     _scaleBarMargins = scaleBarMargins;
+    if([self.scaleBar isKindOfClass:[MGLScaleBar class]]) {
+        ((MGLScaleBar *)self.scaleBar).margins = scaleBarMargins;
+    }
     [self installScaleBarConstraints];
+}
+
+- (void)setScaleBarMaximumWidthRatio:(CGFloat)scaleBarMaximumWidthRatio {
+    _scaleBarMaximumWidthRatio = scaleBarMaximumWidthRatio;
+    if([self.scaleBar isKindOfClass:[MGLScaleBar class]]) {
+        ((MGLScaleBar *)self.scaleBar).maximumWidthRatio = scaleBarMaximumWidthRatio;
+    }
+    [self updateScaleBar];
 }
 
 - (void)setCompassViewPosition:(MGLOrnamentPosition)compassViewPosition {
@@ -873,18 +884,26 @@ public:
         case MGLOrnamentPositionTopLeft:
             [updatedConstraints addObject:[view.topAnchor constraintEqualToAnchor:self.mgl_safeTopAnchor constant:margins.y + inset.top]];
             [updatedConstraints addObject:[view.leadingAnchor constraintEqualToAnchor:self.mgl_safeLeadingAnchor constant:margins.x + inset.left]];
+            if(CGSizeEqualToSize(size, CGSizeZero))
+                [updatedConstraints addObject:[view.trailingAnchor constraintGreaterThanOrEqualToAnchor:self.mgl_safeTrailingAnchor constant:margins.x + inset.left]];
             break;
         case MGLOrnamentPositionTopRight:
             [updatedConstraints addObject:[view.topAnchor constraintEqualToAnchor:self.mgl_safeTopAnchor constant:margins.y + inset.top]];
             [updatedConstraints addObject:[self.mgl_safeTrailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:margins.x + inset.right]];
+            if(CGSizeEqualToSize(size, CGSizeZero))
+                [updatedConstraints addObject:[view.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.mgl_safeLeadingAnchor constant:margins.x + inset.right]];
             break;
         case MGLOrnamentPositionBottomLeft:
             [updatedConstraints addObject:[self.mgl_safeBottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:margins.y + inset.bottom]];
             [updatedConstraints addObject:[view.leadingAnchor constraintEqualToAnchor:self.mgl_safeLeadingAnchor constant:margins.x + inset.left]];
+            if(CGSizeEqualToSize(size, CGSizeZero))
+                [updatedConstraints addObject:[view.trailingAnchor constraintGreaterThanOrEqualToAnchor:self.mgl_safeTrailingAnchor constant:margins.x + inset.left]];
             break;
         case MGLOrnamentPositionBottomRight:
             [updatedConstraints addObject:[self.mgl_safeBottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:margins.y + inset.bottom]];
             [updatedConstraints addObject: [self.mgl_safeTrailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:margins.x + inset.right]];
+            if(CGSizeEqualToSize(size, CGSizeZero))
+                [updatedConstraints addObject:[view.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.mgl_safeLeadingAnchor constant:margins.x + inset.right]];
             break;
     }
 
