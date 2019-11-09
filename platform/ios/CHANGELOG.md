@@ -6,7 +6,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 * Fix ornaments' view constraints bug when devices change to bold-text mode. ([#57](https://github.com/mapbox/mapbox-gl-native-ios/pull/57))
 
-## 5.5.0
+## 5.5.0 - November 5, 2019
 
 ### Performance improvements
 
