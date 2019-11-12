@@ -1,5 +1,6 @@
-@import Mapbox;
-@import MapboxMobileEvents;
+//@import Mapbox;
+//@import MapboxMobileEvents;
+#import <MapboxMobileEvents/MapboxMobileEvents.h>
 #import "MBXSomething.h"
 
 @implementation MBXSomething

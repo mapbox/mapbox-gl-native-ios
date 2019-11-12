@@ -1,13 +1,5 @@
 framework module Mapbox {
-    umbrella header "Mapbox.h"
-
-/*
-    private header "MapboxMobileEvents.h"
-    private header "MMEConstants.h"
-    private header "MMEEvent.h"
-    private header "MMEEventsManager.h"
-    private header "MMETypes.h"
- */
+  umbrella header "Mapbox.h"
 
   module * { export * }
   link "c++"
@@ -15,14 +7,12 @@ framework module Mapbox {
   link "z"
 }
 
-
 framework module MapboxMobileEvents {
-
-  header "MapboxMobileEvents.h"
-  header "MMEConstants.h"
-  header "MMEEvent.h"
-  header "MMEEventsManager.h"
-  header "MMETypes.h"
-
-  export *
+    framework module MapboxMobileEventsBundled {
+	    umbrella header "MapboxMobileEvents.h"    
+	    module * { export * } 
+	}
 }
+
+
+
