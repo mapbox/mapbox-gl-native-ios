@@ -270,9 +270,6 @@ jobs:
           command: make ios-lint
       - check-if-this-job-can-be-skipped
       - build-ios-test
-      - run:
-          name: Check symbol namespacing for mapbox-events-ios
-          command: make ios-check-events-symbols
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
