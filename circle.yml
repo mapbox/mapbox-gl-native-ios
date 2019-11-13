@@ -403,7 +403,7 @@ jobs:
       - run:
           name: Build dynamic framework for device and simulator
           command: make iframework
-          no_output_timeout: 5m
+          no_output_timeout: 10m
       - deploy:
           name: Upload snapshot build to s3
           command: |
