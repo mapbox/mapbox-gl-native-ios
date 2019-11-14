@@ -5,8 +5,6 @@
 #import "NSBundle+MGLAdditions.h"
 #import "MGLAccountManager_Private.h"
 
-//TODO: #import "NSUserDefaults+MMEConfiguration.h"
-
 // NSUserDefaults and Info.plist keys
 NSString * const MGLMapboxMetricsEnabledKey = @"MGLMapboxMetricsEnabled";
 static NSString * const MGLMapboxMetricsDebugLoggingEnabledKey = @"MGLMapboxMetricsDebugLoggingEnabled";
@@ -24,11 +22,10 @@ static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
 
 @end
 
-// TODO:?
+// TODO: Move to private/public header
 @interface MMEEventsManager (TODO)
 @property (nonatomic, getter=isDebugLoggingEnabled) BOOL debugLoggingEnabled;
 @end
-
 
 @implementation MGLMapboxEvents
 
@@ -57,10 +54,12 @@ static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
     if (self) {
         _eventsManager = MMEEventsManager.sharedManager;
         _eventsManager.debugLoggingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsDebugLoggingEnabledKey];
-        // TODO:Use NSUserDefaults+MMEConfiguration NSUserDefaults.mme_configuration setAccountType:, NSUserDefaults.mme_configuration setIsCollectionEnabled:
-        _eventsManager.accountType = [[NSUserDefaults standardUserDefaults] integerForKey:MGLMapboxAccountTypeKey];
-        _eventsManager.metricsEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsEnabledKey];
-        
+
+        // TODO: What happens if the dev sets MGLMapboxAccountTypeKey prior to using the SDK?
+        // _eventsManager.accountType = [[NSUserDefaults standardUserDefaults] integerForKey:MGLMapboxAccountTypeKey];
+        BOOL collectionEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsEnabledKey];
+        NSUserDefaults.mme_configuration.mme_isCollectionEnabled = collectionEnabled;
+
         // It is possible for the shared instance of this class to be created because of a call to
         // +[MGLAccountManager load] early on in the app lifecycle of the host application.
         // If user default values for access token and base URL are available, they are stored here
@@ -100,8 +99,8 @@ static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
     // In that case, setting the access token here will have no effect. In practice, that's fine
     // because the access token value will be resolved when `setupWithAccessToken:` is called eventually
     if ([[[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys] containsObject:MGLTelemetryAccessTokenKey]) {
-        //TODO: Use NSUserDefaults+MMEConfiguration NSUserDefaults.mme_configuration mme_setAccessToken:
-        self.eventsManager.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:MGLTelemetryAccessTokenKey];
+        NSString *telemetryAccessToken = [[NSUserDefaults standardUserDefaults] objectForKey:MGLTelemetryAccessTokenKey];
+        NSUserDefaults.mme_configuration.mme_accessToken = telemetryAccessToken;
     }
 
 }
@@ -115,15 +114,17 @@ static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
     if ([[notification object] respondsToSelector:@selector(objectForKey:)]) {
         NSUserDefaults *userDefaults = [notification object];
 
-        NSInteger accountType = [userDefaults integerForKey:MGLMapboxAccountTypeKey];
-        BOOL metricsEnabled = [userDefaults boolForKey:MGLMapboxMetricsEnabledKey];
+//        //TODO: Account type changed at runtime
+//        NSInteger accountType = [userDefaults integerForKey:MGLMapboxAccountTypeKey];
+//        if (accountType != self.eventsManager.accountType) {
+//            self.eventsManager.accountType = accountType;
+//        }
 
-        if (accountType != self.eventsManager.accountType || metricsEnabled != self.eventsManager.metricsEnabled) {
-            //TODO: Use NSUserDefaults+MMEConfiguration NSUserDefaults.mme_configuration setAccountType:
-            self.eventsManager.accountType = accountType;
-            //TODO: Use NSUserDefaults+MMEConfiguration NSUserDefaults.mme_configuration setIsCollectionEnabled:
-            self.eventsManager.metricsEnabled = metricsEnabled;
+        BOOL oldCollectionEnabled = NSUserDefaults.mme_configuration.mme_isCollectionEnabled;
+        BOOL collectionEnabled = [userDefaults boolForKey:MGLMapboxMetricsEnabledKey];
 
+        if (collectionEnabled != oldCollectionEnabled) {
+            NSUserDefaults.mme_configuration.mme_isCollectionEnabled = collectionEnabled;
             [self.eventsManager pauseOrResumeMetricsCollectionIfRequired];
         }
     }
