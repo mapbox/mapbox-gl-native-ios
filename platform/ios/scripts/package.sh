@@ -112,6 +112,37 @@ fi
 
 LIBS=(Mapbox.a)
 
+
+function copyAndMakeFatFramework {
+    local NAME=$1
+
+    step "Copying ${NAME} dynamic framework into place for iOS devices"
+    cp -r \
+        ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework \
+        ${OUTPUT}/dynamic/
+
+    if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM ]]; then
+        step "Copying ${NAME} dSYM"
+        cp -r ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM \
+              ${OUTPUT}/dynamic/
+        if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM ]]; then
+            step "Merging device and simulator dSYMs…"
+            lipo \
+                ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
+                ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
+                -create -output ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
+            lipo -info ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
+        fi
+    fi
+
+    step "Merging ${NAME} simulator dynamic library into device dynamic library…"
+    lipo \
+        ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework/${NAME} \
+        ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework/${NAME} \
+        -create -output ${OUTPUT}/dynamic/${NAME}.framework/${NAME} | echo
+}
+
+
 # https://medium.com/@syshen/create-an-ios-universal-framework-148eb130a46c
 if [[ ${BUILD_FOR_DEVICE} == true ]]; then
     if [[ ${BUILD_STATIC} == true ]]; then
@@ -127,30 +158,34 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
     fi
 
     if [[ ${BUILD_DYNAMIC} == true ]]; then
-        step "Copying dynamic framework into place for iOS devices"
-        cp -r \
-            ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework \
-            ${OUTPUT}/dynamic/
+        copyAndMakeFatFramework "${NAME}"
+        copyAndMakeFatFramework "MapboxMobileEvents"
+#        step "Copying dynamic framework into place for iOS devices"
+#        cp -r \
+#            ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework \
+#            ${OUTPUT}/dynamic/
+#
+#        if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM ]]; then
+#            step "Copying dSYM"
+#            cp -r ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM \
+#                  ${OUTPUT}/dynamic/
+#            if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM ]]; then
+#                step "Merging device and simulator dSYMs…"
+#                lipo \
+#                    ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
+#                    ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
+#                    -create -output ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
+#                lipo -info ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
+#            fi
+#        fi
+#
+#        step "Merging simulator dynamic library into device dynamic library…"
+#        lipo \
+#            ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework/${NAME} \
+#            ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework/${NAME} \
+#            -create -output ${OUTPUT}/dynamic/${NAME}.framework/${NAME} | echo
 
-        if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM ]]; then
-            step "Copying dSYM"
-            cp -r ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM \
-                  ${OUTPUT}/dynamic/
-            if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM ]]; then
-                step "Merging device and simulator dSYMs…"
-                lipo \
-                    ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
-                    ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
-                    -create -output ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
-                lipo -info ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
-            fi
-        fi
-
-        step "Merging simulator dynamic library into device dynamic library…"
-        lipo \
-            ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework/${NAME} \
-            ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework/${NAME} \
-            -create -output ${OUTPUT}/dynamic/${NAME}.framework/${NAME} | echo
+        # Bundling mapbox-events-ios
     fi
     
     cp -rv platform/ios/app/Settings.bundle ${OUTPUT}
@@ -196,14 +231,29 @@ function validate_dsym {
     fi
 }
 
-if [[ ${BUILD_DYNAMIC} == true && ${BUILDTYPE} == Release ]]; then
-    validate_dsym \
-        "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" \
-        "${OUTPUT}/dynamic/${NAME}.framework/${NAME}"
+function removeSimulatorSlice {
+    local NAME=$1
 
-        step "Removing i386 slice from dSYM"
-        lipo -remove i386 "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" -o "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
-        lipo -info "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
+    validate_dsym \
+    "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" \
+    "${OUTPUT}/dynamic/${NAME}.framework/${NAME}"
+
+    step "Removing i386 slice from ${NAME} dSYM"
+    lipo -remove i386 "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" -o "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
+    lipo -info "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
+}
+
+
+if [[ ${BUILD_DYNAMIC} == true && ${BUILDTYPE} == Release ]]; then
+    removeSimulatorSlice "${NAME}"
+    removeSimulatorSlice MapboxMobileEvents
+#    validate_dsym \
+#        "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" \
+#        "${OUTPUT}/dynamic/${NAME}.framework/${NAME}"
+#
+#        step "Removing i386 slice from dSYM"
+#        lipo -remove i386 "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" -o "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
+#        lipo -info "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
 fi
 
 if [[ ${BUILD_STATIC} == true ]]; then

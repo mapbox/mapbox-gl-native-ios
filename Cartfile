@@ -1,0 +1,4 @@
+#binary "https://www.mapbox.com/ios-sdk/Mapbox-iOS-SDK.json" == 5.6.0
+
+binary "/Users/julianrex/Development/mapbox-gl-native-ios/Maps.json" == 5.6.0
+github "mapbox/mapbox-events-ios" ~> 0.10.1-alpha
