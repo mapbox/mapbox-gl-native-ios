@@ -244,7 +244,11 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 
 - (void)setMaximumWidthRatio:(CGFloat)maximumWidthRatio {
     _maximumWidthRatio = maximumWidthRatio;
+    
+    [self updateVisibility];
+    
     self.recalculateSize = YES;
+    [self invalidateIntrinsicContentSize];
 }
 
 - (CGFloat)unitsPerPoint {
