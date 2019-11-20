@@ -231,8 +231,8 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     // TODO: Consider taking Scale Bar margins into account here.
     CGFloat fullWidth = CGRectGetWidth(self.superview.bounds);
     
-    if(self.maximumWidthRatio < 0.2) {
-        self.maximumWidthRatio = 0.2;
+    if(self.maximumWidthRatio < 0.1) {
+        self.maximumWidthRatio = 0.1;
     }
     else if (self.maximumWidthRatio > 1) {
         self.maximumWidthRatio = 1;

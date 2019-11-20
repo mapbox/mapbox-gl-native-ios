@@ -331,7 +331,7 @@ MGL_EXPORT
 
 /**
  The maximum width ratio of the scale bar relative to the map view's frame.
- This value is limited from 0.2 to 1.
+ This value is limited from 0.1 to 1.
  Default is 0.5(half of map view's width).
  */
 @property (nonatomic, assign) CGFloat scaleBarMaximumWidthRatio;
