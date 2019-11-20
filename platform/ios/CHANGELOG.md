@@ -5,7 +5,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 ## master
 
 * Fix ornaments' view constraints bug when devices change to bold-text mode. ([#57](https://github.com/mapbox/mapbox-gl-native-ios/pull/57))
-* Add a `maximumWidthRatio` property for customizing maximum width of scale bar. ([#52](https://github.com/mapbox/mapbox-gl-native-ios/issues/52))
+* Add a `maximumWidthRatio` property for customizing maximum width of scale bar. ([#65](https://github.com/mapbox/mapbox-gl-native-ios/pull/65))
 
 ## 5.5.0 - November 5, 2019
 
