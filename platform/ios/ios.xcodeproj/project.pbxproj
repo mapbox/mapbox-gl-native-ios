@@ -393,7 +393,6 @@
 		CA0B3C022329DE9A00E4B493 /* MGLTestAssertionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAA65D82321BBA900F08A39 /* MGLTestAssertionHandler.m */; };
 		CA0C27922076C804001CE5B7 /* MGLShapeSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0C27912076C804001CE5B7 /* MGLShapeSourceTests.m */; };
 		CA0C27942076CA19001CE5B7 /* MGLMapViewIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0C27932076CA19001CE5B7 /* MGLMapViewIntegrationTest.m */; };
-		CA0FA9D8237623EE00C9F3C9 /* MBXSomething.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0FA9D7237623EE00C9F3C9 /* MBXSomething.m */; };
 		CA0FAA05237B3BB700C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA0FAA06237B3BB700C9F3C9 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA96299B23731199004F1330 /* MapboxMobileEvents.framework */; };
 		CA0FAA07237B3BC600C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
@@ -1049,8 +1048,6 @@
 		CA0C27952076CA50001CE5B7 /* MGLMapViewIntegrationTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLMapViewIntegrationTest.h; sourceTree = "<group>"; };
 		CA0FA9BB2375EBE700C9F3C9 /* MapboxMobileEvents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MapboxMobileEvents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA0FA9BE2375EC3200C9F3C9 /* MapboxMobileEvents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MapboxMobileEvents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA0FA9D6237623EE00C9F3C9 /* MBXSomething.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBXSomething.h; sourceTree = "<group>"; };
-		CA0FA9D7237623EE00C9F3C9 /* MBXSomething.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXSomething.m; sourceTree = "<group>"; };
 		CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLMapSnapshotterTest.m; sourceTree = "<group>"; };
 		CA4C54FD2324948100A81659 /* MGLSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MGLSourceTests.swift; sourceTree = "<group>"; };
 		CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLStyleLayerIntegrationTests.m; sourceTree = "<group>"; };
@@ -1807,8 +1804,6 @@
 				075AF841227B6762008D7A4C /* MBXState.m */,
 				075AF843227B67C5008D7A4C /* MBXStateManager.h */,
 				075AF844227B67C6008D7A4C /* MBXStateManager.m */,
-				CA0FA9D6237623EE00C9F3C9 /* MBXSomething.h */,
-				CA0FA9D7237623EE00C9F3C9 /* MBXSomething.m */,
 			);
 			name = "Demo App";
 			path = app;
@@ -3003,7 +2998,6 @@
 				40FDA76B1CCAAA6800442548 /* MBXAnnotationView.m in Sources */,
 				1F26B6C120E189C9007BCC21 /* MBXCustomLocationViewController.m in Sources */,
 				3E6465D62065767A00685536 /* LimeGreenStyleLayer.m in Sources */,
-				CA0FA9D8237623EE00C9F3C9 /* MBXSomething.m in Sources */,
 				632281DF1E6F855900D75A5D /* MBXEmbeddedMapViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

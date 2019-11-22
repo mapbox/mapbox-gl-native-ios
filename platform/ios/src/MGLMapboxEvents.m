@@ -14,7 +14,7 @@ static NSString * const MGLTelemetryBaseURLKey = @"MGLTelemetryBaseURL";
 
 static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
 
-@interface MGLMapboxEvents () <MMEEventsManagerDelegate>
+@interface MGLMapboxEvents ()
 
 @property (nonatomic) MMEEventsManager *eventsManager;
 @property (nonatomic) NSURL *baseURL;
@@ -150,7 +150,6 @@ static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
                               hostSDKVersion:sdkVersion];
 
     eventsManager.skuId                       = MBXAccountsSKUIDMapsUser;
-    eventsManager.delegate                    = events;
     eventsManager.debugLoggingEnabled         = [[NSUserDefaults standardUserDefaults] boolForKey :MGLMapboxMetricsDebugLoggingEnabledKey];
     
 
@@ -199,28 +198,6 @@ static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
              @"\n\nAdditionally, by hiding this attribution control you agree to display the required attribution elsewhere in this app."];
         }
     }
-}
-
-@end
-
-
-@implementation MGLMapboxEvents (MMEEventsManagerDelegate)
-
-- (void)eventsManager:(MMEEventsManager *)eventsManager didUpdateLocations:(NSArray<CLLocation *> *)locations
-{
-    NSLog(@"didUpdateLocations = %lu", (unsigned long)locations.count);
-}
-
-#if TARGET_OS_IOS
-- (void)eventsManager:(MMEEventsManager *)eventsManager didVisit:(CLVisit *)visit
-{
-    NSLog(@"didVisit = %@", visit);
-}
-#endif
-
-- (void)eventsManager:(MMEEventsManager *)eventsManager didEncounterError:(NSError *)error
-{
-    NSLog(@"Error = %@", error);
 }
 
 @end

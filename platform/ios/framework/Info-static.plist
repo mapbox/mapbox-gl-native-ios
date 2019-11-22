@@ -20,8 +20,6 @@
 	<string>$(CURRENT_COMMIT_HASH)</string>
 	<key>MGLSemanticVersionString</key>
 	<string>$(CURRENT_SEMANTIC_VERSION)</string>
-	<key>MGLEventsStaticallyLinked</key>
-	<string>YES</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
