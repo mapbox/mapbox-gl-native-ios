@@ -3,18 +3,20 @@
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
 ## master
-* Added support for [image expression](https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-types-image) in core library. Runtime APIs for image expression will be implemented separately. ([#15877](https://github.com/mapbox/mapbox-gl-native/pull/15877))
-* Make network requests for expired resources lower priority than requests for new resources. ([#15950](https://github.com/mapbox/mapbox-gl-native/pull/15950))
 
-### Other changes
-* Convert GeoJSON features to tiles for the loaded source description in a background thread and thus unblock the UI thread ([#15885](https://github.com/mapbox/mapbox-gl-native/pull/15885))
+### Networking and storage
+* Make network requests for expired resources lower priority than requests for new resources. ([#15950](https://github.com/mapbox/mapbox-gl-native/pull/15950))
 
 ### Bug fixes
 * Fixed the rendering bug caused by redundant pending requests for already requested images [#15864](https://github.com/mapbox/mapbox-gl-native/pull/15864)
 * Enable incremental vacuum for the offline database in order to make data removal requests faster and to avoid the excessive disk space usage (creating a backup file on VACUUM call). ([#15837](https://github.com/mapbox/mapbox-gl-native/pull/15837))
 * Fix ornaments' view constraints bug when devices change to bold-text mode. ([#57](https://github.com/mapbox/mapbox-gl-native-ios/pull/57))
-* Fixed Geo JSON source flickering on style transition. ([#15907](https://github.com/mapbox/mapbox-gl-native/pull/15907))
+* Fixed `MGLShapeSource` source flickering on style transition. ([#15907](https://github.com/mapbox/mapbox-gl-native/pull/15907))
 * Fixed flickering caused by unnecessary removing and re-adding of the render sources when the order of their corresponding style objects was changed in the updated style ([#15941](https://github.com/mapbox/mapbox-gl-native/pull/15941))
+
+### Other changes
+* Convert GeoJSON features to tiles for the loaded source description in a background thread and thus unblock the UI thread ([#15885](https://github.com/mapbox/mapbox-gl-native/pull/15885))
+* 
 
 ## 5.5.0 - November 5, 2019
 
