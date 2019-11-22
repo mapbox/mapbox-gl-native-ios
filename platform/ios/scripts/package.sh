@@ -22,13 +22,22 @@ fi
 FORMAT=${FORMAT:-dynamic}
 BUILD_DYNAMIC=true
 BUILD_STATIC=false
+INCLUDE_EVENTS_IN_PACKAGE=false
 if [[ ${FORMAT} == "static" ]]; then
     BUILD_STATIC=true
     BUILD_DYNAMIC=false
+elif [[ ${FORMAT} == "dynamic-with-events" ]]; then
+    INCLUDE_EVENTS_IN_PACKAGE=true
+elif [[ ${FORMAT} == "stripped-dynamic" ]]; then
+    echo "Packaging for stripped-dynamic"
 elif [[ ${FORMAT} != "dynamic" ]]; then
     echo "Error: FORMAT must be dynamic or static."
     exit 1
 fi
+
+function step { >&2 echo -e "\033[1m\033[36m* $@\033[0m"; }
+function finish { >&2 echo -en "\033[0m"; }
+trap finish EXIT
 
 SDK=iphonesimulator
 if [[ ${BUILD_FOR_DEVICE} == true ]]; then
@@ -36,11 +45,7 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
 fi
 IOS_SDK_VERSION=`xcrun --sdk ${SDK} --show-sdk-version`
 
-function step { >&2 echo -e "\033[1m\033[36m* $@\033[0m"; }
-function finish { >&2 echo -en "\033[0m"; }
-trap finish EXIT
-
-step "Configuring ${FORMAT} framework for ${SDK} ${IOS_SDK_VERSION} (symbols: ${SYMBOLS}, buildtype: ${BUILDTYPE})"
+step "Configuring ${FORMAT} framework for ${SDK} ${IOS_SDK_VERSION} (symbols: ${SYMBOLS}, buildtype: ${BUILDTYPE}, include events:${INCLUDE_EVENTS_IN_PACKAGE})"
 
 xcodebuild -version
 
@@ -159,31 +164,10 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
 
     if [[ ${BUILD_DYNAMIC} == true ]]; then
         copyAndMakeFatFramework "${NAME}"
-        copyAndMakeFatFramework "MapboxMobileEvents"
-#        step "Copying dynamic framework into place for iOS devices"
-#        cp -r \
-#            ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework \
-#            ${OUTPUT}/dynamic/
-#
-#        if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM ]]; then
-#            step "Copying dSYM"
-#            cp -r ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM \
-#                  ${OUTPUT}/dynamic/
-#            if [[ -e ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM ]]; then
-#                step "Merging device and simulator dSYMs…"
-#                lipo \
-#                    ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
-#                    ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME} \
-#                    -create -output ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
-#                lipo -info ${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}
-#            fi
-#        fi
-#
-#        step "Merging simulator dynamic library into device dynamic library…"
-#        lipo \
-#            ${PRODUCTS}/${BUILDTYPE}-iphoneos/${NAME}.framework/${NAME} \
-#            ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework/${NAME} \
-#            -create -output ${OUTPUT}/dynamic/${NAME}.framework/${NAME} | echo
+
+        if [[ ${INCLUDE_EVENTS_IN_PACKAGE} == true ]]; then
+            copyAndMakeFatFramework "MapboxMobileEvents"
+        fi
 
         # Bundling mapbox-events-ios
     fi
@@ -246,14 +230,10 @@ function removeSimulatorSlice {
 
 if [[ ${BUILD_DYNAMIC} == true && ${BUILDTYPE} == Release ]]; then
     removeSimulatorSlice "${NAME}"
-    removeSimulatorSlice MapboxMobileEvents
-#    validate_dsym \
-#        "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" \
-#        "${OUTPUT}/dynamic/${NAME}.framework/${NAME}"
-#
-#        step "Removing i386 slice from dSYM"
-#        lipo -remove i386 "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}" -o "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
-#        lipo -info "${OUTPUT}/dynamic/${NAME}.framework.dSYM/Contents/Resources/DWARF/${NAME}"
+
+    if [[ ${INCLUDE_EVENTS_IN_PACKAGE} == true ]]; then
+        removeSimulatorSlice MapboxMobileEvents
+    fi
 fi
 
 if [[ ${BUILD_STATIC} == true ]]; then
