@@ -420,7 +420,7 @@
 		CA94E5FC237D21030037AEA0 /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CA94E5FF237D21030037AEA0 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA94E5FA237D21030037AEA0 /* MapboxMobileEvents.framework */; };
 		CA94E600237D21030037AEA0 /* MapboxMobileEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA94E5FA237D21030037AEA0 /* MapboxMobileEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CA96299C23731199004F1330 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA96299B23731199004F1330 /* MapboxMobileEvents.framework */; };
+		CA94E601237EF4110037AEA0 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA96299B23731199004F1330 /* MapboxMobileEvents.framework */; };
 		CAA69DA5206DCD0E007279CD /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA4A26961CB6E795000B7809 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CAAA65D92321BBA900F08A39 /* MGLTestAssertionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAA65D82321BBA900F08A39 /* MGLTestAssertionHandler.m */; };
 		CAB369E5237471D600592F74 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F7839A3235E11FC00D4D606 /* libz.tbd */; };
@@ -1380,11 +1380,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				CAB369E5237471D600592F74 /* libz.tbd in Frameworks */,
-				CA96299C23731199004F1330 /* MapboxMobileEvents.framework in Frameworks */,
 				358B3DBB2359EA0F007BEB26 /* libmbgl-vendor-icu.a in Frameworks */,
 				35BEB5002359BB9600110752 /* libmbgl-core.a in Frameworks */,
 				358B3DB92359E4A0007BEB26 /* libsqlite3.tbd in Frameworks */,
 				96802766226556C5006BA4A1 /* libmbxaccounts.a in Frameworks */,
+				35BEB5002359BB9600110752 /* libmbgl-core.a in Frameworks */,
+				CA94E601237EF4110037AEA0 /* MapboxMobileEvents.framework in Frameworks */,
 				DA27C24E1CBB3811000B0ECD /* GLKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
