@@ -3839,8 +3839,8 @@
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
+					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/expected-lite/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
 					"$(PROJECT_DIR)/../../platform/darwin/include",
 				);
 				INFOPLIST_FILE = "Integration Tests/Info.plist";
@@ -3883,8 +3883,8 @@
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
+					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/expected-lite/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
 					"$(PROJECT_DIR)/../../platform/darwin/include",
 				);
 				INFOPLIST_FILE = "Integration Tests/Info.plist";
@@ -4191,8 +4191,8 @@
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
+					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/expected-lite/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
 					"$(PROJECT_DIR)/../../platform/darwin/include",
 				);
 				INFOPLIST_FILE = test/Info.plist;
@@ -4244,8 +4244,8 @@
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
+					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/expected-lite/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
 					"$(PROJECT_DIR)/../../platform/darwin/include",
 				);
 				INFOPLIST_FILE = "Integration Tests/Info.plist";
@@ -4470,8 +4470,8 @@
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
+					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/expected-lite/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
 					"$(PROJECT_DIR)/../../platform/darwin/include",
 				);
 				INFOPLIST_FILE = test/Info.plist;
@@ -4511,8 +4511,8 @@
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
+					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/expected-lite/include",
 					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
 					"$(PROJECT_DIR)/../../platform/darwin/include",
 				);
 				INFOPLIST_FILE = test/Info.plist;
