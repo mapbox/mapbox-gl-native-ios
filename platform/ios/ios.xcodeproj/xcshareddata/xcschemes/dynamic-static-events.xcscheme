@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1120"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DA1DC9491CB6C1C2006E619F"
-               BuildableName = "Mapbox GL.app"
-               BlueprintName = "iosapp"
+               BlueprintIdentifier = "CAB36AFE2374762600592F74"
+               BuildableName = "Mapbox.framework"
+               BlueprintName = "dynamic-static-events"
                ReferencedContainer = "container:ios.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,15 +27,6 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DA1DC9491CB6C1C2006E619F"
-            BuildableName = "Mapbox GL.app"
-            BlueprintName = "iosapp"
-            ReferencedContainer = "container:ios.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
       </Testables>
    </TestAction>
@@ -49,23 +40,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DA1DC9491CB6C1C2006E619F"
-            BuildableName = "Mapbox GL.app"
-            BlueprintName = "iosapp"
-            ReferencedContainer = "container:ios.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "DYLD_PRINT_RPATHS"
-            value = "1"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -73,16 +47,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DA1DC9491CB6C1C2006E619F"
-            BuildableName = "Mapbox GL.app"
-            BlueprintName = "iosapp"
+            BlueprintIdentifier = "CAB36AFE2374762600592F74"
+            BuildableName = "Mapbox.framework"
+            BlueprintName = "dynamic-static-events"
             ReferencedContainer = "container:ios.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -6,3 +6,24 @@ framework module Mapbox {
   link "sqlite3"
   link "z"
 }
+
+/*
+framework module MapboxMobileEvents {
+  umbrella header "MapboxMobileEvents.h"
+  header "MMEConstants.h"
+  header "MMEEvent.h"
+  header "MMEEventsManager.h"
+  header "MMETypes.h"
+  export *
+}
+*/
+
+/*
+module MapboxMobileEvents {
+  umbrella header "MapboxMobileEvents.h"
+  export *
+  module * { export * }
+
+}
+*/
+

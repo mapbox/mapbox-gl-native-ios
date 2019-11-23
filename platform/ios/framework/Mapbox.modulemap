@@ -1,0 +1,28 @@
+framework module Mapbox {
+    umbrella header "Mapbox.h"
+
+/*
+    private header "MapboxMobileEvents.h"
+    private header "MMEConstants.h"
+    private header "MMEEvent.h"
+    private header "MMEEventsManager.h"
+    private header "MMETypes.h"
+ */
+
+  module * { export * }
+  link "c++"
+  link "sqlite3"
+  link "z"
+}
+
+
+framework module MapboxMobileEvents {
+
+  header "MapboxMobileEvents.h"
+  header "MMEConstants.h"
+  header "MMEEvent.h"
+  header "MMEEventsManager.h"
+  header "MMETypes.h"
+
+  export *
+}

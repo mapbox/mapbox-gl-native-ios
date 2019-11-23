@@ -1,4 +1,5 @@
 @import Mapbox;
+@import MapboxMobileEvents;
 
 #import "MBXViewController.h"
 
@@ -15,6 +16,7 @@
 
 #import "MBXFrameTimeGraphView.h"
 #import "../src/MGLMapView_Experimental.h"
+
 
 #import <objc/runtime.h>
 
@@ -232,6 +234,8 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+
 
     // Keep track of current map state and debug preferences,
     // saving and restoring when the application's state changes.
@@ -2325,6 +2329,13 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }
 
     return features;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    MMEEventsManager *eventsManager = [MMEEventsManager sharedManager];
+    NSLog(@"eventsManager = %@", eventsManager);
 }
 
 - (void)mapViewDidFinishRenderingFrame:(MGLMapView *)mapView fullyRendered:(BOOL)fullyRendered {
