@@ -538,6 +538,10 @@
 		CAFB3C15234505D500399265 /* MGLMapSnapshotter_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB3C13234505D500399265 /* MGLMapSnapshotter_Private.h */; };
 		CF75A91522D85E860058A5C4 /* MGLLoggingConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = CF75A91422D85E860058A5C4 /* MGLLoggingConfiguration.mm */; };
 		CF75A91622D85E860058A5C4 /* MGLLoggingConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = CF75A91422D85E860058A5C4 /* MGLLoggingConfiguration.mm */; };
+		CF9A708A238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = CF9A7089238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m */; };
+		CF9A708B238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = CF9A7089238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m */; };
+		CF9A708D238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h in Headers */ = {isa = PBXBuildFile; fileRef = CF9A708C238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h */; };
+		CF9A708E238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h in Headers */ = {isa = PBXBuildFile; fileRef = CF9A708C238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h */; };
 		DA00FC8E1D5EEB0D009AABC8 /* MGLAttributionInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = DA00FC8C1D5EEB0D009AABC8 /* MGLAttributionInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA00FC8F1D5EEB0D009AABC8 /* MGLAttributionInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = DA00FC8C1D5EEB0D009AABC8 /* MGLAttributionInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA00FC901D5EEB0D009AABC8 /* MGLAttributionInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA00FC8D1D5EEB0D009AABC8 /* MGLAttributionInfo.mm */; };
@@ -1231,6 +1235,8 @@
 		CAE7AD5420F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MGLMapSnapshotterSwiftTests.swift; sourceTree = "<group>"; };
 		CAFB3C13234505D500399265 /* MGLMapSnapshotter_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLMapSnapshotter_Private.h; sourceTree = "<group>"; };
 		CF75A91422D85E860058A5C4 /* MGLLoggingConfiguration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLLoggingConfiguration.mm; sourceTree = "<group>"; };
+		CF9A7089238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLNativeInterfaceReceiver.m; sourceTree = "<group>"; };
+		CF9A708C238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLNativeInterfaceReceiver.h; sourceTree = "<group>"; };
 		DA00FC8C1D5EEB0D009AABC8 /* MGLAttributionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGLAttributionInfo.h; sourceTree = "<group>"; };
 		DA00FC8D1D5EEB0D009AABC8 /* MGLAttributionInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLAttributionInfo.mm; sourceTree = "<group>"; };
 		DA0CD58F1CF56F6A00A5F5A5 /* MGLFeatureTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = MGLFeatureTests.mm; path = ../../darwin/test/MGLFeatureTests.mm; sourceTree = "<group>"; };
@@ -2198,6 +2204,8 @@
 				1F6A82A021360F9C00BA5B41 /* MGLLoggingConfiguration.h */,
 				CF75A91422D85E860058A5C4 /* MGLLoggingConfiguration.mm */,
 				1F6A82A62138871900BA5B41 /* MGLLoggingConfiguration_Private.h */,
+				CF9A708C238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h */,
+				CF9A7089238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m */,
 			);
 			name = Foundation;
 			path = ../darwin/src;
@@ -2635,6 +2643,7 @@
 				350098BB1D480108004B2AF0 /* MGLVectorTileSource.h in Headers */,
 				DA8847F61CBAFA5100AB86E3 /* MGLOfflineStorage.h in Headers */,
 				DAD1656E1CF41981001FF4B9 /* MGLFeature_Private.h in Headers */,
+				CF9A708D238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h in Headers */,
 				DA88483C1CBAFB8500AB86E3 /* MGLMapView.h in Headers */,
 				3EA9363147E77DD29FA06063 /* MGLRendererConfiguration.h in Headers */,
 				55E5665121C2A1C20008B8B5 /* MMEReachability.h in Headers */,
@@ -2829,6 +2838,7 @@
 				74CB5EB2219B252C00102936 /* MGLStyleLayerManager.h in Headers */,
 				9221BAB020699F8A0054BDF4 /* MGLTilePyramidOfflineRegion_Private.h in Headers */,
 				96E516F5200059B100A02306 /* MGLNetworkConfiguration.h in Headers */,
+				CF9A708E238C288100CCCBF1 /* MGLNativeInterfaceReceiver.h in Headers */,
 				96E516DD200054F200A02306 /* MGLPolygon_Private.h in Headers */,
 				353933F91D3FB79F003F57D7 /* MGLLineStyleLayer.h in Headers */,
 				9C6E282622A980AC0056B7BE /* UIKit+MMEMobileEvents.h in Headers */,
@@ -3371,6 +3381,7 @@
 				9620BB3A1E69FE1700705A1D /* MGLSDKUpdateChecker.mm in Sources */,
 				354B83981D2E873E005D9406 /* MGLUserLocationAnnotationView.m in Sources */,
 				40834BEE1FE05E1800C1BD0D /* MMEEventsConfiguration.m in Sources */,
+				CF9A708A238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m in Sources */,
 				DA88485D1CBAFB9800AB86E3 /* MGLFaux3DUserLocationAnnotationView.m in Sources */,
 				DAD165701CF41981001FF4B9 /* MGLFeature.mm in Sources */,
 				30E578191DAA855E0050F07E /* UIImage+MGLAdditions.mm in Sources */,
@@ -3498,6 +3509,7 @@
 				DAA4E4221CBB730400178DFB /* MGLPointAnnotation.mm in Sources */,
 				40834C021FE05E1800C1BD0D /* MMEEventsConfiguration.m in Sources */,
 				DAED38661D62D0FC00D7640F /* NSURL+MGLAdditions.m in Sources */,
+				CF9A708B238C285600CCCBF1 /* MGLNativeInterfaceReceiver.m in Sources */,
 				DAD165711CF41981001FF4B9 /* MGLFeature.mm in Sources */,
 				30E5781A1DAA855E0050F07E /* UIImage+MGLAdditions.mm in Sources */,
 				ACD0245B2187EABA00D8C8A7 /* MMEMetricsManager.m in Sources */,

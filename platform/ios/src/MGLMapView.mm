@@ -26,6 +26,7 @@
 #include <mbgl/util/run_loop.hpp>
 #include <mbgl/util/string.hpp>
 #include <mbgl/util/projection.hpp>
+#include <mbgl/interface/native_apple_interface.h>
 
 #import "Mapbox.h"
 #import "MGLShape_Private.h"
@@ -69,6 +70,7 @@
 #import "MGLLocationManager_Private.h"
 #import "MGLLoggingConfiguration_Private.h"
 #import "MMEConstants.h"
+#import "MGLNativeInterfaceReceiver.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -452,6 +454,7 @@ public:
     // setup accessibility
     //
 //    self.isAccessibilityElement = YES;
+    MGLNativeAppleInterfaceTransmitter.shared.delegate = MGLNativeInterfaceReceiver.shared;
     self.accessibilityLabel = NSLocalizedStringWithDefaultValue(@"MAP_A11Y_LABEL", nil, nil, @"Map", @"Accessibility label");
     self.accessibilityTraits = UIAccessibilityTraitAllowsDirectInteraction | UIAccessibilityTraitAdjustable;
     self.backgroundColor = [UIColor clearColor];
