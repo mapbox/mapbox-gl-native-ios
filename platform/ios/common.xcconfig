@@ -63,7 +63,7 @@ LD_GENERATE_MAP_FILE = YES
 LIBRARY_SEARCH_PATHS = $(inherited) $(PROJECT_DIR) $(PROJECT_DIR)/vendor/mapbox-accounts-ios
 
 OTHER_CFLAGS = $(inherited) -fvisibility=hidden
-OTHER_CPLUSPLUSFLAGS = $(inherited) -fvisibility=hidden
+OTHER_CPLUSPLUSFLAGS = $(inherited) -fvisibility=hidden -fcxx-modules
 OTHER_SWIFT_FLAGS = -warnings-as-errors
 
 // User defined
