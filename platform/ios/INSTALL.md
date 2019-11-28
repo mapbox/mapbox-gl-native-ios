@@ -44,7 +44,7 @@ Before building, follow these steps to install prerequisites:
    cd mapbox-gl-native
    ```
    Note that this repository uses Git submodules. They'll be automatically checked out when you first run a `make` command,
-   but are not updated automatically. We recommended that you run `git submodule update` after pulling down new commits to
+   but are not updated automatically. We recommended that you run `git submodule update --init --recursive` after pulling down new commits to
    this repository.
 1. Run `make iframework BUILDTYPE=Release`. The packaging script will produce a `build/ios/pkg/` folder containing:
   - a `dynamic` folder containing a dynamically-linked fat framework with debug symbols for devices and the iOS Simulator
