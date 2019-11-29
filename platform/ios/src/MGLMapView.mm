@@ -5964,29 +5964,35 @@ public:
 
 - (void)locationManager:(__unused id<MGLLocationManager>)manager didUpdateHeading:(CLHeading *)newHeading
 {
-    if ( ! _showsUserLocation || self.pan.state == UIGestureRecognizerStateBegan || newHeading.headingAccuracy < 0) return;
+    
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        
+        if ( ! self->_showsUserLocation || self.pan.state == UIGestureRecognizerStateBegan || newHeading.headingAccuracy < 0) return;
+        
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            self.userLocation.heading = newHeading;
 
-    self.userLocation.heading = newHeading;
+            if (self.showsUserHeadingIndicator || self.userTrackingMode == MGLUserTrackingModeFollowWithHeading)
+            {
+                [self updateUserLocationAnnotationView];
+            }
 
-    if (self.showsUserHeadingIndicator || self.userTrackingMode == MGLUserTrackingModeFollowWithHeading)
-    {
-        [self updateUserLocationAnnotationView];
-    }
+            if ([self.delegate respondsToSelector:@selector(mapView:didUpdateUserLocation:)])
+            {
+                [self.delegate mapView:self didUpdateUserLocation:self.userLocation];
 
-    if ([self.delegate respondsToSelector:@selector(mapView:didUpdateUserLocation:)])
-    {
-        [self.delegate mapView:self didUpdateUserLocation:self.userLocation];
+                if ( ! self->_showsUserLocation) return;
+            }
 
-        if ( ! _showsUserLocation) return;
-    }
+            CLLocationDirection headingDirection = (newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading);
 
-    CLLocationDirection headingDirection = (newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading);
-
-    if (headingDirection >= 0 && self.userTrackingMode == MGLUserTrackingModeFollowWithHeading
-        && self.userTrackingState != MGLUserTrackingStateBegan)
-    {
-        [self _setDirection:headingDirection animated:YES];
-    }
+            if (headingDirection >= 0 && self.userTrackingMode == MGLUserTrackingModeFollowWithHeading
+                && self.userTrackingState != MGLUserTrackingStateBegan)
+            {
+                [self _setDirection:headingDirection animated:YES];
+            }
+        });
+    });
 }
 
 - (void)locationManager:(__unused id<MGLLocationManager>)manager didFailWithError:(NSError *)error
