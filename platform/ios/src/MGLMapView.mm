@@ -5981,7 +5981,7 @@ public:
             {
                 [self.delegate mapView:self didUpdateUserLocation:self.userLocation];
 
-                if ( ! self->_showsUserLocation) return;
+                if (! self->_showsUserLocation) return;
             }
 
             CLLocationDirection headingDirection = (newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading);
