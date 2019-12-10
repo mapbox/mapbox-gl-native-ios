@@ -278,7 +278,6 @@ public:
 /// and calculate the ornament's position
 @property (nonatomic, assign) UIEdgeInsets safeMapViewContentInsets;
 @property (nonatomic, strong) NSNumber *automaticallyAdjustContentInsetHolder;
-
 - (mbgl::Map &)mbglMap;
 
 @end
@@ -338,6 +337,7 @@ public:
     CFTimeInterval _frameCounterStartTime;
     NSInteger _frameCount;
     CFTimeInterval _frameDurations;
+    double oldZoom;
 }
 
 #pragma mark - Setup & Teardown -
@@ -581,6 +581,7 @@ public:
 
     // setup interaction
     //
+    self.allowScrollGesturesDuringRotateOrZoom = YES;
     _pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
     _pan.delegate = self;
     _pan.maximumNumberOfTouches = 1;
@@ -1760,12 +1761,23 @@ public:
     [self cancelTransitions];
 
     CGPoint centerPoint = [self anchorPointForGesture:pinch];
+    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+        if (pinch.numberOfTouches == 1 && pinch.state != UIGestureRecognizerStateEnded) {
+            centerPoint = [self anchorPointForGesture:pinch];
+        } else {
+            centerPoint = [self contentCenter];
+        }
+    }
     MGLMapCamera *oldCamera = self.camera;
 
     self.cameraChangeReasonBitmask |= MGLCameraChangeReasonGesturePinch;
 
     if (pinch.state == UIGestureRecognizerStateBegan)
     {
+        oldZoom = [self zoomLevel];
+        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+            self.scrollEnabled = NO;
+        }
         self.scale = powf(2, [self zoomLevel]);
 
         if (abs(pinch.velocity) > abs(self.rotate.velocity)) {
@@ -1778,7 +1790,14 @@ public:
         // Zoom limiting happens at the core level.
         CGFloat newScale = self.scale * pinch.scale;
         double newZoom = log2(newScale);
-
+                
+        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+            if (abs(newZoom - oldZoom) > 0.1) {
+                if (!self.isRotating) {
+                    self.allowsRotating = false;
+                }
+            }
+        }
         // Calculates the final camera zoom, has no effect within current map camera.
         MGLMapCamera *toCamera = [self cameraByZoomingToZoomLevel:newZoom aroundAnchorPoint:centerPoint];
 
@@ -1802,6 +1821,10 @@ public:
     }
     else if (pinch.state == UIGestureRecognizerStateEnded || pinch.state == UIGestureRecognizerStateCancelled)
     {
+        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+            self.allowsRotating = YES;
+            self.scrollEnabled = YES;
+        }
         CGFloat velocity = pinch.velocity;
         if (isnan(velocity))
         {
@@ -1868,6 +1891,9 @@ public:
     [self cancelTransitions];
 
     CGPoint centerPoint = [self anchorPointForGesture:rotate];
+    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+        centerPoint = [self contentCenter];
+    }
     MGLMapCamera *oldCamera = self.camera;
 
     self.cameraChangeReasonBitmask |= MGLCameraChangeReasonGestureRotate;
@@ -1884,6 +1910,9 @@ public:
 
     if (rotate.state == UIGestureRecognizerStateBegan || ! self.isRotating)
     {
+        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+            self.scrollEnabled = NO;
+        }
         self.angle = MGLRadiansFromDegrees(*self.mbglMap.getCameraOptions().bearing) * -1;
 
         self.isRotating = YES;
@@ -1937,6 +1966,9 @@ public:
     }
     else if ((rotate.state == UIGestureRecognizerStateEnded || rotate.state == UIGestureRecognizerStateCancelled))
     {
+        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+            self.scrollEnabled = true;
+        }
         self.rotationBeforeThresholdMet = 0;
         if (! self.isRotating) { return; }
         self.isRotating = NO;

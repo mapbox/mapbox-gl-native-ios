@@ -661,6 +661,10 @@ MGL_EXPORT
 - (void)setTargetCoordinate:(CLLocationCoordinate2D)targetCoordinate animated:(BOOL)animated completionHandler:(nullable void (^)(void))completion;
 
 #pragma mark Configuring How the User Interacts with the Map
+/**
+ Controls whether rotate and zoom gestures can be performed off-center and scrolled around (default YES).
+ */
+@property(nonatomic) BOOL allowScrollGesturesDuringRotateOrZoom;
 
 /**
  A Boolean value that determines whether the user may zoom the map in and
