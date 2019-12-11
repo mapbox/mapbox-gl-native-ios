@@ -104,7 +104,9 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
         [defaults removeObserver:self forKeyPath:MGLMapboxMetricsDebugLoggingEnabledKey];
         [defaults removeObserver:self forKeyPath:MGLTelemetryAccessTokenKey];
     }
-    @catch (NSException *exception) {} //Purposefully unhandled. If the observer is removed by a superclass this may fail since we are removing it twice.
+    @catch (NSException *exception) {
+        [self.eventsManager reportException:exception];
+    } //If the observer is removed by a superclass this may fail since we are removing it twice.
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
