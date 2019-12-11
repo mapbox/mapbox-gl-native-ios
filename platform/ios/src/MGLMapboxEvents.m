@@ -101,8 +101,10 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     @try {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults removeObserver:self forKeyPath:MGLMapboxMetricsEnabledKey];
+        [defaults removeObserver:self forKeyPath:MGLMapboxMetricsDebugLoggingEnabledKey];
+        [defaults removeObserver:self forKeyPath:MGLTelemetryAccessTokenKey];
     }
-    @catch (NSException *exception) {} //Purposefully unhandled. This should only fail if we are unable to add an observer in the first place.
+    @catch (NSException *exception) {} //Purposefully unhandled. If the observer is removed by a superclass this may fail since we are removing it twice.
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
@@ -119,6 +121,8 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
        dispatch_async(dispatch_get_main_queue(), ^{
            [self updateNonDisablingConfigurationValues];
        });
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
