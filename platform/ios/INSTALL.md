@@ -178,7 +178,7 @@ To test pre-releases of the dynamic framework, directly specify the version in y
 
 ```json
 binary "https://www.mapbox.com/ios-sdk/Mapbox-iOS-SDK.json" ~> x.x.x-alpha.1
-github "mapbox/mapbox-events-ios" == 0.10.2-alpha
+github "mapbox/mapbox-events-ios" == 0.10.2
 ```
 
 ##### Testing snapshot releases with Carthage
