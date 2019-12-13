@@ -111,6 +111,8 @@ For instructions on installing stable release versions of the Mapbox Maps SDK fo
 To test pre-releases of the dynamic framework, directly specify the version in your `Podfile`:
 
 ```rb
+use frameworks!
+
 pod 'Mapbox-iOS-SDK', '~> x.x.x-alpha.1'
 ```
 
@@ -119,6 +121,8 @@ pod 'Mapbox-iOS-SDK', '~> x.x.x-alpha.1'
 To test a snapshot dynamic framework build, update your app’s `Podfile` to point to:
 
 ```rb
+use frameworks!
+
 pod 'Mapbox-iOS-SDK-snapshot-dynamic', podspec: 'https://raw.githubusercontent.com/mapbox/mapbox-gl-native-ios/master/platform/ios/Mapbox-iOS-SDK-snapshot-dynamic.podspec'
 ```
 
@@ -139,6 +143,8 @@ pod 'Mapbox-iOS-SDK-snapshot-dynamic', podspec: 'https://raw.githubusercontent.c
 1. Update your app’s `Podfile` to point to the edited `Mapbox-iOS-SDK.podspec`.
 
     ```rb
+    use frameworks!
+
     pod 'Mapbox-iOS-SDK', :path => '{...}/platform/ios/Mapbox-iOS-SDK.podspec'
     ```
 
@@ -151,6 +157,8 @@ If using the static framework, add `$(inherited)` to your target’s Other Linke
 If you choose to commit the contents of your `Pods` directory to source control and are encountering file size limitations, you may wish to use builds that have been pre-stripped of debug symbols. We publish these to [our public podspecs repository](https://github.com/mapbox/pod-specs/), which should be added as an additional `source` in your app’s `Podfile`.
 
 ```rb
+use frameworks!
+
 source 'https://github.com/mapbox/pod-specs.git'
 
 pod 'Mapbox-iOS-SDK-stripped', '~> x.x.x'
@@ -162,12 +170,15 @@ Note that these builds lack some debugging information, which could make develop
 
 For instructions on installing stable release versions of the Mapbox Maps SDK for iOS with Carthage, see [our website](https://www.mapbox.com/install/ios/carthage/).
 
+Please note that as of ios-v5.6.0-alpha.2, `--no-use-binaries` has no affect on projects built with the Mapbox framework.
+
 ##### Testing pre-releases with Carthage
 
 To test pre-releases of the dynamic framework, directly specify the version in your Cartfile:
 
 ```json
 binary "https://www.mapbox.com/ios-sdk/Mapbox-iOS-SDK.json" ~> x.x.x-alpha.1
+github "mapbox/mapbox-events-ios" == 0.10.2-alpha
 ```
 
 ##### Testing snapshot releases with Carthage
