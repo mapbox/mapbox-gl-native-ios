@@ -28,6 +28,7 @@ const MGLShapeSourceOption MGLShapeSourceOptionSimplificationTolerance = @"MGLSh
 const MGLShapeSourceOption MGLShapeSourceOptionLineDistanceMetrics = @"MGLShapeSourceOptionLineDistanceMetrics";
 
 mbgl::Immutable<mbgl::style::GeoJSONOptions> MGLGeoJSONOptionsFromDictionary(NSDictionary<MGLShapeSourceOption, id> *options) {
+
     auto geoJSONOptions = mbgl::makeMutable<mbgl::style::GeoJSONOptions>();
 
     if (NSNumber *value = options[MGLShapeSourceOptionMinimumZoomLevel]) {
@@ -145,7 +146,7 @@ mbgl::Immutable<mbgl::style::GeoJSONOptions> MGLGeoJSONOptionsFromDictionary(NSD
         geoJSONOptions->lineMetrics = value.boolValue;
     }
 
-    return geoJSONOptions;
+    return mbgl::makeMutable<mbgl::style::GeoJSONOptions>(std::move(geoJSONOptions));
 }
 
 @interface MGLShapeSource ()
