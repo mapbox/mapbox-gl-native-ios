@@ -67,4 +67,22 @@
 
     XCTAssertGreaterThan(scaleBar.alpha, 0);
     XCTAssertFalse(CGSizeEqualToSize(scaleBar.intrinsicContentSize, CGSizeZero));
-}@end
+}
+
+- (void)testChangeScaleBarSize {
+    self.mapView.scaleBarMaximumWidthRatio = 0.5;
+    UIView *scaleBar = self.mapView.scaleBar;
+    scaleBar.hidden = NO;
+    
+    self.mapView.zoomLevel = 15;
+    [self.mapView layoutIfNeeded];
+    
+    XCTAssertLessThanOrEqual(scaleBar.frame.size.width, UIScreen.mainScreen.bounds.size.width/2);
+    
+    self.mapView.zoomLevel = 5;
+    [self.mapView layoutIfNeeded];
+    
+    XCTAssertLessThanOrEqual(scaleBar.frame.size.width, UIScreen.mainScreen.bounds.size.width/2);
+}
+
+@end
