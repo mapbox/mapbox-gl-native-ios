@@ -168,7 +168,7 @@ commands:
     - run:
         name: Build ios-test
         command: make ios-test
-        no_output_timeout: 5m
+        no_output_timeout: 20m
   build-ios-integration-test:
     steps:
     - run:
@@ -256,7 +256,7 @@ commands:
 jobs:
   ios-debug:
     macos:
-      xcode: "11.1.0"
+      xcode: "11.2.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -270,9 +270,6 @@ jobs:
           command: make ios-lint
       - check-if-this-job-can-be-skipped
       - build-ios-test
-      - run:
-          name: Check symbol namespacing for mapbox-events-ios
-          command: make ios-check-events-symbols
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
@@ -294,9 +291,6 @@ jobs:
           command: make ios-lint
       - check-if-this-job-can-be-skipped
       - build-ios-test
-      - run:
-          name: Check symbol namespacing for mapbox-events-ios
-          command: make ios-check-events-symbols
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
@@ -304,7 +298,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-sanitize-nightly:
     macos:
-      xcode: "11.1.0"
+      xcode: "11.2.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -331,7 +325,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-sanitize-address-nightly:
     macos:
-      xcode: "11.1.0"
+      xcode: "11.2.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -351,7 +345,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-static-analyzer-nightly:
     macos:
-      xcode: "11.1.0"
+      xcode: "11.2.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -391,7 +385,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-release-template:
     macos:
-      xcode: "11.1.0"
+      xcode: "11.2.1"
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
@@ -406,7 +400,7 @@ jobs:
       - run:
           name: Build dynamic framework for device and simulator
           command: make iframework
-          no_output_timeout: 5m
+          no_output_timeout: 20m
       - deploy:
           name: Upload snapshot build to s3
           command: |
@@ -443,7 +437,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-release-tag:
     macos:
-      xcode: "11.0.0"
+      xcode: "11.2.1"
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
@@ -471,6 +465,7 @@ jobs:
           command: |
             export VERSION_TAG=${CIRCLE_TAG}
             platform/ios/scripts/deploy-packages.sh
+          no_output_timeout: 20m
       - deploy:
           name: Deploy to CocoaPods
           command: platform/ios/scripts/deploy-to-cocoapods.sh
