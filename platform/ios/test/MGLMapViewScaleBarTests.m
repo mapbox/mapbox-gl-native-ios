@@ -88,7 +88,12 @@
     self.mapView.frame = frame;
     [self.mapView layoutIfNeeded];
     
-    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2);
+    // The bar maximum bar width can only limit the bar's total width.
+    // Since we should include some space for last label width, the maximum last label width is 30.
+    // However, the last label cannot be out of bounds by constraints.
+    CGFloat scaleBarLabelWidthHint = 30.0f;
+    
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2 + scaleBarLabelWidthHint);
 }
 
 @end
