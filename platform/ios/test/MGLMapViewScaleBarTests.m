@@ -86,7 +86,6 @@
     CGRect frame = self.mapView.frame;
     frame.size = CGSizeMake(frame.size.width/2, frame.size.height);
     self.mapView.frame = frame;
-    [self.mapView setNeedsLayout];
     [self.mapView layoutIfNeeded];
     
     XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2);
