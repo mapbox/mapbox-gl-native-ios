@@ -15,4 +15,6 @@
 
 @property (nonatomic, assign) CGPoint margins;
 
+- (void)setNeedsRecalculateSize;
+
 @end

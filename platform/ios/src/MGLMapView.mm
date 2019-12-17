@@ -1010,6 +1010,7 @@ public:
     // `_mbglMap->setSize()` just below that triggers rendering update which triggers
     // another scale bar update which causes a rendering update loop and a major performace
     // degradation.
+    [(MGLScaleBar *)self.scaleBar setNeedsRecalculateSize];
     [self.scaleBar invalidateIntrinsicContentSize];
 
     [self adjustContentInset];

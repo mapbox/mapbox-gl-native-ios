@@ -316,6 +316,10 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     [self invalidateIntrinsicContentSize];
 }
 
+- (void)setNeedsRecalculateSize {
+    self.recalculateSize = YES;
+}
+
 - (CGSize)intrinsicContentSize {
     // Size is calculated elsewhere - since intrinsicContentSize is part of the
     // constraint system, this should be done in updateConstraints
