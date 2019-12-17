@@ -318,6 +318,8 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 
 - (void)setNeedsRecalculateSize {
     self.recalculateSize = YES;
+    [self setNeedsUpdateConstraints];
+    [self updateConstraintsIfNeeded];
 }
 
 - (CGSize)intrinsicContentSize {

@@ -58,7 +58,7 @@
     // ... but triggering any camera event will update it.
     self.mapView.zoomLevel = 1;
     [self.mapView layoutIfNeeded];
-    
+
     XCTAssertTrue(CGSizeEqualToSize(scaleBar.intrinsicContentSize, CGSizeZero));
     XCTAssertEqual(scaleBar.alpha, 0);
 
@@ -69,7 +69,7 @@
     XCTAssertFalse(CGSizeEqualToSize(scaleBar.intrinsicContentSize, CGSizeZero));
 }
 
-- (void)testChangeScaleBarSize {
+- (void)testScaleBarSizeChanged {
     self.mapView.scaleBarMaximumWidthRatio = 0.5;
     UIView *scaleBar = self.mapView.scaleBar;
     scaleBar.hidden = NO;
@@ -77,17 +77,19 @@
     self.mapView.zoomLevel = 15;
     [self.mapView layoutIfNeeded];
     
-    XCTAssertLessThanOrEqual(scaleBar.frame.size.width, self.mapView.frame.size.width/2);
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2);
     
     self.mapView.zoomLevel = 10;
     [self.mapView layoutIfNeeded];
-    XCTAssertLessThanOrEqual(scaleBar.frame.size.width, self.mapView.frame.size.width/2);
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2);
     
     CGRect frame = self.mapView.frame;
     frame.size = CGSizeMake(frame.size.width/2, frame.size.height);
     self.mapView.frame = frame;
+    [self.mapView setNeedsLayout];
+    [self.mapView layoutIfNeeded];
     
-    XCTAssertLessThanOrEqual(scaleBar.frame.size.width, self.mapView.frame.size.width/2);
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2);
 }
 
 @end
