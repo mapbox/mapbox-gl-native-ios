@@ -811,6 +811,7 @@ public:
     _scaleBarMaximumWidthRatio = scaleBarMaximumWidthRatio;
     if([self.scaleBar isKindOfClass:[MGLScaleBar class]]) {
         ((MGLScaleBar *)self.scaleBar).maximumWidthRatio = scaleBarMaximumWidthRatio;
+        [(MGLScaleBar *)self.scaleBar setNeedsRecalculateSize];
     }
     [self updateScaleBar];
 }

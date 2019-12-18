@@ -70,6 +70,12 @@
 }
 
 - (void)testScaleBarSizeChanged {
+    
+    // The bar maximum bar width can only limit the bar's total width.
+    // Sometimes we should include some space for last label width, the maximum last label width is 30.
+    // We add this hint value to avoid testing failed when need a extra space for last label.
+    CGFloat scaleBarLastLabelWidthHint = 30.0f;
+    
     self.mapView.scaleBarMaximumWidthRatio = 0.5;
     UIView *scaleBar = self.mapView.scaleBar;
     scaleBar.hidden = NO;
@@ -77,23 +83,22 @@
     self.mapView.zoomLevel = 15;
     [self.mapView layoutIfNeeded];
     
-    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2);
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2 + scaleBarLastLabelWidthHint);
     
     self.mapView.zoomLevel = 10;
     [self.mapView layoutIfNeeded];
-    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2);
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2 + scaleBarLastLabelWidthHint);
     
     CGRect frame = self.mapView.frame;
     frame.size = CGSizeMake(frame.size.width/2, frame.size.height);
     self.mapView.frame = frame;
     [self.mapView layoutIfNeeded];
     
-    // The bar maximum bar width can only limit the bar's total width.
-    // Sometimes we should include some space for last label width, the maximum last label width is 30.
-    // We add this hint value to avoid testing failed when need a extra space for last label.
-    CGFloat scaleBarLabelWidthHint = 30.0f;
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2 + scaleBarLastLabelWidthHint);
     
-    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width/2 + scaleBarLabelWidthHint);
+    self.mapView.scaleBarMaximumWidthRatio = 0.3;
+    
+    XCTAssertLessThanOrEqual(scaleBar.intrinsicContentSize.width, self.mapView.frame.size.width * 0.3 + scaleBarLastLabelWidthHint);
 }
 
 @end
