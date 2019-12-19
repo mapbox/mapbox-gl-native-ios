@@ -20,6 +20,7 @@ This release includes a known issue where the binary size has increased. [#63](h
 * Fix ornaments' view constraints bug when devices change to bold-text mode. ([#57](https://github.com/mapbox/mapbox-gl-native-ios/pull/57))
 * Fixed `MGLShapeSource` source flickering on style transition. ([#15907](https://github.com/mapbox/mapbox-gl-native/pull/15907))
 * Fixed flickering caused by unnecessary removing and re-adding of the render sources when the order of their corresponding style objects was changed in the updated style ([#15941](https://github.com/mapbox/mapbox-gl-native/pull/15941))
+* Fixed a crash when `MGLSymbolStyleLayer.textFontSize` is set to an expression that evaluates to `0`. ([#16080](https://github.com/mapbox/mapbox-gl-native/pull/16080))
 
 ### Other changes
 * Convert GeoJSON features to tiles for the loaded source description in a background thread and thus unblock the UI thread ([#15885](https://github.com/mapbox/mapbox-gl-native/pull/15885))
