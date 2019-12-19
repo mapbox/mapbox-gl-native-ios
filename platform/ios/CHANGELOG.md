@@ -2,7 +2,7 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 5.6.0
+## 5.6.0 - December 19, 2019
 This release includes a known issue where the binary size has increased. [#63](https://github.com/mapbox/mapbox-gl-native-ios/issues/63)
 
 ### Packaging
@@ -23,7 +23,6 @@ This release includes a known issue where the binary size has increased. [#63](h
 
 ### Other changes
 * Convert GeoJSON features to tiles for the loaded source description in a background thread and thus unblock the UI thread ([#15885](https://github.com/mapbox/mapbox-gl-native/pull/15885))
-* 
 
 ## 5.5.0 - November 5, 2019
 
