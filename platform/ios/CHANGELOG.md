@@ -3,8 +3,7 @@
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
 ## 5.6.0
-
-* No public-facing changes in v5.6.0-beta.1.
+This release includes a known issue where the binary size has increased. [#63](https://github.com/mapbox/mapbox-gl-native-ios/issues/63)
 
 ### Packaging
 * Integrates [`MapboxMobileEvents`](https://github.com/mapbox/mapbox-events-ios) as a dependency ([#60](https://github.com/mapbox/mapbox-gl-native-ios/pull/60)). As a result, the following installation processes have changed:
