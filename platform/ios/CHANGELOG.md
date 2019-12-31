@@ -6,9 +6,8 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 * Add a `maximumWidthRatio` property for customizing maximum width of scale bar. ([#65](https://github.com/mapbox/mapbox-gl-native-ios/pull/65))
 
-## 5.6.0
-
-* No public-facing changes in v5.6.0-beta.1.
+## 5.6.0 - December 19, 2019
+This release includes a known issue where the binary size has increased. [#63](https://github.com/mapbox/mapbox-gl-native-ios/issues/63)
 
 ### Packaging
 * Integrates [`MapboxMobileEvents`](https://github.com/mapbox/mapbox-events-ios) as a dependency ([#60](https://github.com/mapbox/mapbox-gl-native-ios/pull/60)). As a result, the following installation processes have changed:
@@ -25,6 +24,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Fix ornaments' view constraints bug when devices change to bold-text mode. ([#57](https://github.com/mapbox/mapbox-gl-native-ios/pull/57))
 * Fixed `MGLShapeSource` source flickering on style transition. ([#15907](https://github.com/mapbox/mapbox-gl-native/pull/15907))
 * Fixed flickering caused by unnecessary removing and re-adding of the render sources when the order of their corresponding style objects was changed in the updated style ([#15941](https://github.com/mapbox/mapbox-gl-native/pull/15941))
+* Fixed a crash when `MGLSymbolStyleLayer.textFontSize` is set to an expression that evaluates to `0`. ([#16080](https://github.com/mapbox/mapbox-gl-native/pull/16080))
 
 ### Other changes
 * Convert GeoJSON features to tiles for the loaded source description in a background thread and thus unblock the UI thread ([#15885](https://github.com/mapbox/mapbox-gl-native/pull/15885))
