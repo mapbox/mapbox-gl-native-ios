@@ -2,6 +2,10 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## 5.7.0
+
+* No public-facing changes in v5.7.0-alpha.1.
+
 ## 5.6.0 - December 19, 2019
 This release includes a known issue where the binary size has increased. [#63](https://github.com/mapbox/mapbox-gl-native-ios/issues/63)
 
