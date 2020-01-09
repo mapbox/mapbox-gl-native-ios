@@ -2,8 +2,11 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## 5.6.1 - January 9, 2020
+* Fixed a crash that could occur when `MGLShapeSource` destroys its underlying data. ([#16106](https://github.com/mapbox/mapbox-gl-native/pull/16106))
+
 ## 5.6.0 - December 19, 2019
-This release includes a known issue where the binary size has increased. [#63](https://github.com/mapbox/mapbox-gl-native-ios/issues/63)
+This release includes a known issue where the binary size has increased. ([#63](https://github.com/mapbox/mapbox-gl-native-ios/issues/63))
 
 ### Packaging
 * Integrates [`MapboxMobileEvents`](https://github.com/mapbox/mapbox-events-ios) as a dependency ([#60](https://github.com/mapbox/mapbox-gl-native-ios/pull/60)). As a result, the following installation processes have changed:
