@@ -2623,6 +2623,7 @@
 				DA1DC9481CB6C1C2006E619F /* Resources */,
 				074A7F0B2277BD67001A62D1 /* Insert Mapbox Access Token */,
 				CA0FA9E62379C39C00C9F3C9 /* Embed Frameworks */,
+				CA3061AD23D11ACA00BC59BF /* Strip Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2950,6 +2951,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "$SRCROOT/app/insert_access_token.sh\n";
+		};
+		CA3061AD23D11ACA00BC59BF /* Strip Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Strip Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework/strip-frameworks.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

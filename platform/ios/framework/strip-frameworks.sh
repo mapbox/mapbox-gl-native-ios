@@ -53,6 +53,18 @@ for file in $(find . -type f -perm +111); do
   if ! [[ "$(file "$file")" == *"dynamically linked shared library"* ]]; then
     continue
   fi
+
+  # Check for required Mapbox frameworks
+  framework=$(basename $file)
+
+  if [ "$framework" = "Mapbox" ]; then
+    found_mapbox_sdk=true
+  fi
+
+  if [ "$framework" = "MapboxMobileEvents" ]; then
+    found_events_sdk=true
+  fi
+
   # Get architectures for current file
   archs="$(lipo -info "${file}" | rev | cut -d ':' -f1 | rev)"
   stripped=""
@@ -71,3 +83,12 @@ for file in $(find . -type f -perm +111); do
   fi
 done
 
+if [[ -z $found_mapbox_sdk ]]; then
+    echo "Please add Mapbox.framework to the Embed Frameworks build phase."
+    exit -1
+fi
+
+if [[ -z $found_events_sdk ]]; then
+    echo "Please add MapboxMobileEvents.framework to the Embed Frameworks build phase."
+    exit -2
+fi
