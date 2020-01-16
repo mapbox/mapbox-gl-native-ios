@@ -85,10 +85,12 @@ done
 
 if [[ -z $found_mapbox_sdk ]]; then
     echo "Please add Mapbox.framework to the Embed Frameworks build phase."
+    echo "See https://github.com/mapbox/mapbox-gl-native-ios/pull/150"
     exit -1
 fi
 
 if [[ -z $found_events_sdk ]]; then
     echo "Please add MapboxMobileEvents.framework to the Embed Frameworks build phase."
+    echo "See https://github.com/mapbox/mapbox-gl-native-ios/pull/150"
     exit -2
 fi
