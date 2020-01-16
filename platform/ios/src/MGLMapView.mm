@@ -337,7 +337,6 @@ public:
     CFTimeInterval _frameCounterStartTime;
     NSInteger _frameCount;
     CFTimeInterval _frameDurations;
-    double oldZoom;
 }
 
 #pragma mark - Setup & Teardown -
@@ -1702,6 +1701,11 @@ public:
 {
     if ( ! self.isScrollEnabled) return;
 
+    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+        if (self.isZooming || self.isRotating) {
+            return;
+        }
+    }
     [self cancelTransitions];
 
     MGLMapCamera *oldCamera = self.camera;
@@ -1762,9 +1766,7 @@ public:
 
     CGPoint centerPoint = [self anchorPointForGesture:pinch];
     if (!self.allowScrollGesturesDuringRotateOrZoom) {
-        if (pinch.numberOfTouches == 1 && pinch.state != UIGestureRecognizerStateEnded) {
-            centerPoint = [self anchorPointForGesture:pinch];
-        } else {
+        if (pinch.numberOfTouches != 1 || pinch.state == UIGestureRecognizerStateEnded) {
             centerPoint = [self contentCenter];
         }
     }
@@ -1774,10 +1776,6 @@ public:
 
     if (pinch.state == UIGestureRecognizerStateBegan)
     {
-        oldZoom = [self zoomLevel];
-        if (!self.allowScrollGesturesDuringRotateOrZoom) {
-            self.scrollEnabled = NO;
-        }
         self.scale = powf(2, [self zoomLevel]);
 
         if (abs(pinch.velocity) > abs(self.rotate.velocity)) {
@@ -1790,14 +1788,7 @@ public:
         // Zoom limiting happens at the core level.
         CGFloat newScale = self.scale * pinch.scale;
         double newZoom = log2(newScale);
-                
-        if (!self.allowScrollGesturesDuringRotateOrZoom) {
-            if (abs(newZoom - oldZoom) > 0.1) {
-                if (!self.isRotating) {
-                    self.allowsRotating = false;
-                }
-            }
-        }
+
         // Calculates the final camera zoom, has no effect within current map camera.
         MGLMapCamera *toCamera = [self cameraByZoomingToZoomLevel:newZoom aroundAnchorPoint:centerPoint];
 
@@ -1821,10 +1812,6 @@ public:
     }
     else if (pinch.state == UIGestureRecognizerStateEnded || pinch.state == UIGestureRecognizerStateCancelled)
     {
-        if (!self.allowScrollGesturesDuringRotateOrZoom) {
-            self.allowsRotating = YES;
-            self.scrollEnabled = YES;
-        }
         CGFloat velocity = pinch.velocity;
         if (isnan(velocity))
         {
@@ -1904,15 +1891,15 @@ public:
     // Check whether a zoom triggered by a pinch gesture is occurring and if the rotation threshold has been met.
     if (MGLDegreesFromRadians(self.rotationBeforeThresholdMet) < self.rotationThresholdWhileZooming && self.isZooming && !self.isRotating) {
         self.rotationBeforeThresholdMet += fabs(rotate.rotation);
+        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+            self.rotationBeforeThresholdMet = 0;
+        }
         rotate.rotation = 0;
         return;
     }
 
     if (rotate.state == UIGestureRecognizerStateBegan || ! self.isRotating)
     {
-        if (!self.allowScrollGesturesDuringRotateOrZoom) {
-            self.scrollEnabled = NO;
-        }
         self.angle = MGLRadiansFromDegrees(*self.mbglMap.getCameraOptions().bearing) * -1;
 
         self.isRotating = YES;
@@ -1966,9 +1953,6 @@ public:
     }
     else if ((rotate.state == UIGestureRecognizerStateEnded || rotate.state == UIGestureRecognizerStateCancelled))
     {
-        if (!self.allowScrollGesturesDuringRotateOrZoom) {
-            self.scrollEnabled = true;
-        }
         self.rotationBeforeThresholdMet = 0;
         if (! self.isRotating) { return; }
         self.isRotating = NO;

@@ -661,10 +661,6 @@ MGL_EXPORT
 - (void)setTargetCoordinate:(CLLocationCoordinate2D)targetCoordinate animated:(BOOL)animated completionHandler:(nullable void (^)(void))completion;
 
 #pragma mark Configuring How the User Interacts with the Map
-/**
- Controls whether rotate and zoom gestures can be performed off-center and scrolled around (default YES).
- */
-@property(nonatomic) BOOL allowScrollGesturesDuringRotateOrZoom;
 
 /**
  A Boolean value that determines whether the user may zoom the map in and
@@ -720,6 +716,11 @@ MGL_EXPORT
  The default value of this property is `YES`.
  */
 @property(nonatomic, getter=isPitchEnabled) BOOL pitchEnabled;
+
+/**
+ A Boolean value that determines whether the user can change the center coordinate of the map while rotating or zooming. When this property is set to YES, the default, the location of the gesture in the map view determines the map's center coordinate.
+ */
+@property(nonatomic) BOOL allowScrollGesturesDuringRotateOrZoom;
 
 /**
  A Boolean value that determines whether the user will receive haptic feedback
