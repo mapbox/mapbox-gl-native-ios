@@ -11,6 +11,7 @@
 #import "NSValue+MGLAdditions.h"
 #import "NSDate+MGLAdditions.h"
 #import "MGLLoggingConfiguration_Private.h"
+#import "MGLNetworkConfiguration_Private.h"
 
 #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
 #import <MapboxMobileEvents/MapboxMobileEvents.h>
@@ -208,6 +209,10 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
 }
 
 - (instancetype)init {
+    // Ensure network configuration & appropriate delegate prior to starting the
+    // run loop
+    [MGLNetworkConfiguration setNativeNetworkManagerDelegateToDefault];
+
     MGLInitializeRunLoop();
 
     if (self = [super init]) {

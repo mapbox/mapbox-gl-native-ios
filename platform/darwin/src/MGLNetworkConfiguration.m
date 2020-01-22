@@ -1,5 +1,5 @@
 #import "MGLNetworkConfiguration_Private.h"
-
+#import "MGLNetworkIntegrationManager.h"
 #include <mbgl/storage/reachability.h>
 
 static NSString * const MGLStartTime = @"start_time";
@@ -35,6 +35,13 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
     });
 
     return _sharedManager;
+}
+
++ (void)setNativeNetworkManagerDelegateToDefault {
+    // Tell core about our network integration. `delegate` here is not (yet)
+    // intended to be set to nil, except for testing.
+    [MGLNativeNetworkManager sharedManager].delegate =
+        MGLNetworkIntegrationManager.sharedManager;
 }
 
 - (void)setSessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration {
