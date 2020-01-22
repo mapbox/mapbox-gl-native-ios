@@ -69,6 +69,9 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
         [sharedOfflineStorage reloadPacks];
     });
 
+    // Always ensure the network delegate is setup
+    [MGLNetworkConfiguration setNativeNetworkManagerDelegateToDefault];
+
     return sharedOfflineStorage;
 }
 

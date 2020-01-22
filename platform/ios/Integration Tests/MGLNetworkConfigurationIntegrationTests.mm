@@ -5,8 +5,19 @@
 #import "MGLOfflineStorage_Private.h"
 #import "MGLMapView.h"
 
+@interface MGLNetworkConfiguration (Testing)
++ (void)testing_clearNativeNetworkManagerDelegate;
++ (id)testing_nativeNetworkManagerDelegate;
+@end
+
 @interface MGLNetworkConfigurationIntegrationTests : XCTestCase
 @end
+
+#define ASSERT_DELEGATE_IS_NIL() \
+    XCTAssertNil([MGLNetworkConfiguration testing_nativeNetworkManagerDelegate])
+
+#define ASSERT_DELEGATE_IS_NOT_NIL() \
+    XCTAssertNotNil([MGLNetworkConfiguration testing_nativeNetworkManagerDelegate])
 
 // NOTE: These tests are currently assumed to run in this specific order.
 @implementation MGLNetworkConfigurationIntegrationTests
@@ -15,56 +26,50 @@
     [super setUp];
 
     // Reset before each test
-    [MGLNativeNetworkManager sharedManager].delegate = nil;
+    [MGLNetworkConfiguration testing_clearNativeNetworkManagerDelegate];
 }
 
-- (void)testNativeNetworkManagerDelegateIsSet
+- (void)test1_NativeNetworkManagerDelegateIsSet
 {
-    XCTAssertNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NIL();
     [MGLNetworkConfiguration setNativeNetworkManagerDelegateToDefault];
-    XCTAssertNotNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NOT_NIL();
 }
 
-- (void)testNativeNetworkManagerDelegateIsNotSetBySharedManager
+- (void)test2_NativeNetworkManagerDelegateIsSetBySharedManager
 {
-    XCTAssertNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NIL();
 
-    // Just calling the shared manager is not sufficient (since it's a singleton,
-    // and created with a dispatch_once).
+    // Just calling the shared manager is also sufficient (even though, it's a
+    // singleton and created with a dispatch_once, the delegate is re-set for
+    // each call.
     [MGLNetworkConfiguration sharedManager];
-    XCTAssertNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NOT_NIL();
 }
 
-- (void)testNativeNetworkManagerDelegateIsSetBySharedOfflineStorage
+- (void)test3_NativeNetworkManagerDelegateIsSetBySharedOfflineStorage
 {
-    XCTAssertNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NIL();
 
-    // However, to compare with testNativeNetworkManagerDelegateIsNotSetBySharedManager
-    // the first time `[MGLOfflineStorage sharedOfflineStorage]` is called, it
-    // *will* set the delegate.
-    //
-    // But the same reason (dispatch_once), if the singleton is cleared, and then
-    // `sharedOfflineStorage` is called again, it will not be set.
-    //
-    // `MGLNativeNetworkManager` is not exposed publicly, so this is more of a
-    // warning.
+    // Similar to `[MGLNetworkConfiguration sharedManager]`,
+    // `[MGLOfflineStorage sharedOfflineStorage]` also sets the delegate.
     [MGLOfflineStorage sharedOfflineStorage];
-    XCTAssertNotNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NOT_NIL();
 }
 
-- (void)testNativeNetworkManagerDelegateIsNotSetBySharedOfflineStorageASecondTime
+- (void)test4_NativeNetworkManagerDelegateIsSetBySharedOfflineStorageASecondTime
 {
-    // As noted above, a second attempt though will break it.
-    XCTAssertNil([MGLNativeNetworkManager sharedManager].delegate);
+    // Testing a second time...
+    ASSERT_DELEGATE_IS_NIL();
     [MGLOfflineStorage sharedOfflineStorage];
-    XCTAssertNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NOT_NIL();
 }
 
-- (void)testNativeNetworkManagerDelegateIsSetByMapViewInit
+- (void)test5_NativeNetworkManagerDelegateIsSetByMapViewInit
 {
-    XCTAssertNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NIL();
     (void)[[MGLMapView alloc] init];
-    XCTAssertNotNil([MGLNativeNetworkManager sharedManager].delegate);
+    ASSERT_DELEGATE_IS_NOT_NIL();
 }
 
 @end
