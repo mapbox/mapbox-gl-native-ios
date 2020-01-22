@@ -4,6 +4,7 @@
 #import "MGLNetworkConfiguration_Private.h"
 #import "MGLOfflineStorage_Private.h"
 #import "MGLMapView.h"
+#import "MGLFoundation_Private.h"
 
 @interface MGLNetworkConfiguration (Testing)
 + (void)testing_clearNativeNetworkManagerDelegate;
@@ -33,7 +34,15 @@
 {
     ASSERT_DELEGATE_IS_NIL();
     [MGLNetworkConfiguration setNativeNetworkManagerDelegateToDefault];
-    ASSERT_DELEGATE_IS_NOT_NIL();
+
+    id delegate = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
+
+    id<MGLNativeNetworkDelegate> manager = MGL_OBJC_DYNAMIC_CAST_AS_PROTOCOL(delegate, MGLNativeNetworkDelegate);
+    XCTAssertNotNil(manager);
+
+    // Expected properties
+    XCTAssertNotNil([manager skuToken]);
+    XCTAssertNotNil([manager sessionConfiguration]);
 }
 
 - (void)test2_NativeNetworkManagerDelegateIsSetBySharedManager
