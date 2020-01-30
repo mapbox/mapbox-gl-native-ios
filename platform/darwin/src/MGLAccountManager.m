@@ -7,7 +7,6 @@
 
 #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
 #import "MGLMapboxEvents.h"
-#import "MBXSKUToken.h"
 
 static NSString * const MGLAccountManagerExternalClassName = @"MBXAccounts";
 static NSString * const MGLAccountManagerExternalMethodName = @"skuToken";
@@ -104,7 +103,9 @@ NSString * const MGLMapboxAccountTypeKey = @"MGLMapboxAccountType";
         return (NSString *)[mbx valueForKeyPath:MGLAccountManagerExternalMethodName];
     }
     
-    return MBXSKUToken.skuToken;
+    // TODO: Depending on if the accounts library should be weakly linked or not, fail gracefully or use the library directly
+    NSAssert(false, @"Install the MapboxAccounts library");
+    return @"";
 }
 
 #endif

@@ -60,7 +60,7 @@ HEADER_SEARCH_PATHS = $(inherited) "$(PROJECT_DIR)/../../vendor/mapbox-gl-native
 
 LD_GENERATE_MAP_FILE = YES
 
-LIBRARY_SEARCH_PATHS = $(inherited) $(PROJECT_DIR) $(PROJECT_DIR)/vendor/mapbox-accounts-ios
+LIBRARY_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)
 
 OTHER_CFLAGS = $(inherited) -fvisibility=hidden
 OTHER_CPLUSPLUSFLAGS = $(inherited) -fvisibility=hidden -fcxx-modules

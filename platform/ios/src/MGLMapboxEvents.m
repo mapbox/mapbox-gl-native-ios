@@ -1,7 +1,6 @@
 @import Foundation;
 
 #import "MGLMapboxEvents.h"
-#import "MBXSKUToken.h"
 #import "NSBundle+MGLAdditions.h"
 #import "MGLAccountManager_Private.h"
 
@@ -161,7 +160,7 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
                                userAgentBase:MGLAPIClientUserAgentBase
                               hostSDKVersion:sdkVersion];
 
-    eventsManager.skuId                       = MBXAccountsSKUIDMapsUser;
+    //eventsManager.skuId                       = MBXAccountsSKUIDMapsUser;
     eventsManager.debugLoggingEnabled         = [[NSUserDefaults standardUserDefaults] boolForKey :MGLMapboxMetricsDebugLoggingEnabledKey];
     
 
