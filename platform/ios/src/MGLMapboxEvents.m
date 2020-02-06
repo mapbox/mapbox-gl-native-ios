@@ -31,7 +31,7 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
         NSBundle *bundle = [NSBundle mainBundle];
         NSNumber *accountTypeNumber = [bundle objectForInfoDictionaryKey:MGLMapboxAccountTypeKey];
         [[NSUserDefaults standardUserDefaults] registerDefaults:@{MGLMapboxAccountTypeKey: accountTypeNumber ?: @0,
-                                                                  MGLMapboxMetricsEnabledKey: @YES];
+                                                                  MGLMapboxMetricsEnabledKey: @YES}];
     }
 }
 
