@@ -7,7 +7,6 @@
 
 // NSUserDefaults and Info.plist keys
 NSString * const MGLMapboxMetricsEnabledKey = @"MGLMapboxMetricsEnabled";
-static NSString * const MGLMapboxMetricsDebugLoggingEnabledKey = @"MGLMapboxMetricsDebugLoggingEnabled";
 static NSString * const MGLMapboxMetricsEnabledSettingShownInAppKey = @"MGLMapboxMetricsEnabledSettingShownInApp";
 static NSString * const MGLTelemetryAccessTokenKey = @"MGLTelemetryAccessToken";
 static NSString * const MGLTelemetryBaseURLKey = @"MGLTelemetryBaseURL";
@@ -15,7 +14,6 @@ static NSString * const MGLTelemetryBaseURLKey = @"MGLTelemetryBaseURL";
 static NSString * const MGLAPIClientUserAgentBase = @"mapbox-maps-ios";
 
 static void * MGLMapboxMetricsEnabledKeyContext = &MGLMapboxMetricsEnabledKeyContext;
-static void * MGLMapboxMetricsDebugLoggingEnabledKeyContext = &MGLMapboxMetricsDebugLoggingEnabledKeyContext;
 static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyContext;
 
 @interface MGLMapboxEvents ()
@@ -26,11 +24,6 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
 
 @end
 
-// TODO: Move to private/public header
-@interface MMEEventsManager (TODO)
-@property (nonatomic, getter=isDebugLoggingEnabled) BOOL debugLoggingEnabled;
-@end
-
 @implementation MGLMapboxEvents
 
 + (void)initialize {
@@ -38,8 +31,7 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
         NSBundle *bundle = [NSBundle mainBundle];
         NSNumber *accountTypeNumber = [bundle objectForInfoDictionaryKey:MGLMapboxAccountTypeKey];
         [[NSUserDefaults standardUserDefaults] registerDefaults:@{MGLMapboxAccountTypeKey: accountTypeNumber ?: @0,
-                                                                  MGLMapboxMetricsEnabledKey: @YES,
-                                                                  MGLMapboxMetricsDebugLoggingEnabledKey: @NO}];
+                                                                  MGLMapboxMetricsEnabledKey: @YES];
     }
 }
 
@@ -57,7 +49,6 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     self = [super init];
     if (self) {
         _eventsManager = MMEEventsManager.sharedManager;
-        _eventsManager.debugLoggingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsDebugLoggingEnabledKey];
 
         BOOL collectionEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsEnabledKey];
         NSUserDefaults.mme_configuration.mme_isCollectionEnabled = collectionEnabled;
@@ -86,10 +77,6 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
                       options:NSKeyValueObservingOptionNew
                       context:MGLMapboxMetricsEnabledKeyContext];
         [defaults addObserver:self
-                   forKeyPath:MGLMapboxMetricsDebugLoggingEnabledKey
-                      options:NSKeyValueObservingOptionNew
-                      context:MGLMapboxMetricsDebugLoggingEnabledKeyContext];
-        [defaults addObserver:self
                    forKeyPath:MGLTelemetryAccessTokenKey
                       options:NSKeyValueObservingOptionNew
                       context:MGLTelemetryAccessTokenKeyContext];
@@ -101,7 +88,6 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     @try {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults removeObserver:self forKeyPath:MGLMapboxMetricsEnabledKey];
-        [defaults removeObserver:self forKeyPath:MGLMapboxMetricsDebugLoggingEnabledKey];
         [defaults removeObserver:self forKeyPath:MGLTelemetryAccessTokenKey];
     }
     @catch (NSException *exception) {
@@ -114,10 +100,6 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     if (context == MGLMapboxMetricsEnabledKeyContext) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateDisablingConfigurationValues];
-        });
-    } else if (context == MGLMapboxMetricsDebugLoggingEnabledKeyContext) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.eventsManager.debugLoggingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsDebugLoggingEnabledKey];
         });
     } else if (context == MGLTelemetryAccessTokenKeyContext) {
        dispatch_async(dispatch_get_main_queue(), ^{
@@ -162,8 +144,6 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
                               hostSDKVersion:sdkVersion];
 
     eventsManager.skuId                       = MBXAccountsSKUIDMapsUser;
-    eventsManager.debugLoggingEnabled         = [[NSUserDefaults standardUserDefaults] boolForKey :MGLMapboxMetricsDebugLoggingEnabledKey];
-    
 
     events.eventsManager = eventsManager;
 }
