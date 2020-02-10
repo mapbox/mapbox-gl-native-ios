@@ -120,6 +120,7 @@ MGL_EXPORT
 @property (nonatomic) CGFloat scale;
 
 /**
+ :nodoc:
  Whether the Mapbox logo is displayed.
 
  @note The Mapbox terms of service, which governs the use of Mapbox-hosted

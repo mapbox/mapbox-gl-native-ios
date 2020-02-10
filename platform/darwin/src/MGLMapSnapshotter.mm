@@ -340,7 +340,7 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
         }
     }
 
-    UIImage *logoImage = showsLogo ? [MGLMapSnapshotter logoImageWithStyle:attributionInfoStyle] : nil;
+    UIImage *logoImage = [MGLMapSnapshotter logoImageWithStyle:attributionInfoStyle];
     CGSize attributionBackgroundSize = [MGLMapSnapshotter attributionTextSizeWithStyle:attributionInfoStyle attributionInfo:attributionInfo];
     
     CGRect logoImageRect = CGRectMake(MGLLogoImagePosition.x, mglImage.size.height - (MGLLogoImagePosition.y + logoImage.size.height), logoImage.size.width, logoImage.size.height);
@@ -388,7 +388,9 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
         return nil;
     }
 
-    [logoImage drawInRect:logoImageRect];
+    if (showsLogo) {
+        [logoImage drawInRect:logoImageRect];
+    }
     
     UIImage *currentImage = UIGraphicsGetImageFromCurrentImageContext();
     CGImageRef attributionImageRef = CGImageCreateWithImageInRect([currentImage CGImage], cropRect);
@@ -501,7 +503,7 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
     // Capture scale and size by value to avoid accessing self from another thread
     CGFloat scale  = self.options.scale;
     CGSize size    = self.options.size;
-    BOOL showsLogo = self.options.showsLogo;
+    BOOL showsLogo = NO;//self.options.showsLogo;
 
     // pointForFn is a copyable std::function that captures state by value: see MapSnapshotter::Impl::snapshot
     __weak __typeof__(self) weakself = self;
