@@ -91,6 +91,10 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
 #endif
 @end
 
+@interface MGLMapSnapshotOptions ()
+@property (nonatomic, readwrite) BOOL showsLogo;
+@end
+
 @implementation MGLMapSnapshotOptions
 
 - (instancetype _Nonnull)initWithStyleURL:(nullable NSURL *)styleURL camera:(MGLMapCamera *)camera size:(CGSize)size
@@ -106,6 +110,7 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
         _styleURL = styleURL;
         _size = size;
         _camera = camera;
+        _showsLogo = YES;
 #if TARGET_OS_IPHONE
         _scale = [UIScreen mainScreen].scale;
 #else
@@ -321,7 +326,7 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
     _mbglMapSnapshotter->snapshot(_snapshotCallback->self());
 }
 
-+ (MGLImage*)drawAttributedSnapshotWorker:(mbgl::MapSnapshotter::Attributions)attributions snapshotImage:(MGLImage *)mglImage pointForFn:(mbgl::MapSnapshotter::PointForFn)pointForFn latLngForFn:(mbgl::MapSnapshotter::LatLngForFn)latLngForFn scale:(CGFloat)scale size:(CGSize)size overlayHandler:(MGLMapSnapshotOverlayHandler)overlayHandler {
++ (MGLImage*)drawAttributedSnapshotWorker:(mbgl::MapSnapshotter::Attributions)attributions snapshotImage:(MGLImage *)mglImage pointForFn:(mbgl::MapSnapshotter::PointForFn)pointForFn latLngForFn:(mbgl::MapSnapshotter::LatLngForFn)latLngForFn scale:(CGFloat)scale size:(CGSize)size showsLogo:(BOOL)showsLogo overlayHandler:(MGLMapSnapshotOverlayHandler)overlayHandler {
 
     NSArray<MGLAttributionInfo *>* attributionInfo = [MGLMapSnapshotter generateAttributionInfos:attributions];
 
@@ -334,8 +339,8 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
             break;
         }
     }
-    
-    UIImage *logoImage = [MGLMapSnapshotter logoImageWithStyle:attributionInfoStyle];
+
+    UIImage *logoImage = showsLogo ? [MGLMapSnapshotter logoImageWithStyle:attributionInfoStyle] : nil;
     CGSize attributionBackgroundSize = [MGLMapSnapshotter attributionTextSizeWithStyle:attributionInfoStyle attributionInfo:attributionInfo];
     
     CGRect logoImageRect = CGRectMake(MGLLogoImagePosition.x, mglImage.size.height - (MGLLogoImagePosition.y + logoImage.size.height), logoImage.size.width, logoImage.size.height);
@@ -494,15 +499,23 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
     dispatch_queue_t resultQueue = self.resultQueue;
 
     // Capture scale and size by value to avoid accessing self from another thread
-    CGFloat scale = self.options.scale;
-    CGSize size = self.options.size;
+    CGFloat scale  = self.options.scale;
+    CGSize size    = self.options.size;
+    BOOL showsLogo = self.options.showsLogo;
 
     // pointForFn is a copyable std::function that captures state by value: see MapSnapshotter::Impl::snapshot
     __weak __typeof__(self) weakself = self;
 
     dispatch_async(workQueue, ^{
         // Call a class method to ensure we're not accidentally capturing self
-        MGLImage *compositedImage = [MGLMapSnapshotter drawAttributedSnapshotWorker:attributions snapshotImage:mglImage pointForFn:pointForFn latLngForFn:latLngForFn scale:scale size:size overlayHandler:overlayHandler];
+        MGLImage *compositedImage = [MGLMapSnapshotter drawAttributedSnapshotWorker:attributions
+                                                                      snapshotImage:mglImage
+                                                                         pointForFn:pointForFn
+                                                                        latLngForFn:latLngForFn
+                                                                              scale:scale
+                                                                               size:size
+                                                                          showsLogo:showsLogo
+                                                                     overlayHandler:overlayHandler];
 
         // Dispatch result to origin queue
         dispatch_async(resultQueue, ^{

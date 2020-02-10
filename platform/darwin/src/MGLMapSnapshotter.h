@@ -119,6 +119,17 @@ MGL_EXPORT
  */
 @property (nonatomic) CGFloat scale;
 
+/**
+ Whether the Mapbox logo is displayed.
+
+ @note The Mapbox terms of service, which governs the use of Mapbox-hosted
+ vector tiles and styles,
+ <a href="https://docs.mapbox.com/help/how-mapbox-works/attribution/">requires</a> most Mapbox
+ customers to display the Mapbox logo. If this applies to you, do not
+ hide the logo or change its contents.
+ */
+@property (nonatomic, readonly) BOOL showsLogo;
+
 @end
 
 /**
