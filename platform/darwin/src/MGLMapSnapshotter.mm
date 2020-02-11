@@ -92,6 +92,17 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
 @end
 
 @interface MGLMapSnapshotOptions ()
+
+/**
+ :nodoc:
+ Whether the Mapbox wordmark is displayed.
+
+ @note The Mapbox terms of service, which governs the use of Mapbox-hosted
+ vector tiles and styles,
+ <a href="https://docs.mapbox.com/help/how-mapbox-works/attribution/">requires</a> most Mapbox
+ customers to display the Mapbox wordmark. If this applies to you, do not
+ hide the wordmark or change its contents.
+ */
 @property (nonatomic, readwrite) BOOL showsLogo;
 @end
 
@@ -122,6 +133,11 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key {
     MGLAssert(0, @"MGLMapSnapshotOptions does not support the key: %@", key);
+}
+
+- (id)valueForUndefinedKey:(NSString *)key {
+    MGLAssert(0, @"MGLMapSnapshotOptions does not support the key: %@", key);
+    return nil;
 }
 
 @end
