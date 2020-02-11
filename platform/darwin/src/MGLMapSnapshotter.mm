@@ -523,7 +523,7 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
     // Capture scale and size by value to avoid accessing self from another thread
     CGFloat scale  = self.options.scale;
     CGSize size    = self.options.size;
-    BOOL showsLogo = NO;//self.options.showsLogo;
+    BOOL showsLogo = self.options.showsLogo;
 
     // pointForFn is a copyable std::function that captures state by value: see MapSnapshotter::Impl::snapshot
     __weak __typeof__(self) weakself = self;
