@@ -808,6 +808,7 @@ public:
 }
 
 - (void)setScaleBarMaximumWidthRatio:(CGFloat)scaleBarMaximumWidthRatio {
+    MGLLogDebug(@"Setting scale bar maximum width ratio: %f", scaleBarMaximumWidthRatio);
     _scaleBarMaximumWidthRatio = scaleBarMaximumWidthRatio;
     if([self.scaleBar isKindOfClass:[MGLScaleBar class]]) {
         ((MGLScaleBar *)self.scaleBar).maximumWidthRatio = scaleBarMaximumWidthRatio;
