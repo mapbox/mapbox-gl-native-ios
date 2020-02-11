@@ -120,6 +120,10 @@ const CGFloat MGLSnapshotterMinimumPixelSize = 64;
     return self;
 }
 
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
+    MGLAssert(0, @"MGLMapSnapshotOptions does not support the key: %@", key);
+}
+
 @end
 
 @interface MGLMapSnapshot() <MGLMapSnapshotProtocol>
