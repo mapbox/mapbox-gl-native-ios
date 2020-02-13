@@ -2,11 +2,14 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 5.7.0
+## 5.7.0 - February 13, 2020
+
+### Bug fixes
+* Fixed an issue where `symbolSortKey` could sort text and icons incorrectly. ([#16023](https://github.com/mapbox/mapbox-gl-native/pull/16023))
+* Fixed a crash when parsing GeoJSON sources. ([#16106](https://github.com/mapbox/mapbox-gl-native/pull/16106))
 
 ### Other changes
 * Added new property `MGLMapView.panScrollingMode`, which allows you to limit the horizontal or vertical direction a user may pan on the map view. ([#108](https://github.com/mapbox/mapbox-gl-native-ios/pull/108))
-* Fixed a crash when parsing GeoJSON sources. ([#16106](https://github.com/mapbox/mapbox-gl-native/pull/16106))
 
 ## 5.6.0 - December 19, 2019
 This release includes a known issue where the binary size has increased. [#63](https://github.com/mapbox/mapbox-gl-native-ios/issues/63)
