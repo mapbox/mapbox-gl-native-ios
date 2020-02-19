@@ -339,6 +339,13 @@ MGL_EXPORT
 @property (nonatomic, assign) CGPoint scaleBarMargins;
 
 /**
+ The maximum width ratio of the scale bar relative to the map view's frame.
+ This value is limited from 0.1 to 1.
+ Default is 0.5(half of map view's width).
+ */
+@property (nonatomic, assign) CGFloat scaleBarMaximumWidthRatio;
+
+/**
  A control indicating the map’s direction and allowing the user to manipulate
  the direction, positioned in the upper-right corner.
  */

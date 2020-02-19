@@ -581,6 +581,7 @@ public:
     _scaleBarConstraints = [NSMutableArray array];
     _scaleBarPosition = MGLOrnamentPositionTopLeft;
     _scaleBarMargins = MGLOrnamentDefaultPositionOffset;
+    _scaleBar.margins = MGLOrnamentDefaultPositionOffset;
 
     [self installConstraints];
 
@@ -806,7 +807,20 @@ public:
 - (void)setScaleBarMargins:(CGPoint)scaleBarMargins {
     MGLLogDebug(@"Setting scaleBarMargins: (x:%f, y:%f)", scaleBarMargins.x, scaleBarMargins.y);
     _scaleBarMargins = scaleBarMargins;
+    if([self.scaleBar isKindOfClass:[MGLScaleBar class]]) {
+        ((MGLScaleBar *)self.scaleBar).margins = scaleBarMargins;
+    }
     [self installScaleBarConstraints];
+}
+
+- (void)setScaleBarMaximumWidthRatio:(CGFloat)scaleBarMaximumWidthRatio {
+    MGLLogDebug(@"Setting scale bar maximum width ratio: %f", scaleBarMaximumWidthRatio);
+    _scaleBarMaximumWidthRatio = scaleBarMaximumWidthRatio;
+    if([self.scaleBar isKindOfClass:[MGLScaleBar class]]) {
+        ((MGLScaleBar *)self.scaleBar).maximumWidthRatio = scaleBarMaximumWidthRatio;
+        [(MGLScaleBar *)self.scaleBar setNeedsRecalculateSize];
+    }
+    [self updateScaleBar];
 }
 
 - (void)setCompassViewPosition:(MGLOrnamentPosition)compassViewPosition {
@@ -1004,6 +1018,7 @@ public:
     // `_mbglMap->setSize()` just below that triggers rendering update which triggers
     // another scale bar update which causes a rendering update loop and a major performace
     // degradation.
+    [(MGLScaleBar *)self.scaleBar setNeedsRecalculateSize];
     [self.scaleBar invalidateIntrinsicContentSize];
 
     [self adjustContentInset];

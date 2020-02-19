@@ -2,6 +2,10 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## Master
+
+* Added `MGLMapView.maximumWidthRatio` property for customizing the width ratio of map view's scale bar. ([#65](https://github.com/mapbox/mapbox-gl-native-ios/pull/65))
+
 ## 5.7.0 - February 13, 2020
 
 ### Bug fixes
