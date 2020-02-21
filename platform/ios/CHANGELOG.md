@@ -2,6 +2,11 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## 5.5.1 - February 20, 2020
+
+* Fixed an issue where `MGLSymbolStyleLayer.symbolSortKey` could sort text and icons incorrectly. ([#16023](https://github.com/mapbox/mapbox-gl-native/pull/16023))
+* Fixed an issue where style layers backed by a shape source could flicker when transitioning between styles. ([#15907](https://github.com/mapbox/mapbox-gl-native/pull/15907), [#15941](https://github.com/mapbox/mapbox-gl-native/pull/15941))
+
 ## 5.5.0 - November 5, 2019
 
 ### Performance improvements
