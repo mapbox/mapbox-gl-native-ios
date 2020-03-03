@@ -1,6 +1,6 @@
 #import "MGLNetworkConfiguration_Private.h"
-
-#include <mbgl/storage/reachability.h>
+#import "MGLNetworkIntegrationManager.h"
+#import "MGLReachability.h"
 
 static NSString * const MGLStartTime = @"start_time";
 static NSString * const MGLResourceType = @"resource_type";
@@ -34,7 +34,16 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
         _sharedManager = [[self alloc] init];
     });
 
+    [self setNativeNetworkManagerDelegateToDefault];
+
     return _sharedManager;
+}
+
++ (void)setNativeNetworkManagerDelegateToDefault {
+    // Tell core about our network integration. `delegate` here is not (yet)
+    // intended to be set to nil, except for testing.
+    [MGLNativeNetworkManager sharedManager].delegate =
+        MGLNetworkIntegrationManager.sharedManager;
 }
 
 - (void)setSessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration {
@@ -157,6 +166,18 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
     dispatch_barrier_async(self.eventsQueue, ^{
         [self.events removeObjectForKey:key];
     });
+}
+
+@end
+
+@implementation MGLNetworkConfiguration (ForTesting)
+
++ (void)testing_clearNativeNetworkManagerDelegate {
+    [MGLNativeNetworkManager sharedManager].delegate = nil;
+}
+
++ (id)testing_nativeNetworkManagerDelegate {
+    return [MGLNativeNetworkManager sharedManager].delegate;
 }
 
 @end

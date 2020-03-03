@@ -56,7 +56,6 @@ endif
 .PHONY: default
 default: test
 
-BUILD_DEPS += ./vendor/mapbox-gl-native/Makefile
 BUILD_DEPS += ./vendor/mapbox-gl-native/CMakeLists.txt
 
 BUILD_DOCS ?= true
@@ -66,7 +65,7 @@ BUILD_DOCS ?= true
 ifeq ($(HOST_PLATFORM), macos)
 
 IOS_OUTPUT_PATH = build/ios
-IOS_PROJ_PATH = '$(IOS_OUTPUT_PATH)/Mapbox GL Native.xcodeproj'
+IOS_PROJ_PATH = $(IOS_OUTPUT_PATH)/Mapbox\ GL\ Native.xcodeproj
 IOS_WORK_PATH = platform/ios/ios.xcworkspace
 IOS_USER_DATA_PATH = $(IOS_WORK_PATH)/xcuserdata/$(USER).xcuserdatad
 
@@ -135,7 +134,7 @@ endif
 
 $(IOS_PROJ_PATH): $(IOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings $(BUILD_DEPS)
 	mkdir -p $(IOS_OUTPUT_PATH)
-	(cd $(IOS_OUTPUT_PATH) && $(CMAKE) -G Xcode ../../vendor/mapbox-gl-native/next \
+	(cd $(IOS_OUTPUT_PATH) && $(CMAKE) -G Xcode ../../vendor/mapbox-gl-native \
 		-DCMAKE_SYSTEM_NAME=iOS )
 
 $(IOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings: platform/ios/WorkspaceSettings.xcsettings
@@ -216,6 +215,73 @@ darwin-update-examples:
 .PHONY: darwin-check-public-symbols
 darwin-check-public-symbols:
 	node platform/darwin/scripts/check-public-symbols.js macOS iOS
+
+endif
+
+#### macOS targets ############################################################
+
+ifeq ($(HOST_PLATFORM), macos)
+
+MACOS_OUTPUT_PATH = build/macos
+MACOS_PROJ_PATH = $(MACOS_OUTPUT_PATH)/Mapbox\ GL\ Native.xcodeproj
+MACOS_WORK_PATH = platform/macos/macos.xcworkspace
+MACOS_USER_DATA_PATH = $(MACOS_WORK_PATH)/xcuserdata/$(USER).xcuserdatad
+
+MACOS_XCODEBUILD = xcodebuild \
+	-derivedDataPath $(MACOS_OUTPUT_PATH) \
+	-configuration $(BUILDTYPE) \
+	-workspace $(MACOS_WORK_PATH) \
+	-jobs $(JOBS)
+
+ifneq ($(CI),)
+	MACOS_XCODEBUILD += -xcconfig platform/darwin/ci.xcconfig
+endif
+
+$(MACOS_PROJ_PATH): $(MACOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings $(BUILD_DEPS)
+	mkdir -p $(MACOS_OUTPUT_PATH)
+	(cd $(MACOS_OUTPUT_PATH) && $(CMAKE) -G Xcode ../../vendor/mapbox-gl-native \
+		-DCMAKE_SYSTEM_NAME=Darwin )
+
+$(MACOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings: platform/macos/WorkspaceSettings.xcsettings
+	mkdir -p "$(MACOS_USER_DATA_PATH)"
+	cp platform/macos/WorkspaceSettings.xcsettings "$@"
+
+.PHONY: macos
+macos: $(MACOS_PROJ_PATH)
+	set -o pipefail && $(MACOS_XCODEBUILD) -scheme 'CI' build $(XCPRETTY)
+
+.PHONY: xproj
+xproj: $(MACOS_PROJ_PATH)
+	xed $(MACOS_WORK_PATH)
+
+.PHONY: macos-test
+macos-test: $(MACOS_PROJ_PATH)
+	set -o pipefail && $(MACOS_XCODEBUILD) -scheme 'CI' test $(XCPRETTY)
+
+.PHONY: macos-lint
+macos-lint:
+	find platform/macos -type f -name '*.plist' | xargs plutil -lint
+
+.PHONY: xpackage
+xpackage: $(MACOS_PROJ_PATH)
+	SYMBOLS=$(SYMBOLS) ./platform/macos/scripts/package.sh
+
+.PHONY: xdeploy
+xdeploy:
+	caffeinate -i ./platform/macos/scripts/deploy-packages.sh
+
+.PHONY: xdocument
+xdocument:
+	OUTPUT=$(OUTPUT) ./platform/macos/scripts/document.sh
+
+.PHONY: genstrings
+genstrings:
+	genstrings -u -o platform/macos/sdk/Base.lproj platform/darwin/src/*.{m,mm}
+	genstrings -u -o platform/macos/sdk/Base.lproj platform/macos/src/*.{m,mm}
+	genstrings -u -o platform/ios/resources/Base.lproj platform/ios/src/*.{m,mm}
+	-find platform/ios/resources platform/macos/sdk -path '*/Base.lproj/*.strings' -exec \
+		textutil -convert txt -extension strings -inputencoding UTF-16 -encoding UTF-8 {} \;
+	mv platform/macos/sdk/Base.lproj/Foundation.strings platform/darwin/resources/Base.lproj/
 
 endif
 
