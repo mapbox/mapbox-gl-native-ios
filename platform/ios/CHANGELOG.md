@@ -5,6 +5,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 ## 5.6.0
 
 * No public-facing changes in v5.6.0-alpha.2.
+* Added new property `MGLMapView.allowScrollGesturesDuringRotateOrZoom`, which allows you to change the center coordinate of the map while rotating or zooming. ([#94](https://github.com/mapbox/mapbox-gl-native-ios/pull/94))
 
 ### Packaging
 * Integrates [`MapboxMobileEvents`](https://github.com/mapbox/mapbox-events-ios) as a dependency. ([#60](https://github.com/mapbox/mapbox-gl-native-ios/pull/60))
