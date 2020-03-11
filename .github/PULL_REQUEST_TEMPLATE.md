@@ -1,4 +1,4 @@
-`<changelog>Replace text with suggested changelog entry for this PR.</changelog>`
+`<changelog>Replace text with suggested changelog entry for this PR or add the `skip changelog` label.</changelog>`
 
 <!-- Examples: -->
 <!-- `<changelog>Enabled newly loaded labels to appear faster on the screen.</changelog>` -->
