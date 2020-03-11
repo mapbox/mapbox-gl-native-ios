@@ -485,7 +485,7 @@ const MGLExpressionInterpolationMode MGLExpressionInterpolationModeCubicBezier =
     if (color.a == 1) {
         return @[@"rgb", @(color.r * 255), @(color.g * 255), @(color.b * 255)];
     }
-    return @[@"rgba", @(color.r * 255), @(color.g * 255), @(color.b * 255), @(color.a)];
+    return @[@"rgba", @(color.r * 255 / color.a), @(color.g * 255 / color.a), @(color.b * 255 / color.a), @(color.a)];
 }
 
 @end
