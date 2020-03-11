@@ -1033,6 +1033,19 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     waterLayer.fillAntialiased = [NSExpression mgl_expressionForSteppingExpression:NSExpression.zoomLevelVariableExpression
                                                                     fromExpression:[NSExpression expressionForConstantValue:@NO]
                                                                              stops:[NSExpression expressionForConstantValue:fillAntialiasedStops]];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSDictionary *waterColorStops2 = @{@6.0f: [[UIColor yellowColor] colorWithAlphaComponent:0.5],
+         @8.0f: [[UIColor blueColor]colorWithAlphaComponent:0.5],
+         @10.0f: [[UIColor redColor] colorWithAlphaComponent:0.5],
+        @12.0f: [[UIColor greenColor] colorWithAlphaComponent:0.5],
+         @14.0f: [[UIColor blueColor] colorWithAlphaComponent:0.5]};
+
+        waterLayer.fillColor = [NSExpression mgl_expressionForInterpolatingExpression:NSExpression.zoomLevelVariableExpression
+        withCurveType:MGLExpressionInterpolationModeLinear
+           parameters:nil
+                stops:[NSExpression expressionForConstantValue:waterColorStops2]];
+    });
 }
 
 - (void)styleRoadLayer
@@ -1084,8 +1097,16 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     [self.mapView.style addSource:source];
 
     MGLFillStyleLayer *fillLayer = [[MGLFillStyleLayer alloc] initWithIdentifier:@"test" source:source];
-    fillLayer.fillColor = [NSExpression expressionForConstantValue:[UIColor purpleColor]];
-    [self.mapView.style addLayer:fillLayer];
+//    fillLayer.fillColor = [NSExpression expressionForConstantValue:[UIColor purpleColor]];
+//    [self.mapView.style addLayer:fillLayer];
+    fillLayer.fillColor = [NSExpression expressionForConstantValue:[[UIColor blueColor] colorWithAlphaComponent:0.75]];
+     [self.mapView.style addLayer:fillLayer];
+     [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(52.3667, 4.8945) zoomLevel:9 animated:NO];
+
+
+     UIView *blueView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 140)];
+     blueView.backgroundColor = [[UIColor blueColor] colorWithAlphaComponent:0.75];
+     [self.view addSubview:blueView];
 
 }
 
