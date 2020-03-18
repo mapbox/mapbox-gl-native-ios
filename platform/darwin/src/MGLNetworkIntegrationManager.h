@@ -4,5 +4,5 @@
 @interface MGLNetworkIntegrationManager : NSObject <MGLNativeNetworkDelegate>
 
 + (MGLNetworkIntegrationManager *)sharedManager;
-
+- (void)clearCachedURLSession;
 @end

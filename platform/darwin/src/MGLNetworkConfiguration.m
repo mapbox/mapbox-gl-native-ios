@@ -16,6 +16,9 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
 @end
 
 @implementation MGLNetworkConfiguration
+{
+    NSURLSession *_session;
+}
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -46,8 +49,24 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
         MGLNetworkIntegrationManager.sharedManager;
 }
 
+- (void)setSession:(NSURLSession *)session {
+    @synchronized (self) {
+        [MGLNetworkIntegrationManager.sharedManager clearCachedURLSession];
+        _session = session;
+    }
+}
+
+- (NSURLSession *)session {
+    NSURLSession *session = nil;
+    @synchronized (self) {
+        session = _session;
+    }
+    return session;
+}
+
 - (void)setSessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration {
     @synchronized (self) {
+        [MGLNetworkIntegrationManager.sharedManager clearCachedURLSession];
         if (sessionConfiguration == nil) {
             _sessionConfig = [self defaultSessionConfiguration];
         } else {

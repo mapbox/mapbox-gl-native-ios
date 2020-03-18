@@ -7,6 +7,10 @@
 #import "MGLAccountManager_Private.h"
 #endif
 
+@interface MGLNetworkIntegrationManager ()
+@property (atomic) NSURLSession *cachedSession;
+@end
+
 @implementation MGLNetworkIntegrationManager
 
 static MGLNetworkIntegrationManager *instance = nil;
@@ -19,7 +23,35 @@ static MGLNetworkIntegrationManager *instance = nil;
     return instance;
 }
 
+- (void)clearCachedURLSession {
+    self.cachedSession = nil;
+}
+
 #pragma mark - MGLNativeAppleInterfaceManager delegate -
+
+- (NSURLSession*)session {
+
+    NSURLSession *session = self.cachedSession;
+
+    if (session) {
+        return session;
+    }
+
+    // Reach out to the public `MGLNetworkConfiguration` manager
+    MGLNetworkConfiguration *configuration = [MGLNetworkConfiguration sharedManager];
+
+    if ([configuration respondsToSelector:@selector(session)]) {
+        session = [configuration performSelector:@selector(session)];
+    }
+
+    if (!session && configuration.sessionConfiguration) {
+        session = [NSURLSession sessionWithConfiguration:configuration.sessionConfiguration];
+    }
+
+    self.cachedSession = session;
+
+    return session;
+}
 
 - (NSURLSessionConfiguration *)sessionConfiguration {
     return [MGLNetworkConfiguration sharedManager].sessionConfiguration;
