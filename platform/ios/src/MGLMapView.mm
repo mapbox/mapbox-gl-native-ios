@@ -68,7 +68,6 @@
 #import "MGLLocationManager_Private.h"
 #import "MGLLoggingConfiguration_Private.h"
 #import "MGLNetworkConfiguration_Private.h"
-#import "MGLNetworkIntegrationManager.h"
 #import "MGLReachability.h"
 #import <MapboxMobileEvents/MapboxMobileEvents.h>
 
@@ -454,7 +453,6 @@ public:
     // setup accessibility
     //
 //    self.isAccessibilityElement = YES;
-    MGLNativeNetworkManager.sharedManager.delegate = MGLNetworkIntegrationManager.sharedManager;
 
     // Ensure network configuration is set up
     [MGLNetworkConfiguration setNativeNetworkManagerDelegateToDefault];

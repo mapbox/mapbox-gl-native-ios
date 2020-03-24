@@ -1,4 +1,5 @@
 #import "MGLNetworkConfiguration.h"
+#include <mbgl/interface/native_apple_interface.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

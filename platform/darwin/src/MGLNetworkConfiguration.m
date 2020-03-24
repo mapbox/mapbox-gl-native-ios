@@ -1,6 +1,5 @@
 #import "MGLNetworkConfiguration_Private.h"
 #import "MGLLoggingConfiguration_Private.h"
-#include <mbgl/interface/native_apple_interface.h>
 #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
 #import "MGLAccountManager_Private.h"
 #endif
@@ -42,7 +41,8 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
         _sharedManager = [[self alloc] init];
     });
 
-    [self setNativeNetworkManagerDelegateToDefault];
+    // Notice, this is reset for each call.
+    [MGLNativeNetworkManager sharedManager].delegate = _sharedManager;
 
     return _sharedManager;
 }
@@ -129,7 +129,7 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
                 [self.metricsDelegate networkConfiguration:self didGenerateMetricEvent:eventAttributes];
             });            
         }
-    }    
+    }
 }
 
 - (NSDictionary *)eventAttributesForURL:(NSURLResponse *)response withAction:(NSString *)action

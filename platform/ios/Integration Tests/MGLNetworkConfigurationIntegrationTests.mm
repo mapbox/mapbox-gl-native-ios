@@ -1,5 +1,4 @@
 #import <XCTest/XCTest.h>
-#import "MGLNetworkIntegrationManager.h"
 #import "MGLNetworkConfiguration.h"
 #import "MGLNetworkConfiguration_Private.h"
 #import "MGLOfflineStorage_Private.h"
