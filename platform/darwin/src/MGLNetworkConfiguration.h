@@ -4,12 +4,31 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class MGLNetworkConfiguration;
+
+/**
+ :nodoc:
+ The `MGLNetworkConfigurationSessionDelegate` protocol provides an `NSURLSession`
+ object for the `MGLNetworkConfiguration`. This API should be considered
+ experimental, likely to be removed or changed in future releases.
+ */
+@protocol MGLNetworkConfigurationSessionDelegate <NSObject>
+- (NSURLSession *)sessionForNetworkConfiguration:(MGLNetworkConfiguration *)configuration;
+@end
+
+
 /**
  The `MGLNetworkConfiguration` object provides a global way to set a base
  `NSURLSessionConfiguration`, and other resources.
  */
 MGL_EXPORT
 @interface MGLNetworkConfiguration : NSObject
+
+/**
+ :nodoc:
+ Delegate for the `MGLNetworkConfiguration` class.
+ */
+@property (nonatomic, weak) id delegate;
 
 /**
  Returns the shared instance of the `MGLNetworkConfiguration` class.

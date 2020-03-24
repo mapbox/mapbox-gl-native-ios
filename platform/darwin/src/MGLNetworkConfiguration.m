@@ -67,6 +67,14 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
 
 #pragma mark - MGLNativeNetworkDelegate
 
+- (NSURLSession *)sessionForNetworkManager:(MGLNativeNetworkManager *)networkManager {
+    if ([self.delegate conformsToProtocol:@protocol(MGLNetworkConfigurationSessionDelegate)]) {
+        return [(id<MGLNetworkConfigurationSessionDelegate>)self.delegate sessionForNetworkConfiguration:self];
+    }
+
+    return nil;
+}
+
 - (NSURLSessionConfiguration *)sessionConfiguration {
     NSURLSessionConfiguration *sessionConfig = nil;
     @synchronized (self) {
