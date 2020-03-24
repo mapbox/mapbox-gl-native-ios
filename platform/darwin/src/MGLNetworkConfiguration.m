@@ -1,14 +1,19 @@
 #import "MGLNetworkConfiguration_Private.h"
-#import "MGLNetworkIntegrationManager.h"
+#import "MGLLoggingConfiguration_Private.h"
+#include <mbgl/interface/native_apple_interface.h>
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+#import "MGLAccountManager_Private.h"
+#endif
+
 #import "MGLReachability.h"
 
 static NSString * const MGLStartTime = @"start_time";
 static NSString * const MGLResourceType = @"resource_type";
 NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
 
-@interface MGLNetworkConfiguration ()
+@interface MGLNetworkConfiguration () <MGLNativeNetworkDelegate>
 
-@property (strong) NSURLSessionConfiguration *sessionConfig;
+//@property (strong) NSURLSessionConfiguration *sessionConfig;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSDictionary*> *events;
 @property (nonatomic, weak) id<MGLNetworkConfigurationMetricsDelegate> metricsDelegate;
 @property (nonatomic) dispatch_queue_t eventsQueue;
@@ -17,7 +22,7 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
 
 @implementation MGLNetworkConfiguration
 {
-    NSURLSession *_session;
+    NSURLSessionConfiguration *_sessionConfig;
 }
 
 - (instancetype)init {
@@ -46,34 +51,21 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
     // Tell core about our network integration. `delegate` here is not (yet)
     // intended to be set to nil, except for testing.
     [MGLNativeNetworkManager sharedManager].delegate =
-        MGLNetworkIntegrationManager.sharedManager;
+        [MGLNetworkConfiguration sharedManager];
 }
 
-- (void)setSession:(NSURLSession *)session {
-    @synchronized (self) {
-        [MGLNetworkIntegrationManager.sharedManager clearCachedURLSession];
-        _session = session;
-    }
++ (NSURLSessionConfiguration *)defaultSessionConfiguration {
+    NSURLSessionConfiguration* sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+
+    sessionConfiguration.timeoutIntervalForResource = 30;
+    sessionConfiguration.HTTPMaximumConnectionsPerHost = 8;
+    sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    sessionConfiguration.URLCache = nil;
+
+    return sessionConfiguration;
 }
 
-- (NSURLSession *)session {
-    NSURLSession *session = nil;
-    @synchronized (self) {
-        session = _session;
-    }
-    return session;
-}
-
-- (void)setSessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration {
-    @synchronized (self) {
-        [MGLNetworkIntegrationManager.sharedManager clearCachedURLSession];
-        if (sessionConfiguration == nil) {
-            _sessionConfig = [self defaultSessionConfiguration];
-        } else {
-            _sessionConfig = sessionConfiguration;
-        }
-    }
-}
+#pragma mark - MGLNativeNetworkDelegate
 
 - (NSURLSessionConfiguration *)sessionConfiguration {
     NSURLSessionConfiguration *sessionConfig = nil;
@@ -83,21 +75,27 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
     return sessionConfig;
 }
 
-- (NSURLSessionConfiguration *)defaultSessionConfiguration {
-    NSURLSessionConfiguration* sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    
-    sessionConfiguration.timeoutIntervalForResource = 30;
-    sessionConfiguration.HTTPMaximumConnectionsPerHost = 8;
-    sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-    sessionConfiguration.URLCache = nil;
-    
-    return sessionConfiguration;
+- (void)setSessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration {
+    @synchronized (self) {
+        if (sessionConfiguration == nil) {
+            _sessionConfig = [MGLNetworkConfiguration defaultSessionConfiguration];
+        } else {
+            _sessionConfig = sessionConfiguration;
+        }
+    }
 }
 
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+- (NSString *)skuToken {
+    return MGLAccountManager.skuToken;
+}
+#endif
+
 - (void)startDownloadEvent:(NSString *)urlString type:(NSString *)resourceType {
-    if (urlString && ![self eventDictionaryForKey:urlString]) {
+    if (urlString && resourceType && ![self eventDictionaryForKey:urlString]) {
         NSDate *startDate = [NSDate date];
-        [self setEventDictionary:@{ MGLStartTime: startDate, MGLResourceType: resourceType } forKey:urlString];
+        [self setEventDictionary:@{ MGLStartTime: startDate, MGLResourceType: resourceType }
+                          forKey:urlString];
     }
 }
 
@@ -108,6 +106,16 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
 - (void)cancelDownloadEventForResponse:(NSURLResponse *)response {
     [self sendEventForURLResponse:response withAction:@"cancel"];
 }
+
+- (void)debugLog:(NSString *)format, ... {
+    MGLLogDebug(format);
+}
+
+- (void)errorLog:(NSString *)format, ... {
+    MGLLogError(format);
+}
+
+#pragma mark - Event management
 
 - (void)sendEventForURLResponse:(NSURLResponse *)response withAction:(NSString *)action
 {
@@ -121,8 +129,7 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
                 [self.metricsDelegate networkConfiguration:self didGenerateMetricEvent:eventAttributes];
             });            
         }
-    }
-    
+    }    
 }
 
 - (NSDictionary *)eventAttributesForURL:(NSURLResponse *)response withAction:(NSString *)action

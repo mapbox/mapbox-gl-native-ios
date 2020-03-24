@@ -42,7 +42,7 @@
 
     // Expected properties
     XCTAssertNotNil([manager skuToken]);
-    XCTAssertNotNil([manager session]);
+    XCTAssertNotNil([manager sessionConfiguration]);
 }
 
 - (void)test2_NativeNetworkManagerDelegateIsSetBySharedManager
