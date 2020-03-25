@@ -1,5 +1,6 @@
 #import "MGLFoundation_Private.h"
 #import "MGLGeometry_Private.h"
+#import "MGLShape_Private.h"
 #import "NSExpression+MGLPrivateAdditions.h"
 
 #import "MGLTypes.h"
@@ -484,7 +485,7 @@ const MGLExpressionInterpolationMode MGLExpressionInterpolationModeCubicBezier =
     if (color.a == 1) {
         return @[@"rgb", @(color.r * 255), @(color.g * 255), @(color.b * 255)];
     }
-    return @[@"rgba", @(color.r * 255 / color.a), @(color.g * 255 / color.a), @(color.b * 255 / color.a), @(color.a)];
+    return @[@"rgba", @(color.r * 255), @(color.g * 255), @(color.b * 255), @(color.a)];
 }
 
 @end
@@ -535,6 +536,14 @@ const MGLExpressionInterpolationMode MGLExpressionInterpolationModeCubicBezier =
     [NSException raise:NSInvalidArgumentException
                 format:@"Has expressions lack underlying Objective-C implementations."];
     return nil;
+}
+
+@end
+
+@implementation MGLShape (MGLExpressionAdditions)
+
+- (id)mgl_jsonExpressionObject {
+    return self.geoJSONDictionary;
 }
 
 @end
@@ -659,11 +668,24 @@ NSArray *MGLSubexpressionsWithJSONObjects(NSArray *objects) {
     if ([object isKindOfClass:[NSString class]] ||
         [object isKindOfClass:[NSNumber class]] ||
         [object isKindOfClass:[NSValue class]] ||
-        [object isKindOfClass:[MGLColor class]]) {
+        [object isKindOfClass:[MGLColor class]] ||
+        [object isKindOfClass:[MGLShape class]]) {
         return [NSExpression expressionForConstantValue:object];
     }
     
     if ([object isKindOfClass:[NSDictionary class]]) {
+        if (object[@"type"]) {
+            NSError *error;
+            NSData *shapeData = [NSJSONSerialization dataWithJSONObject:object options:0 error:&error];
+            MGLShape *shape;
+            if (shapeData && !error) {
+                shape = [MGLShape shapeWithData:shapeData encoding:NSUTF8StringEncoding error:&error];
+            }
+            if (shape && !error) {
+                return [NSExpression expressionForConstantValue:shape];
+            }
+        }
+        
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:[object count]];
         [object enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL * _Nonnull stop) {
             dictionary[key] = [NSExpression expressionWithMGLJSONObject:obj];
@@ -1030,6 +1052,10 @@ NSArray *MGLSubexpressionsWithJSONObjects(NSArray *objects) {
                     
                 } 
                 return @[jsonObject, attributedDictionary];
+            }
+            if ([constantValue isKindOfClass:[MGLShape class]]) {
+                MGLShape *shape = (MGLShape *)constantValue;
+                return shape.geoJSONDictionary;
             }
             return self.constantValue;
         }
