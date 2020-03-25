@@ -157,6 +157,8 @@
         [self waitForExpectationsWithTimeout:5 handler:nil];
     }
 
+    XCTAssert(pack.state == MGLOfflinePackStateInactive);
+
     // Download
     {
         XCTestExpectation *expectation = [self expectationForNotification:MGLOfflinePackProgressChangedNotification object:pack handler:^BOOL(NSNotification * _Nonnull notification) {
@@ -171,6 +173,20 @@
 
     XCTAssert(didCallSessionDelegate);
     XCTAssertFalse(isMainThread);
+
+    // Remove pack, so we don't affect other tests
+    {
+        XCTestExpectation *expectation = [self expectationWithDescription:@"remove pack completion handler"];
+        [[MGLOfflineStorage sharedOfflineStorage] removePack:pack withCompletionHandler:^(NSError * _Nullable error) {
+            [expectation fulfill];
+        }];
+        [self waitForExpectationsWithTimeout:5 handler:nil];
+    }
+}
+
+- (void)testNetworkConfigurationTestSharedSession🔒 {
+    NSURLSession *session = [NSURLSession sharedSession];
+    [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
 }
 
 - (void)testBackgroundSessionConfiguration {
@@ -185,10 +201,6 @@
     // It makes more sense to support background configs (requiring delegation
     // rather than blocks in gl-native)
     //  [self internalTestNetworkConfigurationWithSession:session], NSException, NSInvalidArgumentException);
-}
-
-- (void)testNetworkConfigurationTestSharedSession🔒 {
-    [self internalTestNetworkConfigurationWithSession:[NSURLSession sharedSession] shouldDownload:YES];
 }
 
 - (void)testNetworkConfigurationTestSessionWithDefaultSessionConfiguration🔒 {
