@@ -18,7 +18,7 @@
 @property (nonatomic) dispatch_block_t authHandler;
 @end
 
-@interface MGLNetworkConfigurationIntegrationTests : XCTestCase
+@interface MGLNetworkConfigurationIntegrationTests : MGLIntegrationTestCase
 @end
 
 #define ASSERT_NATIVE_DELEGATE_IS_NIL() \
@@ -30,25 +30,8 @@
 // NOTE: These tests are currently assumed to run in this specific order.
 @implementation MGLNetworkConfigurationIntegrationTests
 
-+ (XCTestSuite*)defaultTestSuite {
-    return [MGLMapViewIntegrationTest defaultTestSuite];
-}
-
 - (void)setUp {
     [super setUp];
-
-    // TODO: Consolidate MGLMapViewIntegrationTest's behaviour and the following
-    NSString *accessToken;
-
-    if ([self.name containsString:@"🔒"]) {
-        accessToken = [[NSProcessInfo processInfo] environment][@"MAPBOX_ACCESS_TOKEN"];
-
-        if (!accessToken) {
-            printf("warning: MAPBOX_ACCESS_TOKEN env var is required for test '%s' - trying anyway.\n", self.name.UTF8String);
-        }
-    }
-
-    [MGLAccountManager setAccessToken:accessToken ?: @"pk.feedcafedeadbeefbadebede"];
 
     // Reset before each test
     [MGLNetworkConfiguration testing_clearNativeNetworkManagerDelegate];
@@ -183,7 +166,7 @@
         expectation.inverted = !shouldDownload;
         [pack resume];
 
-        [self waitForExpectations:@[expectation] timeout:10];
+        [self waitForExpectations:@[expectation] timeout:15];
     }
 
     XCTAssert(didCallSessionDelegate);
