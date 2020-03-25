@@ -1104,7 +1104,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
      [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(52.3667, 4.8945) zoomLevel:9 animated:NO];
 
 
-     UIView *blueView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 140)];
+     UIView *blueView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 120, 240)];
      blueView.backgroundColor = [[UIColor blueColor] colorWithAlphaComponent:0.75];
      [self.view addSubview:blueView];
 
