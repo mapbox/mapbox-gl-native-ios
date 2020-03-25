@@ -11,6 +11,13 @@ NS_ASSUME_NONNULL_BEGIN
  The `MGLNetworkConfigurationSessionDelegate` protocol provides an `NSURLSession`
  object for the `MGLNetworkConfiguration`. This API should be considered
  experimental, likely to be removed or changed in future releases.
+
+ This method is called from background threads, i.e. it is not called on the main
+ thread.
+
+ @note: Background sessions (i.e. created with
+ `-[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:]`)
+ are not supported at this time.
  */
 @protocol MGLNetworkConfigurationSessionDelegate <NSObject>
 - (NSURLSession *)sessionForNetworkConfiguration:(MGLNetworkConfiguration *)configuration;
@@ -42,12 +49,14 @@ MGL_EXPORT
  If this property is set to nil or if no session configuration is provided this property
  is set to the default session configuration.
  
- Assign this object before instantiating any `MGLMapView` object.
+ Assign this object before instantiating any `MGLMapView` object, or using
+ `MGLOfflineStorage`
  
  @note: `NSURLSession` objects store a copy of this configuration. Any further changes
  to mutable properties on this configuration object passed to a session’s initializer
  will not affect the behavior of that session.
- 
+
+ @note: Background sessions are not currently supported.
  */
 @property (atomic, strong, null_resettable) NSURLSessionConfiguration *sessionConfiguration;
 

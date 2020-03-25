@@ -68,11 +68,19 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
 #pragma mark - MGLNativeNetworkDelegate
 
 - (NSURLSession *)sessionForNetworkManager:(MGLNativeNetworkManager *)networkManager {
+    // Note: this method is NOT called on the main thread.
+    NSURLSession *session;
     if ([self.delegate conformsToProtocol:@protocol(MGLNetworkConfigurationSessionDelegate)]) {
-        return [(id<MGLNetworkConfigurationSessionDelegate>)self.delegate sessionForNetworkConfiguration:self];
+        session = [(id<MGLNetworkConfigurationSessionDelegate>)self.delegate sessionForNetworkConfiguration:self];
     }
 
-    return nil;
+    // Check for a background session; string checking is fragile, but this is not
+    // a deal breaker as we're only doing this to provide more clarity to the
+    // developer
+    NSAssert(![session isKindOfClass:NSClassFromString(@"__NSURLBackgroundSession")],
+             @"Background NSURLSessions are not yet supported");
+
+    return session;
 }
 
 - (NSURLSessionConfiguration *)sessionConfiguration {
