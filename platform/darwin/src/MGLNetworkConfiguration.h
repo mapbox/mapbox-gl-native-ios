@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
  This method is called from background threads, i.e. it is not called on the main
  thread.
 
- @note: Background sessions (i.e. created with
+ @note Background sessions (i.e. created with
  `-[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:]`)
  are not supported at this time.
 
@@ -60,7 +60,7 @@ MGL_EXPORT
  to mutable properties on this configuration object passed to a session’s initializer
  will not affect the behavior of that session.
 
- @note: Background sessions are not currently supported.
+ @note Background sessions are not currently supported.
  */
 @property (atomic, strong, null_resettable) NSURLSessionConfiguration *sessionConfiguration;
 
