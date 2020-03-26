@@ -37,10 +37,11 @@
     [MGLNetworkConfiguration testing_clearNativeNetworkManagerDelegate];
 }
 
-- (void)test1_NativeNetworkManagerDelegateIsSet
+- (void)test0_NativeNetworkManagerDelegateIsSet
 {
     ASSERT_NATIVE_DELEGATE_IS_NIL();
-    [MGLNetworkConfiguration setNativeNetworkManagerDelegateToDefault];
+    MGLNetworkConfiguration *config = [[MGLNetworkConfiguration alloc] init];
+    [config setNativeNetworkManagerDelegate];
 
     id delegate = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
 
@@ -50,9 +51,13 @@
     // Expected properties
     XCTAssertNotNil([manager skuToken]);
     XCTAssertNotNil([manager sessionConfiguration]);
+
+    [MGLNetworkConfiguration sharedManager];
+    id delegate2 = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
+    XCTAssert(delegate != delegate2);
 }
 
-- (void)test2_NativeNetworkManagerDelegateIsSetBySharedManager
+- (void)test1_NativeNetworkManagerDelegateIsSetBySharedManager
 {
     ASSERT_NATIVE_DELEGATE_IS_NIL();
 
@@ -61,6 +66,25 @@
     // each call.
     [MGLNetworkConfiguration sharedManager];
     ASSERT_NATIVE_DELEGATE_IS_NOT_NIL();
+
+    id delegate = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
+    id<MGLNativeNetworkDelegate> manager = MGL_OBJC_DYNAMIC_CAST_AS_PROTOCOL(delegate, MGLNativeNetworkDelegate);
+    XCTAssertNotNil(manager);
+
+    // Expected properties
+    XCTAssertNotNil([manager skuToken]);
+    XCTAssertNotNil([manager sessionConfiguration]);
+}
+
+- (void)test2_NativeNetworkManagerDelegateIsSet
+{
+    ASSERT_NATIVE_DELEGATE_IS_NIL();
+    [MGLNetworkConfiguration sharedManager];
+    id delegate = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
+
+    [[MGLNetworkConfiguration sharedManager] setNativeNetworkManagerDelegate];
+    id delegate2 = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
+    XCTAssert(delegate == delegate2);
 }
 
 - (void)test3_NativeNetworkManagerDelegateIsSetBySharedOfflineStorage

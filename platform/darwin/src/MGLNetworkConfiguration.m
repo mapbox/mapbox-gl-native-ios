@@ -40,17 +40,17 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
         _sharedManager = [[self alloc] init];
     });
 
-    // Notice, this is reset for each call.
-    [MGLNativeNetworkManager sharedManager].delegate = _sharedManager;
+    // Notice, this is reset for each call. This is primarily for testing purposes.
+    // TODO: Consider only calling this for testing?
+    [_sharedManager setNativeNetworkManagerDelegate];
 
     return _sharedManager;
 }
 
-+ (void)setNativeNetworkManagerDelegateToDefault {
+- (void)setNativeNetworkManagerDelegate {
     // Tell core about our network integration. `delegate` here is not (yet)
     // intended to be set to nil, except for testing.
-    [MGLNativeNetworkManager sharedManager].delegate =
-        [MGLNetworkConfiguration sharedManager];
+    [MGLNativeNetworkManager sharedManager].delegate = self;
 }
 
 + (NSURLSessionConfiguration *)defaultSessionConfiguration {
