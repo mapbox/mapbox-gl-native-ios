@@ -41,7 +41,7 @@
 {
     ASSERT_NATIVE_DELEGATE_IS_NIL();
     MGLNetworkConfiguration *config = [[MGLNetworkConfiguration alloc] init];
-    [config setNativeNetworkManagerDelegate];
+    [config resetNativeNetworkManagerDelegate];
 
     id delegate = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
 
@@ -82,7 +82,7 @@
     [MGLNetworkConfiguration sharedManager];
     id delegate = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
 
-    [[MGLNetworkConfiguration sharedManager] setNativeNetworkManagerDelegate];
+    [[MGLNetworkConfiguration sharedManager] resetNativeNetworkManagerDelegate];
     id delegate2 = [MGLNetworkConfiguration testing_nativeNetworkManagerDelegate];
     XCTAssert(delegate == delegate2);
 }
