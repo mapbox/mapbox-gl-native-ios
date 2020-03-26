@@ -70,7 +70,7 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
     });
 
     // Always ensure the MGLNativeNetworkManager delegate is setup. Calling
-    // `setNativeNetworkManagerDelegate` is not necessary here, since the shared
+    // `resetNativeNetworkManagerDelegate` is not necessary here, since the shared
     // manager already calls it.
     //
     // TODO: Consider only calling this for testing?
@@ -221,7 +221,7 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
 
 - (instancetype)init {
     // Ensure network configuration & appropriate delegate prior to starting the
-    // run loop. Calling `setNativeNetworkManagerDelegate` is not necessary here,
+    // run loop. Calling `resetNativeNetworkManagerDelegate` is not necessary here,
     // since the shared manager already calls it.
     [MGLNetworkConfiguration sharedManager];
 

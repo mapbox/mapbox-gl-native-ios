@@ -454,7 +454,7 @@ public:
 //  self.isAccessibilityElement = YES;
 
     // Ensure network configuration is set up (connect gl-native networking to
-    // platform SDK via delegation). Calling `setNativeNetworkManagerDelegate`
+    // platform SDK via delegation). Calling `resetNativeNetworkManagerDelegate`
     // is not necessary here, since the shared manager already calls it.
     [MGLNetworkConfiguration sharedManager];
 
