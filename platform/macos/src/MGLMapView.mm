@@ -259,7 +259,7 @@ public:
 }
 
 - (void)commonInit {
-    [MGLNetworkConfiguration setNativeNetworkManagerDelegateToDefault];
+    [MGLNetworkConfiguration sharedManager];
 
     _isTargetingInterfaceBuilder = NSProcessInfo.processInfo.mgl_isInterfaceBuilderDesignablesAgent;
 
