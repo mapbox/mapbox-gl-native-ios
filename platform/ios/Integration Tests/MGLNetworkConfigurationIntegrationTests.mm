@@ -18,6 +18,11 @@
 @property (nonatomic) dispatch_block_t authHandler;
 @end
 
+@interface MGLNetworkConfigurationSessionDataDelegate: NSObject <NSURLSessionDataDelegate>
+@property (nonatomic) void (^dataHandler)(NSURLSessionDataTask *, NSData *);
+@end
+
+
 @interface MGLNetworkConfigurationIntegrationTests : MGLIntegrationTestCase
 @end
 
@@ -208,12 +213,12 @@
     }
 }
 
-- (void)testNetworkConfigurationTestSharedSession🔒 {
+- (void)testNetworkConfigurationWithSharedSession🔒 {
     NSURLSession *session = [NSURLSession sharedSession];
     [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
 }
 
-- (void)testBackgroundSessionConfiguration {
+- (void)testNetworkConfigurationWithBackgroundSessionConfiguration {
     // Background session configurations are NOT supported, we expect this test
     // trigger an exception
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:NSStringFromSelector(_cmd)];
@@ -227,19 +232,19 @@
     //  [self internalTestNetworkConfigurationWithSession:session], NSException, NSInvalidArgumentException);
 }
 
-- (void)testNetworkConfigurationTestSessionWithDefaultSessionConfiguration🔒 {
+- (void)testNetworkConfigurationWithDefaultSessionConfiguration🔒 {
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
     [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
 }
 
-- (void)testNetworkConfigurationTestSessionWithEmphemeralSessionConfiguration🔒 {
+- (void)testNetworkConfigurationWithEmphemeralSessionConfiguration🔒 {
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
     [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
 }
 
-- (void)testNetworkConfigurationTestSessionWithSessionConfigurationAndDelegate🔒 {
+- (void)testNetworkConfigurationWithSessionConfigurationWithDelegate🔒 {
     __block BOOL didCallAuthChallenge = NO;
     __block BOOL isMainThread = YES;
 
@@ -261,6 +266,43 @@
 
     XCTAssertFalse(isMainThread);
     XCTAssert(didCallAuthChallenge);
+}
+
+- (void)testFailureForNetworkConfigurationWithSessionWithDataDelegate🔒 {
+    __block BOOL didCallReceiveData = NO;
+
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    MGLNetworkConfigurationSessionDataDelegate *delegate = [[MGLNetworkConfigurationSessionDataDelegate alloc] init];
+    delegate.dataHandler = ^(NSURLSessionDataTask *task, NSData *data) {
+        @synchronized (self) {
+            didCallReceiveData = YES;
+        }
+    };
+
+    // NOTE: Sessions with a delegate that conforms to NSURLSessionDataDelegate
+    // are NOT supported.
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig
+                                                          delegate:delegate
+                                                     delegateQueue:nil];
+    [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
+
+    [session finishTasksAndInvalidate];
+
+    XCTAssertFalse(didCallReceiveData);
+}
+
+- (void)testNetworkConfigurationWithSessionConfigurationWithCustomHeaders🔒 {
+    // Custom session configuration, based on `MGLNetworkConfiguration.defaultSessionConfiguration`
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    sessionConfig.HTTPAdditionalHeaders = @{ @"testing" : @YES };
+    sessionConfig.HTTPMaximumConnectionsPerHost = 1;
+    sessionConfig.timeoutIntervalForResource = 30;
+    sessionConfig.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    sessionConfig.URLCache = nil;
+
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
+
+    [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
 }
 
 @end
@@ -289,3 +331,17 @@
     completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
 }
 @end
+
+#pragma mark - NSURLSession data delegate
+
+@implementation MGLNetworkConfigurationSessionDataDelegate
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    if (self.dataHandler) {
+        self.dataHandler(dataTask, data);
+    }
+}
+@end
+
+
+
+

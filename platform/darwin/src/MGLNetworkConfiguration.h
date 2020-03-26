@@ -18,6 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
  @note: Background sessions (i.e. created with
  `-[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:]`)
  are not supported at this time.
+
+ @note: Sessions created with a delegate that conforms to `NSURLSessionDataDelegate`
+ are not supported at this time.
+
  */
 @protocol MGLNetworkConfigurationSessionDelegate <NSObject>
 - (NSURLSession *)sessionForNetworkConfiguration:(MGLNetworkConfiguration *)configuration;
