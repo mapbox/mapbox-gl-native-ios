@@ -12,7 +12,6 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
 
 @interface MGLNetworkConfiguration () <MGLNativeNetworkDelegate>
 
-//@property (strong) NSURLSessionConfiguration *sessionConfig;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSDictionary*> *events;
 @property (nonatomic, weak) id<MGLNetworkConfigurationMetricsDelegate> metricsDelegate;
 @property (nonatomic) dispatch_queue_t eventsQueue;
