@@ -6,24 +6,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class MGLNetworkConfiguration;
 
+@protocol MGLNetworkConfigurationDelegate <NSObject>
+@optional
+
 /**
  :nodoc:
- The `MGLNetworkConfigurationSessionDelegate` protocol provides an `NSURLSession`
- object for the `MGLNetworkConfiguration`. This API should be considered
- experimental, likely to be removed or changed in future releases.
+ Provides an `NSURLSession` object for the specified `MGLNetworkConfiguration`.
+ This API should be considered experimental, likely to be removed or changed in
+ future releases.
 
  This method is called from background threads, i.e. it is not called on the main
  thread.
 
  @note Background sessions (i.e. created with
  `-[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:]`)
+ and sessions created with a delegate that conforms to `NSURLSessionDataDelegate`
  are not supported at this time.
-
- @note: Sessions created with a delegate that conforms to `NSURLSessionDataDelegate`
- are not supported at this time.
-
  */
-@protocol MGLNetworkConfigurationSessionDelegate <NSObject>
 - (NSURLSession *)sessionForNetworkConfiguration:(MGLNetworkConfiguration *)configuration;
 @end
 
@@ -39,7 +38,7 @@ MGL_EXPORT
  :nodoc:
  Delegate for the `MGLNetworkConfiguration` class.
  */
-@property (nonatomic, weak) id delegate;
+@property (nonatomic, weak) id<MGLNetworkConfigurationDelegate> delegate;
 
 /**
  Returns the shared instance of the `MGLNetworkConfiguration` class.
@@ -56,7 +55,7 @@ MGL_EXPORT
  Assign this object before instantiating any `MGLMapView` object, or using
  `MGLOfflineStorage`
  
- @note: `NSURLSession` objects store a copy of this configuration. Any further changes
+ @note `NSURLSession` objects store a copy of this configuration. Any further changes
  to mutable properties on this configuration object passed to a session’s initializer
  will not affect the behavior of that session.
 

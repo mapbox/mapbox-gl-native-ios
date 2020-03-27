@@ -10,7 +10,7 @@
 + (id)testing_nativeNetworkManagerDelegate;
 @end
 
-@interface MGLNetworkConfigurationTestDelegate: NSObject <MGLNetworkConfigurationSessionDelegate>
+@interface MGLNetworkConfigurationTestDelegate: NSObject <MGLNetworkConfigurationDelegate>
 @property (nonatomic) NSURLSession *(^handler)();
 @end
 
@@ -284,8 +284,16 @@
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig
                                                           delegate:delegate
                                                      delegateQueue:nil];
-    [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
 
+    BOOL conforms = [session.delegate conformsToProtocol:@protocol(NSURLSessionDataDelegate)];
+    XCTAssert(conforms);
+#ifdef DEBUG
+    if (conforms) {
+        NSLog(@"Session delegates conforming to NSURLSessionDataDelegate are not supported");
+    }
+#else
+    [self internalTestNetworkConfigurationWithSession:session shouldDownload:YES];
+#endif
     [session finishTasksAndInvalidate];
 
     XCTAssertFalse(didCallReceiveData);
