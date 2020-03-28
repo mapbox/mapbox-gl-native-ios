@@ -464,7 +464,7 @@ public:
     self.clipsToBounds = YES;
     if (@available(iOS 11.0, *)) { self.accessibilityIgnoresInvertColors = YES; }
 
-    self.preferredFramesPerSecond = MGLMapViewPreferredFramesPerSecondDefault;
+    self.preferredFramesPerSecond = 30;//MGLMapViewPreferredFramesPerSecondDefault;
 
     // setup mbgl view
     _mbglView = MGLMapViewImpl::Create(self);
