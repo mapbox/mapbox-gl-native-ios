@@ -296,7 +296,7 @@ using namespace std::string_literals;
         float blue = (213.0 * alpha) / 255;
         MGLColor *color = [MGLColor mgl_colorWithColor:{ red, green, blue, alpha }]; // papayawhip
         NSExpression *expression = [NSExpression expressionForConstantValue:color];
-        NSArray *jsonExpression = @[@"rgba", @127.5, @119.5, @106.5, @0.5];
+        NSArray *jsonExpression = @[@"rgba", @255.0, @239.0, @213.0, @0.5];
         XCTAssertEqualObjects(expression.mgl_jsonExpressionObject, jsonExpression);
         XCTAssertEqualObjects([expression expressionValueWithObject:nil context:nil], color);
     }
