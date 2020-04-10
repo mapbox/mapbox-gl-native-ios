@@ -13,7 +13,7 @@ workflows:
       #   - {build type} is typically "debug" or "release".
       #
       - ios-debug
-      - ios-debug-xcode10
+      - ios-debug-xcode11
       - ios-release-template:
           name: ios-release
       - ios-trigger-metrics:
@@ -273,7 +273,7 @@ commands:
 jobs:
   ios-debug:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -292,9 +292,9 @@ jobs:
       - upload-xcode-build-logs
 
 # ------------------------------------------------------------------------------
-  ios-debug-xcode10:
+  ios-debug-xcode11:
     macos:
-      xcode: "10.3.0"
+      xcode: "11.4.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -315,7 +315,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-sanitize-nightly:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -342,7 +342,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-sanitize-address-nightly:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -362,7 +362,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-static-analyzer-nightly:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -402,7 +402,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-release-template:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
@@ -444,7 +444,7 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-release-tag:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
@@ -497,14 +497,14 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-trigger-metrics:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     steps:
       - trigger-metrics
 
 # ------------------------------------------------------------------------------
   macos-debug:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
