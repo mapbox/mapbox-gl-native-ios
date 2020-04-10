@@ -15,7 +15,7 @@ Pod::Spec.new do |m|
   m.documentation_url = 'https://docs.mapbox.com/ios/api/maps/'
 
   m.source = {
-    :http => "https://mapbox.s3.amazonaws.com/mapbox-gl-native/ios/builds/mapbox-ios-sdk-#{m.version.to_s}-dynamic.zip",
+    :http => "https://mapbox.s3.amazonaws.com/mapbox-gl-native/ios/builds/mapbox-ios-sdk-#{m.version.to_s}-dynamic-with-events.zip",
     :flatten => true
   }
 
@@ -29,5 +29,13 @@ Pod::Spec.new do |m|
 
   m.preserve_path = '**/*.bcsymbolmap'
 
-  m.dependency "MapboxMobileEvents", "0.10.2"
+  m.subspec 'Dynamic' do |s|
+    s.dependency "MapboxMobileEvents", "0.10.2"
+  end
+
+  m.subspec 'Static' do |s|
+    s.vendored_frameworks = 'dynamic/Mapbox.framework', 'dynamic/MapboxMobileEvents.framework'
+  end
+
+  m.default_subspecs = 'Dynamic'
 end
