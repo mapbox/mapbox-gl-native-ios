@@ -585,6 +585,9 @@ public:
 
     // setup interaction
     //
+
+    self.allowScrollGesturesDuringRotateOrZoom = YES;
+
     _pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
     _pan.delegate = self;
     _pan.maximumNumberOfTouches = 1;
@@ -1714,6 +1717,12 @@ public:
 {
     if ( ! self.isScrollEnabled) return;
 
+    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+        if (self.isZooming || self.isRotating) {
+            return;
+        }
+    }
+
     [self cancelTransitions];
 
     MGLMapCamera *oldCamera = self.camera;
@@ -1792,6 +1801,11 @@ public:
     [self cancelTransitions];
 
     CGPoint centerPoint = [self anchorPointForGesture:pinch];
+    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+        if (pinch.numberOfTouches != 1 || pinch.state == UIGestureRecognizerStateEnded) {
+            centerPoint = [self contentCenter];
+        }
+    }
     MGLMapCamera *oldCamera = self.camera;
 
     self.cameraChangeReasonBitmask |= MGLCameraChangeReasonGesturePinch;
@@ -1900,6 +1914,9 @@ public:
     [self cancelTransitions];
 
     CGPoint centerPoint = [self anchorPointForGesture:rotate];
+    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+        centerPoint = [self contentCenter];
+    }
     MGLMapCamera *oldCamera = self.camera;
 
     self.cameraChangeReasonBitmask |= MGLCameraChangeReasonGestureRotate;
@@ -1910,6 +1927,9 @@ public:
     // Check whether a zoom triggered by a pinch gesture is occurring and if the rotation threshold has been met.
     if (MGLDegreesFromRadians(self.rotationBeforeThresholdMet) < self.rotationThresholdWhileZooming && self.isZooming && !self.isRotating) {
         self.rotationBeforeThresholdMet += fabs(rotate.rotation);
+        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+            self.rotationBeforeThresholdMet = 0;
+        }
         rotate.rotation = 0;
         return;
     }

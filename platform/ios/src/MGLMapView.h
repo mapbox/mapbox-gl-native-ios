@@ -741,6 +741,10 @@ MGL_EXPORT
 @property(nonatomic, getter=isPitchEnabled) BOOL pitchEnabled;
 
 /**
+ A Boolean value that determines whether the user can change the center coordinate of the map while rotating or zooming. When this property is set to YES, the default, the location of the gesture in the map view determines the map's center coordinate.
+ */
+@property(nonatomic) BOOL allowScrollGesturesDuringRotateOrZoom;
+/**
  A Boolean value that determines whether the user will receive haptic feedback
  for certain interactions with the map.
 
