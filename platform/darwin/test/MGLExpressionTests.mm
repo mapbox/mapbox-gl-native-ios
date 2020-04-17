@@ -301,6 +301,28 @@ using namespace std::string_literals;
         XCTAssertEqualObjects([expression expressionValueWithObject:nil context:nil], color);
     }
     {
+        // Transform color components to non-premultiplied values
+        float alpha = 0.5;
+        float red = (255.0 * alpha) / 255;
+        float green = (239.0 * alpha) / 255;
+        float blue = (213.0 * alpha) / 255;
+
+        MGLColor *color = [MGLColor mgl_colorWithColor:{ red, green, blue, alpha }]; // papayawhip
+        CGFloat originalRed = 0.0, originalGreen = 0.0, originalBlue = 0.0, originalAlpha = 0.0;
+        [color getRed:&originalRed green:&originalGreen blue:&originalBlue alpha:&originalAlpha];
+
+        NSArray *jsonExpression = @[@"rgba", @255.0, @239.0, @213.0, @0.5];
+        NSExpression *papayawhipExpression = [NSExpression expressionWithMGLJSONObject:jsonExpression];
+        MGLColor *papayaWhipColor = [papayawhipExpression expressionValueWithObject:nil context:nil];
+        CGFloat convertedRed = 0.0, convertedGreen = 0.0, convertedBlue = 0.0, convertedAlpha = 0.0;
+        [papayaWhipColor getRed:&convertedRed green:&convertedGreen blue:&convertedBlue alpha:&convertedAlpha];
+
+        XCTAssertEqualWithAccuracy(convertedRed, originalRed, 0.0000001);
+        XCTAssertEqualWithAccuracy(convertedGreen, originalGreen, 0.0000001);
+        XCTAssertEqualWithAccuracy(convertedBlue, originalBlue, 0.0000001);
+        XCTAssertEqual(convertedAlpha, originalAlpha);
+    }
+    {
         NSExpression *expression = [NSExpression expressionWithFormat:@"noindex(513)"];
         XCTAssertEqualObjects(expression.mgl_jsonExpressionObject, @513);
         XCTAssertEqualObjects([expression expressionValueWithObject:nil context:nil], @513);
