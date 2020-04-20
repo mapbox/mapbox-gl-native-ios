@@ -6,7 +6,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ### Styles and rendering
 
-* Fixed an issue where properties such as `MGLFillStyleLayer.fillColor` and `MGLLineStyleLayer.lineColor` misinterpreted non-opaque `UIColor`s.
+* Fixed an issue where properties such as `MGLFillStyleLayer.fillColor` and `MGLLineStyleLayer.lineColor` misinterpreted non-opaque `UIColor`s. ([#266](https://github.com/mapbox/mapbox-gl-native-ios/pull/266))
 
 ## 5.8.0
 
