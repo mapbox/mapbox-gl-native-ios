@@ -173,7 +173,8 @@ commands:
     steps:
     - run:
         name: Build ios-test
-        command: make ios-test 
+        command: make ios-test
+        no_output_timeout: 2m
   build-ios-integration-test:
     steps:
     - run:
