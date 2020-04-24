@@ -16,7 +16,6 @@ workflows:
       - ios-debug-xcode10
       - ios-release-template:
           name: ios-release
-          parallelism: 4
       - ios-trigger-metrics:
           requires: 
             - ios-release
@@ -404,6 +403,7 @@ jobs:
   ios-release-template:
     macos:
       xcode: "11.2.1"
+      parallelism: 4
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
