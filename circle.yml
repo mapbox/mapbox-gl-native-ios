@@ -12,11 +12,11 @@ workflows:
       #     unique aspect of the build environment.
       #   - {build type} is typically "debug" or "release".
       #
-      parallelism: 4
       - ios-debug
       - ios-debug-xcode10
       - ios-release-template:
           name: ios-release
+          parallelism: 4
       - ios-trigger-metrics:
           requires: 
             - ios-release
