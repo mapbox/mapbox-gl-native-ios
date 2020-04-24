@@ -174,7 +174,7 @@ commands:
     - run:
         name: Build ios-test
         command: make ios-test
-        no_output_timeout: 3m
+        no_output_timeout: 1m
   build-ios-integration-test:
     steps:
     - run:
@@ -185,7 +185,7 @@ commands:
     - run:
         name: Build macos-test
         command: make macos-test
-        no_output_timeout: 3m
+        no_output_timeout: 1m
 
 
   check-public-symbols:
@@ -417,7 +417,7 @@ jobs:
       - run:
           name: Build dynamic framework for device and simulator
           command: make iframework
-          no_output_timeout: 3m
+          no_output_timeout: 1m
       - deploy:
           name: Upload snapshot build to s3
           command: |
@@ -472,7 +472,7 @@ jobs:
           command: |
             export VERSION_TAG=${CIRCLE_TAG}
             platform/ios/scripts/deploy-packages.sh
-          no_output_timeout: 3m
+          no_output_timeout: 1m
       - deploy:
           name: Deploy to CocoaPods
           command: platform/ios/scripts/deploy-to-cocoapods.sh
