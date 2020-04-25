@@ -1,5 +1,9 @@
 # Changelog for Mapbox Maps SDK for macOS
 
+## 0.15.1
+
+* Fixed various crashes, including crashes on launch, on macOS 10.11.0 through 10.14._x_. ([mapbox/mapbox-gl-native#16412](https://github.com/mapbox/mapbox-gl-native/pull/16412))
+
 ## 0.15.0
 
 ### Styles and rendering
