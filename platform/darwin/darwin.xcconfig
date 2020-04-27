@@ -1,3 +1,38 @@
+
+// Strip Debug Symbols During Copy
+// Specifies whether binary files that are copied during the build, such as in a Copy Bundle
+// Resources or Copy Files build phase, should be stripped of debugging symbols. It does not cause
+// the linked product of a target to be stripped—use Strip Linked Product (STRIP_INSTALLED_PRODUCT)
+// for that.
+COPY_PHASE_STRIP = NO
+
+// Debug Information Format
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+
+// Strip Style
+// The level of symbol stripping to be performed on the linked product of the build. The default
+// value is defined by the target’s product type.
+// all: Strips the binary completely, removing the symbol table and relocation information.
+// non-global: Strips nonglobal symbols but saves external symbols.
+// debugging: Strips debugging symbols but saves local and global symbols.
+
+STRIP_STYLE = non-global
+
+// Strip Linked Product
+// If enabled, the linked product of the build will be stripped of symbols when performing
+// deployment postprocessing.
+STRIP_INSTALLED_PRODUCT = YES
+
+// Deployment Postprocessing
+// If enabled, indicates that binaries should be stripped and file mode, owner, and group
+// information should be set to standard values.
+// Boolean value. Specifies whether the binary receives deployment postprocessing. Deployment
+// postprocessing involves stripping the binary, and setting its file mode, owner, and group.
+DEPLOYMENT_POSTPROCESSING = NO
+DEPLOYMENT_POSTPROCESSING[config=Release] = YES
+
+
+
 ALWAYS_SEARCH_USER_PATHS = NO
 
 CLANG_ANALYZER_GCD_PERFORMANCE = YES
@@ -35,11 +70,13 @@ CLANG_WARN_SUSPICIOUS_MOVE = YES
 CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE
 CLANG_WARN_UNREACHABLE_CODE = YES
 
+ENABLE_BITCODE = YES
 ENABLE_STRICT_OBJC_MSGSEND = YES
 
 GCC_C_LANGUAGE_STANDARD = gnu99
 GCC_DYNAMIC_NO_PIC = NO
 GCC_ENABLE_CPP_RTTI = NO
+GCC_GENERATE_DEBUGGING_SYMBOLS = YES
 GCC_NO_COMMON_BLOCKS = YES
 GCC_TREAT_WARNINGS_AS_ERRORS = YES
 GCC_WARN_64_TO_32_BIT_CONVERSION = YES

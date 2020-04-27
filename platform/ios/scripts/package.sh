@@ -15,9 +15,9 @@ BUILD_DOCS=${BUILD_DOCS:-true}
 SYMBOLS=${SYMBOLS:-YES}
 
 BUILDTYPE=${BUILDTYPE:-Debug}
-if [[ ${SYMBOLS} == YES && ${BUILDTYPE} == Release ]]; then
-    BUILDTYPE='RelWithDebInfo'
-fi
+#if [[ ${SYMBOLS} == YES && ${BUILDTYPE} == Release ]]; then
+#    BUILDTYPE='RelWithDebInfo'
+#fi
 
 FORMAT=${FORMAT:-dynamic}
 BUILD_DYNAMIC=true
