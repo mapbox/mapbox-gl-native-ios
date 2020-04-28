@@ -2229,6 +2229,12 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }
 }
 
+- (void)mapView:(MGLMapView *)mapView didCancelGestureForCamera:(MGLMapCamera *)camera {
+    MGLMapCamera *toCamera = self.mapView.camera;
+    toCamera.centerCoordinate = CLLocationCoordinate2DMake(39.748947, -104.995882);
+    [self.mapView flyToCamera:toCamera withDuration:2.0 completionHandler:nil];
+}
+
 - (void)mapViewRegionIsChanging:(MGLMapView *)mapView
 {
     [self updateHUD];
