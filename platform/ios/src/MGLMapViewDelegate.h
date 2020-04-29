@@ -76,6 +76,22 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)mapView:(MGLMapView *)mapView shouldChangeFromCamera:(MGLMapCamera *)oldCamera toCamera:(MGLMapCamera *)newCamera reason:(MGLCameraChangeReason)reason;
 
 /**
+Tells the delegate that the map view canceled a gesture.
+
+This method is called as soon as `-mapView:shouldChangeFromCamera:toCamera:`
+returns `NO`.
+
+@param mapView The map view that the user is manipulating.
+@param camera The camera that triggered a gesture cancellation.
+
+#### Related examples
+See the <a href="https://docs.mapbox.com/ios/maps/examples/constraining-gestures/">
+Restrict map panning to an area</a> example to learn how to use this method
+and `MGLMapCamera` objects to restrict a users ability to pan your map.
+*/
+- (void)mapView:(MGLMapView *)mapView didCancelGestureForCamera:(MGLMapCamera *)camera;
+
+/**
  Tells the delegate that the viewpoint depicted by the map view is about to change.
 
  This method is called whenever the currently displayed map camera will start

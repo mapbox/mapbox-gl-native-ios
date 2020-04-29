@@ -1778,6 +1778,10 @@ public:
                    default:
                       self.mbglMap.moveBy({ offset.x, offset.y }, MGLDurationFromTimeInterval(self.decelerationRate));
                 }
+            } else {
+                if ([self.delegate respondsToSelector:@selector(mapView:didCancelGestureForCamera:)]) {
+                    [self.delegate mapView:self didCancelGestureForCamera:toCamera];
+                }
             }
         }
 
@@ -1869,8 +1873,8 @@ public:
         // Calculates the final camera zoom, this has no effect within current map camera.
         double zoom = log2(newScale);
         MGLMapCamera *toCamera = [self cameraByZoomingToZoomLevel:zoom aroundAnchorPoint:centerPoint];
-
-        if ( ! [self _shouldChangeFromCamera:oldCamera toCamera:toCamera])
+        BOOL shouldChange = [self _shouldChangeFromCamera:oldCamera toCamera:toCamera];
+        if ( ! shouldChange)
         {
             drift = NO;
         }
@@ -1886,6 +1890,9 @@ public:
         }
 
         self.isZooming = NO;
+        if ( !shouldChange && [self.delegate respondsToSelector:@selector(mapView:didCancelGestureForCamera:)]) {
+            [self.delegate mapView:self didCancelGestureForCamera:toCamera];
+        }
         [self notifyGestureDidEndWithDrift:drift];
         [self unrotateIfNeededForGesture];
     }
@@ -1999,6 +2006,10 @@ public:
                  {
                      [weakSelf unrotateIfNeededForGesture];
                  }];
+            } else {
+                if ([self.delegate respondsToSelector:@selector(mapView:didCancelGestureForCamera:)]) {
+                    [self.delegate mapView:self didCancelGestureForCamera:toCamera];
+                }
             }
         }
         else
@@ -2131,6 +2142,9 @@ public:
     }
     else
     {
+        if ([self.delegate respondsToSelector:@selector(mapView:didCancelGestureForCamera:)]) {
+            [self.delegate mapView:self didCancelGestureForCamera:toCamera];
+        }
         [self unrotateIfNeededForGesture];
     }
 }
@@ -2169,6 +2183,10 @@ public:
          {
              [weakSelf unrotateIfNeededForGesture];
          }];
+    } else {
+        if ([self.delegate respondsToSelector:@selector(mapView:didCancelGestureForCamera:)]) {
+            [self.delegate mapView:self didCancelGestureForCamera:toCamera];
+        }
     }
 }
 
@@ -2207,6 +2225,10 @@ public:
                                 .withZoom(newZoom)
                                 .withAnchor(mbgl::ScreenCoordinate { centerPoint.x, centerPoint.y })
                                 .withPadding(MGLEdgeInsetsFromNSEdgeInsets(self.contentInset)));
+        } else {
+            if ([self.delegate respondsToSelector:@selector(mapView:didCancelGestureForCamera:)]) {
+                [self.delegate mapView:self didCancelGestureForCamera:toCamera];
+            }
         }
 
         [self cameraIsChanging];
@@ -2275,6 +2297,10 @@ public:
                                     .withPitch(pitchNew)
                                     .withAnchor(mbgl::ScreenCoordinate { centerPoint.x, centerPoint.y })
                                     .withPadding(MGLEdgeInsetsFromNSEdgeInsets(self.contentInset)));
+            } else {
+                if ([self.delegate respondsToSelector:@selector(mapView:didCancelGestureForCamera:)]) {
+                    [self.delegate mapView:self didCancelGestureForCamera:toCamera];
+                }
             }
             
             [self cameraIsChanging];
