@@ -24,11 +24,9 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
 @property (nonatomic) NSURL *baseURL;
 @property (nonatomic, copy) NSString *accessToken;
 
-@end
+// Readonly Reference to MMEEvents UserDefaults reference
+@property (nonatomic, readonly) NSUserDefaults *userDefaults;
 
-// TODO: Move to private/public header
-@interface MMEEventsManager (TODO)
-@property (nonatomic, getter=isDebugLoggingEnabled) BOOL debugLoggingEnabled;
 @end
 
 @implementation MGLMapboxEvents
@@ -37,7 +35,7 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     if (self == [MGLMapboxEvents class]) {
         NSBundle *bundle = [NSBundle mainBundle];
         NSNumber *accountTypeNumber = [bundle objectForInfoDictionaryKey:MGLMapboxAccountTypeKey];
-        [[NSUserDefaults standardUserDefaults] registerDefaults:@{MGLMapboxAccountTypeKey: accountTypeNumber ?: @0,
+        [[self userDefaults] registerDefaults:@{MGLMapboxAccountTypeKey: accountTypeNumber ?: @0,
                                                                   MGLMapboxMetricsEnabledKey: @YES,
                                                                   MGLMapboxMetricsDebugLoggingEnabledKey: @NO}];
     }
@@ -53,14 +51,30 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     return _sharedInstance;
 }
 
+// Readonly Reference to MMEEvents UserDefaults reference
++ (NSUserDefaults*)userDefaults {
+    return MMEEventsManager.sharedManager.configuration.userDefaults;
+}
+
+- (NSUserDefaults*)userDefaults {
+    return [self.class userDefaults];
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {
         _eventsManager = MMEEventsManager.sharedManager;
-        _eventsManager.debugLoggingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsDebugLoggingEnabledKey];
+
+
+        if ([[NSUserDefaults standardUserDefaults] boolForKey :MGLMapboxMetricsDebugLoggingEnabledKey]) {
+            _eventsManager.logLevel = MMELogInfo;
+        } else {
+            _eventsManager.logLevel = MMELogNone;
+        }
+
 
         BOOL collectionEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsEnabledKey];
-        NSUserDefaults.mme_configuration.mme_isCollectionEnabled = collectionEnabled;
+        _eventsManager.configuration.isCollectionEnabled = collectionEnabled;
 
         // It is possible for the shared instance of this class to be created because of a call to
         // +[MGLAccountManager load] early on in the app lifecycle of the host application.
@@ -99,7 +113,11 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
 
 - (void)dealloc {
     @try {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+        // TODOD: Do we still need to be monitoring this? Do we need to do it by key?
+        // Or perhaps we could expose KVO compliance for each property?
+        NSUserDefaults *defaults = self.eventsManager.configuration.userDefaults;
+
         [defaults removeObserver:self forKeyPath:MGLMapboxMetricsEnabledKey];
         [defaults removeObserver:self forKeyPath:MGLMapboxMetricsDebugLoggingEnabledKey];
         [defaults removeObserver:self forKeyPath:MGLTelemetryAccessTokenKey];
@@ -109,6 +127,7 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     } //If the observer is removed by a superclass this may fail since we are removing it twice.
 }
 
+// TODO: Why are we observing these items?
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     //KVO callback can happen on any thread. Even two threads concurrently for the same key.
     if (context == MGLMapboxMetricsEnabledKeyContext) {
@@ -117,7 +136,11 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
         });
     } else if (context == MGLMapboxMetricsDebugLoggingEnabledKeyContext) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.eventsManager.debugLoggingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MGLMapboxMetricsDebugLoggingEnabledKey];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey :MGLMapboxMetricsDebugLoggingEnabledKey]) {
+                self.eventsManager.logLevel = MMELogInfo;
+            } else {
+                self.eventsManager.logLevel = MMELogNone;
+            }
         });
     } else if (context == MGLTelemetryAccessTokenKeyContext) {
        dispatch_async(dispatch_get_main_queue(), ^{
@@ -131,14 +154,13 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
 - (void)updateNonDisablingConfigurationValues {
     if ([[[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys] containsObject:MGLTelemetryAccessTokenKey]) {
         NSString *telemetryAccessToken = [[NSUserDefaults standardUserDefaults] objectForKey:MGLTelemetryAccessTokenKey];
-        NSUserDefaults.mme_configuration.mme_accessToken = telemetryAccessToken;
+        self.eventsManager.configuration.accessToken = telemetryAccessToken;
     }
 }
 
 - (void)updateDisablingConfigurationValues {
     BOOL collectionEnabled = [NSUserDefaults.standardUserDefaults boolForKey:MGLMapboxMetricsEnabledKey];
-    NSUserDefaults.mme_configuration.mme_isCollectionEnabled = collectionEnabled;
-    
+    self.eventsManager.configuration.isCollectionEnabled = collectionEnabled;
     [self.eventsManager pauseOrResumeMetricsCollectionIfRequired];
 }
 
@@ -156,14 +178,18 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
     // It is possible that an alternative access token was already set on this instance when the class was loaded
     // Use it if it exists
     NSString *resolvedAccessToken = [MGLMapboxEvents sharedInstance].accessToken ?: accessToken;
-
-    [eventsManager initializeWithAccessToken:resolvedAccessToken
-                               userAgentBase:MGLAPIClientUserAgentBase
-                              hostSDKVersion:sdkVersion];
+    [eventsManager startEventsManagerWithToken:resolvedAccessToken
+                                 userAgentBase:MGLAPIClientUserAgentBase
+                                hostSDKVersion:sdkVersion];
+    [eventsManager startEventsManagerWithToken:resolvedAccessToken];
 
     eventsManager.skuId                       = MBXAccountsSKUIDMapsUser;
-    eventsManager.debugLoggingEnabled         = [[NSUserDefaults standardUserDefaults] boolForKey :MGLMapboxMetricsDebugLoggingEnabledKey];
-    
+
+    if ([[NSUserDefaults standardUserDefaults] boolForKey :MGLMapboxMetricsDebugLoggingEnabledKey]) {
+        eventsManager.logLevel = MMELogInfo;
+    } else {
+        eventsManager.logLevel = MMELogNone;
+    }
 
     events.eventsManager = eventsManager;
 }
@@ -183,9 +209,9 @@ static void * MGLTelemetryAccessTokenKeyContext = &MGLTelemetryAccessTokenKeyCon
 + (void)ensureMetricsOptoutExists {
     NSNumber *shownInAppNumber = [[NSBundle mainBundle] objectForInfoDictionaryKey:MGLMapboxMetricsEnabledSettingShownInAppKey];
     BOOL metricsEnabledSettingShownInAppFlag = [shownInAppNumber boolValue];
-    
+
     if (!metricsEnabledSettingShownInAppFlag &&
-        [[NSUserDefaults mme_configuration] integerForKey:MGLMapboxAccountTypeKey] == 0) {
+        [self.userDefaults integerForKey:MGLMapboxAccountTypeKey] == 0) {
         // Opt-out is not configured in UI, so check for Settings.bundle
         BOOL defaultEnabledValue = NO;
         NSString *appSettingsBundle = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"];
