@@ -6,7 +6,7 @@ workflows:
     jobs:
       #
       # Naming convention: {platform}-{additional description}-{build type}
-      #   - {platform} is the client platform/framework, which may differ from 
+      #   - {platform} is the client platform/framework, which may differ from
       #     the build platform. Specify both if applicable, e.g., "qt5-macos".
       #   - {additional description} optionally describes the compiler or other
       #     unique aspect of the build environment.
@@ -17,7 +17,7 @@ workflows:
       - ios-release-template:
           name: ios-release
       - ios-trigger-metrics:
-          requires: 
+          requires:
             - ios-release
           filters:
             branches:
@@ -174,7 +174,7 @@ commands:
     - run:
         name: Build ios-test
         command: make ios-test
-        no_output_timeout: 20m
+        no_output_timeout: 30m
   build-ios-integration-test:
     steps:
     - run:
@@ -185,7 +185,7 @@ commands:
     - run:
         name: Build macos-test
         command: make macos-test
-        no_output_timeout: 20m
+        no_output_timeout: 30m
 
 
   check-public-symbols:
@@ -417,7 +417,7 @@ jobs:
       - run:
           name: Build dynamic framework for device and simulator
           command: make iframework
-          no_output_timeout: 20m
+          no_output_timeout: 30m
       - deploy:
           name: Upload snapshot build to s3
           command: |
@@ -472,7 +472,7 @@ jobs:
           command: |
             export VERSION_TAG=${CIRCLE_TAG}
             platform/ios/scripts/deploy-packages.sh
-          no_output_timeout: 20m
+          no_output_timeout: 30m
       - deploy:
           name: Deploy to CocoaPods
           command: platform/ios/scripts/deploy-to-cocoapods.sh
