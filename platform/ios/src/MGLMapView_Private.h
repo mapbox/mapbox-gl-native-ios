@@ -65,6 +65,9 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 
 - (void)pauseRendering:(nonnull NSNotification *)notification;
 - (void)resumeRendering:(nonnull NSNotification *)notification;
+
+- (void)accessibilityPostNotification:(UIAccessibilityNotifications)notification argument:(__nullable id)argument;
+
 @property (nonatomic, nonnull) MGLUserLocationAnnotationView *userLocationAnnotationView;
 @property (nonatomic, nonnull) MGLAnnotationContainerView *annotationContainerView;
 @property (nonatomic, readonly) BOOL enablePresentsWithTransaction;
