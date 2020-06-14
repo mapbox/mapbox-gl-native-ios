@@ -59,8 +59,16 @@ void writeDictionaryToFile(NSDictionary *info, NSString *filename);
     
     [self queryRoads];
     
-    NSDictionary *accessibilityDictionary = MGLTestAccessibilityDictionaryForElement(self.mapView);
+    __block NSDictionary *accessibilityDictionary;
     
+    os_signpost_id_t signpost = MGL_CREATE_SIGNPOST(self.log);
+
+    [self measureBlock:^{
+        MGL_SIGNPOST_BEGIN(self.log, signpost, "create-dictionary");
+        accessibilityDictionary = MGLTestAccessibilityDictionaryForElement(self.mapView);
+        MGL_SIGNPOST_END(self.log, signpost, "create-dictionary");
+    }];
+        
     NSString *filename = @"testQueryRoadsAroundDC";
 
 #if 0
@@ -71,6 +79,8 @@ void writeDictionaryToFile(NSDictionary *info, NSString *filename);
     XCTAssertNotNil(expected);
     [self assertAccessibilityDictionary:accessibilityDictionary isEqualToDictionary:expected];
 #endif
+    
+    accessibilityDictionary = nil;
 }
 
 #pragma mark - Common methods
@@ -242,7 +252,7 @@ NSArray* MGLTestArrayForBezierPath(UIBezierPath* path)
             
             if (isnan(element->points->x) ||
                 isnan(element->points->y)) {
-                NSLog(@"wer");
+                NSCAssert(0, @"Invalid point");
             }
             
             NSDictionary *elementDict = @{
