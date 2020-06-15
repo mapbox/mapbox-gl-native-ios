@@ -3151,7 +3151,7 @@ public:
     
     // Let the annotation view serve as its own accessibility element.
     MGLAnnotationView *annotationView = annotationContext.annotationView;
-    if (annotationView)//asdf && annotationView.superview)
+    if (annotationView && annotationView.superview)
     {
         return annotationView;
     }
