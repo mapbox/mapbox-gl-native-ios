@@ -3122,7 +3122,7 @@
 				1F95931D1E6DE2E900D5B294 /* MGLNSDateAdditionsTests.mm in Sources */,
 				DA695426215B1E76002041A4 /* MGLMapCameraTests.m in Sources */,
 				96381C0222C6F3950053497D /* MGLMapViewPitchTests.m in Sources */,
-				CA8FBC0921A47BB100D1203C /* MGLRendererConfigurationTests.mm in Sources */,
+				CA8FBC0921A47BB100D1203C /* MGLRendererConfigurationTests.m in Sources */,
 				CAD9D0AA22A86D6F001B25EE /* MGLResourceTests.mm in Sources */,
 				DD58A4C61D822BD000E1F038 /* MGLExpressionTests.mm in Sources */,
 				3575798B1D502B0C000B822E /* MGLBackgroundStyleLayerTests.mm in Sources */,
