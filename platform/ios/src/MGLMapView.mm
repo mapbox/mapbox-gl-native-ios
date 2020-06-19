@@ -4021,7 +4021,14 @@ public:
     CLLocationDirection direction = cameraOptions.bearing ? mbgl::util::wrap(*cameraOptions.bearing, 0., 360.) : self.direction;
     CGFloat pitch = cameraOptions.pitch ? *cameraOptions.pitch : *mapCamera.pitch;
     CLLocationDistance altitude = MGLAltitudeForZoomLevel(zoomLevel, pitch, centerCoordinate.latitude, self.frame.size);
-    return [MGLMapCamera cameraLookingAtCenterCoordinate:centerCoordinate altitude:altitude pitch:pitch heading:direction];
+    MGLEdgeInsets padding = MGLEdgeInsetsZero;
+    if (cameraOptions.padding) {
+        padding = MGLEdgeInsetsMake(cameraOptions.padding->top(),
+                          cameraOptions.padding->left(),
+                          cameraOptions.padding->bottom(),
+                          cameraOptions.padding->right());
+    }
+    return [MGLMapCamera cameraLookingAtCenterCoordinate:centerCoordinate altitude:altitude pitch:pitch heading:direction padding:padding];
 }
 
 /// Returns a CameraOptions object that specifies parameters for animating to
@@ -4044,6 +4051,9 @@ public:
     if (camera.pitch >= 0)
     {
         options.pitch = camera.pitch;
+    }
+    if (! MGLEdgeInsetsEqual(camera.padding, MGLEdgeInsetsZero)) {
+        options.padding = MGLEdgeInsetsFromNSEdgeInsets(camera.padding);
     }
     return options;
 }
