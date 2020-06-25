@@ -44,13 +44,11 @@
     NSString *accessToken;
 
     if ([self.name containsString:@"🔒"]) {
-        accessToken = [[NSProcessInfo processInfo] environment][@"MAPBOX_ACCESS_TOKEN"];
+        accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
 
         if (!accessToken) {
-            printf("warning: MAPBOX_ACCESS_TOKEN env var is required for test '%s' - trying anyway.\n", self.name.UTF8String);
+            printf("warning: MGLMapboxAccessToken info.plist key is required for test '%s' - trying anyway.\n", self.name.UTF8String);
         }
     }
-
-    [MGLAccountManager setAccessToken:accessToken ?: @"pk.feedcafedeadbeefbadebede"];
 }
 @end
