@@ -11,7 +11,7 @@
     XCTestSuite *newTestSuite = [XCTestSuite testSuiteWithName:defaultTestSuite.name];
 
     BOOL runPendingTests = [[[NSProcessInfo processInfo] environment][@"MAPBOX_RUN_PENDING_TESTS"] boolValue];
-    NSString *accessToken = [[NSProcessInfo processInfo] environment][@"MAPBOX_ACCESS_TOKEN"];
+    NSString *accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
 
     for (XCTest *test in tests) {
 
