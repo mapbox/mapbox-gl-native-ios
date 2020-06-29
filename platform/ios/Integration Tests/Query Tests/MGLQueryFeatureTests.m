@@ -270,7 +270,8 @@ NSDictionary* MGLTestAccessibilityDictionaryForElement(NSObject* element)
 
     // Recurse
     elementCount = 0;
-    
+
+    // Fails: "NSInvalidArgumentException", "*** -[__NSPlaceholderArray initWithCapacity:]: capacity (9223372036854775807) is ridiculous"
     if (!element.isAccessibilityElement) {
         elementCount = element.accessibilityElementCount;
         NSMutableArray *mutableElements = [NSMutableArray arrayWithCapacity:elementCount];
