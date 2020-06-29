@@ -2938,9 +2938,8 @@ public:
         
         MGL_SIGNPOST_BEGIN(self.log, signpost, "gae/query-places");
         NSArray *placeStyleLayerIdentifiers = [self.style.placeStyleLayers valueForKey:@"identifier"];
-        
-        // TODO:
-        /*NSArray **/visiblePlaceFeatures = [self visibleFeaturesInRect:bounds inStyleLayersWithIdentifiers:[NSSet setWithArray:placeStyleLayerIdentifiers]];
+
+        visiblePlaceFeatures = [self visibleFeaturesInRect:bounds inStyleLayersWithIdentifiers:[NSSet setWithArray:placeStyleLayerIdentifiers]];
         MGL_SIGNPOST_END(self.log, signpost, "gae/query-places");
 
         
@@ -3011,10 +3010,8 @@ public:
     // If there's a selected annotation with a callout view that's visible, then
     // we use those (regardless of whether we've just calculated our roads/places
     // as those are used by the accessibility value.
-    
-    // TODO: check this assumption
-    
-    if (self.calloutViewForSelectedAnnotation.superview != nil) // might not be true at this point in time
+
+    if (self.calloutViewForSelectedAnnotation.superview != nil)
     {
         // Update the accessibility path
         UIBezierPath *calloutViewPath = [UIBezierPath bezierPathWithRect:self.calloutViewForSelectedAnnotation.frame];
@@ -3030,8 +3027,7 @@ public:
     {
         MGL_SIGNPOST_BEGIN(self.log, signpost, "gae/build-elements");
 
-        // TODO: Previously, accessibility considered the compass always visible
-        BOOL compassViewVisible       = YES;//self.compassView.alpha > 0.0;
+        BOOL compassViewVisible       = self.compassView.alpha > 0.0 || !self.compassView.isHidden;
         BOOL userLocationViewVisible  = self.userLocationAnnotationView && !self.userLocationAnnotationView.isHidden;
         BOOL attributionButtonVisible = self.attributionButton && !self.attributionButton.isHidden;
         
@@ -3085,9 +3081,8 @@ public:
         if (numberOfPlaces > 0) {
             NSMutableArray *placesArray = [NSMutableArray arrayWithCapacity:4];
             NSMutableSet *placesSet = [NSMutableSet setWithCapacity:numberOfPlaces];
-            // TODO:
-//          for (id <MGLFeature> placeFeature in sortedPlaceFeatures){
-            for (id <MGLFeature> placeFeature in visiblePlaceFeatures.reverseObjectEnumerator){
+
+          for (id <MGLFeature> placeFeature in sortedPlaceFeatures){
                 NSString *name = [placeFeature attributeForKey:@"name"];
                 if (![placesSet containsObject:name]) {
                     [placesArray addObject:name];
@@ -3129,11 +3124,6 @@ public:
     }
     
     MGLAssert(NO, @"Index %ld not in recognized accessibility element ranges. ", (long)index);
-//              @"User location annotation range: %@; visible annotation range: %@; "
-//              @"visible place feature range: %@; visible road feature range: %@.",
-//              (long)index, NSStringFromRange(userLocationAnnotationRange),
-//              NSStringFromRange(visibleAnnotationRange), NSStringFromRange(visiblePlaceFeatureRange),
-//              NSStringFromRange(visibleRoadFeatureRange));
     return nil;
 }
 
