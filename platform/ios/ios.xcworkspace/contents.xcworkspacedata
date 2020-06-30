@@ -7,7 +7,4 @@
    <FileRef
       location = "group:vendor/mapbox-events-ios/MapboxMobileEvents.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:../../build/ios/Mapbox GL Native.xcodeproj">
-   </FileRef>
 </Workspace>

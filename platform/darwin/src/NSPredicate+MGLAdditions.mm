@@ -26,12 +26,15 @@
 
 + (instancetype)mgl_predicateWithFilter:(mbgl::style::Filter)filter
 {
-    if (filter.expression) {
-        id jsonObject = MGLJSONObjectFromMBGLExpression(**filter.expression);
-        return [NSPredicate predicateWithMGLJSONObject:jsonObject];
-    } else {
+    // Should this use filter.serialize(), so that it uses serializedLegacyFilter?
+    const auto expression = filter.getExpression();
+
+    if (!expression) {
         return nil;
     }
+    
+    id jsonObject = MGLJSONObjectFromMBGLExpression(*expression);
+    return [NSPredicate predicateWithMGLJSONObject:jsonObject];
 }
 
 @end

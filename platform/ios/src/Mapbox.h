@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-
+@import MBGLCore;
 #import "MGLFoundation.h"
 
 /// Project version number for Mapbox.

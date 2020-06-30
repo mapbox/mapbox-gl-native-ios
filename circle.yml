@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  # https://circleci.com/orbs/registry/orb/circleci/slack
+  slack: circleci/slack@3.4.2
+
 workflows:
   version: 2
   mbgl-legacy:
@@ -14,6 +18,7 @@ workflows:
       #
       - ios-debug
       - ios-debug-xcode10
+      - ios-debug-xcode11-5
       - ios-release-template:
           name: ios-release
       - ios-trigger-metrics:
@@ -235,18 +240,14 @@ commands:
     - store_artifacts:
         path: build/logs
 
-
+  # Must be last step of a job
   notify-slack-nightly-failure:
     steps:
-    - run:
-        name: Send a Slack notification on nightly failure
-        when: on_fail
-        command: |
-          if [[ $CIRCLE_BRANCH == master ]]; then
-            export SLACK_MESSAGE="Nightly build of \`$CIRCLE_JOB\` <$CIRCLE_BUILD_URL|failed>."
-            export SLACK_COLOR="danger"
-            scripts/notify-slack.sh
-          fi
+    - slack/status:
+        fail_only: true
+        only_for_branches: 'internal,master'
+        include_visit_job_action: true
+        failure_message: ':red_circle: Nightly build of \`$CIRCLE_JOB\` <$CIRCLE_BUILD_URL|failed>.'
 
   #
   # Add this step to all regular jobs to enable skipping of certain non-code-related changes.
@@ -273,7 +274,7 @@ commands:
 jobs:
   ios-debug:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -292,6 +293,7 @@ jobs:
       - upload-xcode-build-logs
 
 # ------------------------------------------------------------------------------
+# TODO: Update to latest on macOS 10.14 Mojave, i.e. 11.3.1
   ios-debug-xcode10:
     macos:
       xcode: "10.3.0"
@@ -312,15 +314,35 @@ jobs:
       - collect-xcode-build-logs
       - upload-xcode-build-logs
 
-# ------------------------------------------------------------------------------
-  ios-sanitize-nightly:
+  ios-debug-xcode11-5:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.5.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      SLACK_CHANNEL: CU0LHNNJY
+    steps:
+      - install-macos-dependencies
+      - install-dependencies
+      - check-public-symbols
+      - run:
+          name: Lint podspecs and plist files
+          command: make ios-lint
+      - check-if-this-job-can-be-skipped
+      - build-ios-test
+      - save-dependencies
+      - collect-xcode-build-logs
+      - upload-xcode-build-logs
+
+
+# ------------------------------------------------------------------------------
+  ios-sanitize-nightly:
+    macos:
+      xcode: "11.4.1"
+    environment:
+      BUILDTYPE: Debug
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - install-macos-dependencies
       - install-dependencies
@@ -342,12 +364,11 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-sanitize-address-nightly:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      SLACK_CHANNEL: CU0LHNNJY
     steps:
       - install-macos-dependencies
       - install-dependencies
@@ -362,12 +383,11 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-static-analyzer-nightly:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      SLACK_CHANNEL: CU0LHNNJY
     steps:
       - install-macos-dependencies
       - install-dependencies
@@ -387,7 +407,6 @@ jobs:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      SLACK_CHANNEL: CU0LHNNJY
     steps:
       - install-macos-dependencies
       - install-dependencies
@@ -402,13 +421,12 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-release-template:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.1"
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      SLACK_CHANNEL: CU0LHNNJY
     steps:
       - install-macos-dependencies
       - install-dependencies
@@ -444,20 +462,17 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-release-tag:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.1"
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      SLACK_CHANNEL: CU0LHNNJY
     steps:
       - checkout
-      - run:
-          name: Send a Slack notification on start
-          command: |
-            export SLACK_MESSAGE="<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` started.>"
-            scripts/notify-slack.sh
+      - slack/notify:
+          message: '<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` started.>'
+          include_visit_job_action: true
       - install-macos-dependencies
       - install-dependencies
       - install-ios-packaging-dependencies
@@ -479,32 +494,25 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - run:
-          name: Send a Slack notification on failure
-          when: on_fail
-          command: |
-            export SLACK_MESSAGE="<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` failed.>"
-            export SLACK_COLOR="danger"
-            scripts/notify-slack.sh
-      - run:
-          name: Send a Slack notification on success
-          when: on_success
-          command: |
-            export SLACK_MESSAGE="<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` succeeded.>"
-            export SLACK_COLOR="good"
-            scripts/notify-slack.sh
+
+      # Must be last step in job
+      - slack/status:
+          fail_only: false
+          include_visit_job_action: true
+          failure_message: ':red_circle: <$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` failed.>'
+          success_message: ':green_circle: <$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` succeeded!> :tada:'
 
 # ------------------------------------------------------------------------------
   ios-trigger-metrics:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.1"
     steps:
       - trigger-metrics
 
 # ------------------------------------------------------------------------------
   macos-debug:
     macos:
-      xcode: "11.2.1"
+      xcode: "11.4.1"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
