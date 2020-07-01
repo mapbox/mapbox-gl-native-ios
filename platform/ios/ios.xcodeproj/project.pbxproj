@@ -49,8 +49,6 @@
 		1F7454961ECD450D00021D39 /* MGLLight_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F7454941ECD450D00021D39 /* MGLLight_Private.h */; };
 		1F7454971ECD450D00021D39 /* MGLLight_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F7454941ECD450D00021D39 /* MGLLight_Private.h */; };
 		1F7454A91ED08AB400021D39 /* MGLLightTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F7454A61ED08AB400021D39 /* MGLLightTest.mm */; };
-		1F78399E235AA1E600D4D606 /* libmbgl-core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F78399D235AA1E600D4D606 /* libmbgl-core.a */; };
-		1F7839A6235E137000D4D606 /* sideload_sat.db in Resources */ = {isa = PBXBuildFile; fileRef = 1F7839A5235E137000D4D606 /* sideload_sat.db */; };
 		1F8E8A81233A9FD9009B51ED /* MGLMapViewGestureRecognizerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F8E8A80233A9FD9009B51ED /* MGLMapViewGestureRecognizerTests.mm */; };
 		1F95931D1E6DE2E900D5B294 /* MGLNSDateAdditionsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F95931C1E6DE2E900D5B294 /* MGLNSDateAdditionsTests.mm */; };
 		1FC4817D2098CBC0000D09B4 /* NSPredicate+MGLPrivateAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FC4817B2098CBC0000D09B4 /* NSPredicate+MGLPrivateAdditions.h */; };
@@ -190,7 +188,6 @@
 		35E79F201D41266300957B9E /* MGLStyleLayer_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 35E79F1F1D41266300957B9E /* MGLStyleLayer_Private.h */; };
 		35E79F211D41266300957B9E /* MGLStyleLayer_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 35E79F1F1D41266300957B9E /* MGLStyleLayer_Private.h */; };
 		3E6465D62065767A00685536 /* LimeGreenStyleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E6465D42065767A00685536 /* LimeGreenStyleLayer.m */; };
-		3E8770612074297100B7E842 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 554180411D2E97DE00012372 /* OpenGLES.framework */; };
 		3EA93369F61CF70AFA50465D /* MGLRendererConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EA931BC4F087E166D538F21 /* MGLRendererConfiguration.m */; };
 		3EA934623AD0000B7D99C3FB /* MGLRendererConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EA9337830C7738BF7F5493C /* MGLRendererConfiguration.h */; };
 		3EA9363147E77DD29FA06063 /* MGLRendererConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EA9337830C7738BF7F5493C /* MGLRendererConfiguration.h */; };
@@ -383,19 +380,14 @@
 		AC518DFF201BB55A00EBC820 /* MGLTelemetryConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = AC518DFD201BB55A00EBC820 /* MGLTelemetryConfig.h */; };
 		AC518E03201BB56000EBC820 /* MGLTelemetryConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = AC518DFE201BB55A00EBC820 /* MGLTelemetryConfig.m */; };
 		AC518E04201BB56100EBC820 /* MGLTelemetryConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = AC518DFE201BB55A00EBC820 /* MGLTelemetryConfig.m */; };
-		CA02C87224AB6CDC00A55CF5 /* MBGLCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA02C87124AB6CD100A55CF5 /* MBGLCore.framework */; };
 		CA0B3C022329DE9A00E4B493 /* MGLTestAssertionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAA65D82321BBA900F08A39 /* MGLTestAssertionHandler.m */; };
 		CA0C27922076C804001CE5B7 /* MGLShapeSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0C27912076C804001CE5B7 /* MGLShapeSourceTests.m */; };
 		CA0C27942076CA19001CE5B7 /* MGLMapViewIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0C27932076CA19001CE5B7 /* MGLMapViewIntegrationTest.m */; };
 		CA0FAA05237B3BB700C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
-		CA0FAA06237B3BB700C9F3C9 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA96299B23731199004F1330 /* MapboxMobileEvents.framework */; };
 		CA0FAA07237B3BC600C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
-		CA0FAA08237B3BC600C9F3C9 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA96299B23731199004F1330 /* MapboxMobileEvents.framework */; };
 		CA0FAA09237B3BEA00C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA17464E23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA17464D23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm */; };
 		CA1B4A512099FB2200EDD491 /* MGLMapSnapshotterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */; };
-		CA488BAB23FCE6B900AEE226 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA96299B23731199004F1330 /* MapboxMobileEvents.framework */; };
-		CA488BAC23FCE6B900AEE226 /* MapboxMobileEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA96299B23731199004F1330 /* MapboxMobileEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CA4C54FE2324948100A81659 /* MGLSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4C54FD2324948100A81659 /* MGLSourceTests.swift */; };
 		CA4EB8C720863487006AB465 /* MGLStyleLayerIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */; };
 		CA4F3BDE230F74C3008BAFEA /* MGLMapViewPendingBlockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA4F3BDD230F74C3008BAFEA /* MGLMapViewPendingBlockTests.m */; };
@@ -411,17 +403,25 @@
 		CA7766842229C11A0008DE9E /* SMCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA88488A1CBB037E00AB86E3 /* SMCalloutView.m */; };
 		CA86FF0E22D8D5A0009EB14A /* MGLNetworkConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA86FF0D22D8D5A0009EB14A /* MGLNetworkConfigurationTests.m */; };
 		CA88DC3021C85D900059ED5A /* MGLStyleURLIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88DC2F21C85D900059ED5A /* MGLStyleURLIntegrationTest.m */; };
-		CA8A30C124ABA251008CB6D8 /* MBGLCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA02C87124AB6CD100A55CF5 /* MBGLCore.framework */; };
-		CA8A30C224ABA251008CB6D8 /* MBGLCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA02C87124AB6CD100A55CF5 /* MBGLCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CA8A30C624ABA6EF008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30C424ABA69B008CB6D8 /* MapboxMobileEvents.framework */; };
-		CA8A30C924ABA704008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30C424ABA69B008CB6D8 /* MapboxMobileEvents.framework */; };
-		CA8A30CA24ABA704008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30C424ABA69B008CB6D8 /* MapboxMobileEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CA8A30F024ACE3D3008CB6D8 /* MBGLCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EF24ACE3A1008CB6D8 /* MBGLCore.framework */; };
+		CA8A30F124ACE3EE008CB6D8 /* MBGLCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EF24ACE3A1008CB6D8 /* MBGLCore.framework */; };
+		CA8A30F224ACE406008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
+		CA8A30F324ACE411008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
+		CA8A30F724ACE43C008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
+		CA8A30F824ACE43C008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CA8A30F924ACE441008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
+		CA8A30FA24ACE441008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CA8A30FB24ACE741008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
+		CA8A30FC24ACE741008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CA8A310824ACE816008CB6D8 /* glyphs.pbf in Resources */ = {isa = PBXBuildFile; fileRef = CA8A310724ACE80B008CB6D8 /* glyphs.pbf */; };
+		CA8A310924ACE81B008CB6D8 /* mixed.json in Resources */ = {isa = PBXBuildFile; fileRef = CA8A310324ACE80B008CB6D8 /* mixed.json */; };
+		CA8A310A24ACE825008CB6D8 /* sideload_sat.db in Resources */ = {isa = PBXBuildFile; fileRef = CA8A310524ACE80B008CB6D8 /* sideload_sat.db */; };
+		CA8A310B24ACE82B008CB6D8 /* sideload_sat.db in Resources */ = {isa = PBXBuildFile; fileRef = CA8A310524ACE80B008CB6D8 /* sideload_sat.db */; };
 		CA8FBC0921A47BB100D1203C /* MGLRendererConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8FBC0821A47BB100D1203C /* MGLRendererConfigurationTests.m */; };
 		CA94E5FB237D21030037AEA0 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA94E5FC237D21030037AEA0 /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CAA69DA5206DCD0E007279CD /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA4A26961CB6E795000B7809 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CAAA65D92321BBA900F08A39 /* MGLTestAssertionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAA65D82321BBA900F08A39 /* MGLTestAssertionHandler.m */; };
-		CABC52C22368CB5100B7E543 /* sideload_sat.db in Resources */ = {isa = PBXBuildFile; fileRef = 1F7839A5235E137000D4D606 /* sideload_sat.db */; };
 		CAD9D0AA22A86D6F001B25EE /* MGLResourceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CAD9D0A922A86D6F001B25EE /* MGLResourceTests.mm */; };
 		CAE7AD5520F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE7AD5420F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift */; };
 		CAFB3C14234505D500399265 /* MGLMapSnapshotter_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB3C13234505D500399265 /* MGLMapSnapshotter_Private.h */; };
@@ -477,9 +477,6 @@
 		DA35D9C1240916290013ECB0 /* MGLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DA35D9BE240916290013ECB0 /* MGLReachability.m */; };
 		DA35D9C2240916290013ECB0 /* MGLReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = DA35D9BF240916290013ECB0 /* MGLReachability.h */; };
 		DA35D9C3240916290013ECB0 /* MGLReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = DA35D9BF240916290013ECB0 /* MGLReachability.h */; };
-		DA35D9D4240992400013ECB0 /* libmbgl-vendor-csscolorparser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA35D9CC240920910013ECB0 /* libmbgl-vendor-csscolorparser.a */; };
-		DA35D9D52409925E0013ECB0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 358B3DB82359E491007BEB26 /* libsqlite3.tbd */; };
-		DA35D9D6240992760013ECB0 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F7839A3235E11FC00D4D606 /* libz.tbd */; };
 		DA5DB12A1FABF1EE001C2326 /* MGLMapAccessibilityElementTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DA5DB1291FABF1EE001C2326 /* MGLMapAccessibilityElementTests.m */; };
 		DA6408DB1DA4E7D300908C90 /* MGLVectorStyleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = DA6408D91DA4E7D300908C90 /* MGLVectorStyleLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA6408DC1DA4E7D300908C90 /* MGLVectorStyleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = DA6408D91DA4E7D300908C90 /* MGLVectorStyleLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -626,8 +623,6 @@
 		DAC25FCD200FD83F009BE98E /* NSExpression+MGLPrivateAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = DAC25FCB200FD83E009BE98E /* NSExpression+MGLPrivateAdditions.h */; };
 		DAC49C5C1CD02BC9009E1AA3 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = DAC49C5F1CD02BC9009E1AA3 /* Localizable.stringsdict */; };
 		DAC49C5D1CD02BC9009E1AA3 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = DAC49C5F1CD02BC9009E1AA3 /* Localizable.stringsdict */; };
-		DAC8A48024527EDC00C795BB /* glyphs.pbf in Resources */ = {isa = PBXBuildFile; fileRef = DAC8A47F24527EDB00C795BB /* glyphs.pbf */; };
-		DAC8A4822452971B00C795BB /* mixed.json in Resources */ = {isa = PBXBuildFile; fileRef = DAC8A4812452971B00C795BB /* mixed.json */; };
 		DACA86262019218600E9693A /* MGLRasterDEMSource.h in Headers */ = {isa = PBXBuildFile; fileRef = DACA86242019218500E9693A /* MGLRasterDEMSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DACA86272019218600E9693A /* MGLRasterDEMSource.h in Headers */ = {isa = PBXBuildFile; fileRef = DACA86242019218500E9693A /* MGLRasterDEMSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DACA86282019218600E9693A /* MGLRasterDEMSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = DACA86252019218500E9693A /* MGLRasterDEMSource.mm */; };
@@ -728,8 +723,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CA8A30CA24ABA704008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */,
-				CA8A30C224ABA251008CB6D8 /* MBGLCore.framework in Embed Frameworks */,
+				CA8A30FA24ACE441008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */,
 				CA94E5FC237D21030037AEA0 /* Mapbox.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -741,7 +735,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CA488BAC23FCE6B900AEE226 /* MapboxMobileEvents.framework in Embed Frameworks */,
+				CA8A30FC24ACE741008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */,
 				CAA69DA5206DCD0E007279CD /* Mapbox.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -753,6 +747,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CA8A30F824ACE43C008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */,
 				DAA4E4091CBB6C9500178DFB /* Mapbox.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -1038,7 +1033,6 @@
 		A4F3FB1C2254865900A30170 /* missing_icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = missing_icon.json; sourceTree = "<group>"; };
 		AC518DFD201BB55A00EBC820 /* MGLTelemetryConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLTelemetryConfig.h; sourceTree = "<group>"; };
 		AC518DFE201BB55A00EBC820 /* MGLTelemetryConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLTelemetryConfig.m; sourceTree = "<group>"; };
-		CA02C87124AB6CD100A55CF5 /* MBGLCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MBGLCore.framework; sourceTree = "<group>"; };
 		CA0C27912076C804001CE5B7 /* MGLShapeSourceTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLShapeSourceTests.m; sourceTree = "<group>"; };
 		CA0C27932076CA19001CE5B7 /* MGLMapViewIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLMapViewIntegrationTest.m; sourceTree = "<group>"; wrapsLines = 0; };
 		CA0C27952076CA50001CE5B7 /* MGLMapViewIntegrationTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLMapViewIntegrationTest.h; sourceTree = "<group>"; };
@@ -1057,7 +1051,11 @@
 		CA6914B420E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = MGLAnnotationViewIntegrationTests.mm; path = "Annotation Tests/MGLAnnotationViewIntegrationTests.mm"; sourceTree = "<group>"; };
 		CA86FF0D22D8D5A0009EB14A /* MGLNetworkConfigurationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLNetworkConfigurationTests.m; sourceTree = "<group>"; };
 		CA88DC2F21C85D900059ED5A /* MGLStyleURLIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLStyleURLIntegrationTest.m; sourceTree = "<group>"; };
-		CA8A30C424ABA69B008CB6D8 /* MapboxMobileEvents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapboxMobileEvents.framework; path = ../../../Carthage/Build/iOS/MapboxMobileEvents.framework; sourceTree = "<group>"; };
+		CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapboxMobileEvents.framework; path = ../../../Carthage/Build/iOS/MapboxMobileEvents.framework; sourceTree = "<group>"; };
+		CA8A30EF24ACE3A1008CB6D8 /* MBGLCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MBGLCore.framework; path = ../../../Carthage/Build/iOS/MBGLCore.framework; sourceTree = "<group>"; };
+		CA8A310324ACE80B008CB6D8 /* mixed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mixed.json; sourceTree = "<group>"; };
+		CA8A310524ACE80B008CB6D8 /* sideload_sat.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = sideload_sat.db; sourceTree = "<group>"; };
+		CA8A310724ACE80B008CB6D8 /* glyphs.pbf */ = {isa = PBXFileReference; lastKnownFileType = file; path = glyphs.pbf; sourceTree = "<group>"; };
 		CA8FBC0821A47BB100D1203C /* MGLRendererConfigurationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MGLRendererConfigurationTests.m; path = ../../darwin/test/MGLRendererConfigurationTests.m; sourceTree = "<group>"; };
 		CA96299B23731199004F1330 /* MapboxMobileEvents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MapboxMobileEvents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAAA65D72321BBA900F08A39 /* MGLTestAssertionHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MGLTestAssertionHandler.h; path = ../../darwin/test/MGLTestAssertionHandler.h; sourceTree = "<group>"; };
@@ -1338,7 +1336,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA0FAA07237B3BC600C9F3C9 /* Mapbox.framework in Frameworks */,
-				CA0FAA08237B3BC600C9F3C9 /* MapboxMobileEvents.framework in Frameworks */,
+				CA8A30F324ACE411008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1346,7 +1344,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA488BAB23FCE6B900AEE226 /* MapboxMobileEvents.framework in Frameworks */,
+				CA8A30FB24ACE741008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
 				CA0FAA09237B3BEA00C9F3C9 /* Mapbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1355,8 +1353,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA8A30C924ABA704008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
-				CA8A30C124ABA251008CB6D8 /* MBGLCore.framework in Frameworks */,
+				CA8A30F924ACE441008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
 				CA94E5FB237D21030037AEA0 /* Mapbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1365,12 +1362,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA35D9D52409925E0013ECB0 /* libsqlite3.tbd in Frameworks */,
-				DA35D9D6240992760013ECB0 /* libz.tbd in Frameworks */,
-				DA35D9D4240992400013ECB0 /* libmbgl-vendor-csscolorparser.a in Frameworks */,
 				CA0FAA05237B3BB700C9F3C9 /* Mapbox.framework in Frameworks */,
-				CA0FAA06237B3BB700C9F3C9 /* MapboxMobileEvents.framework in Frameworks */,
-				1F78399E235AA1E600D4D606 /* libmbgl-core.a in Frameworks */,
+				CA8A30F224ACE406008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1378,9 +1371,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA8A30C624ABA6EF008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
-				CA02C87224AB6CDC00A55CF5 /* MBGLCore.framework in Frameworks */,
 				96802766226556C5006BA4A1 /* libmbxaccounts.a in Frameworks */,
+				CA8A30F024ACE3D3008CB6D8 /* MBGLCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1390,6 +1382,7 @@
 			files = (
 				9680276422655696006BA4A1 /* libmbxaccounts.a in Frameworks */,
 				550570D22296E96E00228ECF /* GLKit.framework in Frameworks */,
+				CA8A30F124ACE3EE008CB6D8 /* MBGLCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1397,8 +1390,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA8A30F724ACE43C008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
 				DAA4E4081CBB6C9500178DFB /* Mapbox.framework in Frameworks */,
-				3E8770612074297100B7E842 /* OpenGLES.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1731,10 +1724,45 @@
 		CA8A30C324ABA688008CB6D8 /* Carthage */ = {
 			isa = PBXGroup;
 			children = (
-				CA8A30C424ABA69B008CB6D8 /* MapboxMobileEvents.framework */,
-				CA02C87124AB6CD100A55CF5 /* MBGLCore.framework */,
+				CA8A30EF24ACE3A1008CB6D8 /* MBGLCore.framework */,
+				CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */,
 			);
 			path = Carthage;
+			sourceTree = "<group>";
+		};
+		CA8A310124ACE80B008CB6D8 /* fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				CA8A310224ACE80B008CB6D8 /* local_glyphs */,
+				CA8A310424ACE80B008CB6D8 /* offline_database */,
+				CA8A310624ACE80B008CB6D8 /* resources */,
+			);
+			name = fixtures;
+			path = ../../../test/fixtures;
+			sourceTree = "<group>";
+		};
+		CA8A310224ACE80B008CB6D8 /* local_glyphs */ = {
+			isa = PBXGroup;
+			children = (
+				CA8A310324ACE80B008CB6D8 /* mixed.json */,
+			);
+			path = local_glyphs;
+			sourceTree = "<group>";
+		};
+		CA8A310424ACE80B008CB6D8 /* offline_database */ = {
+			isa = PBXGroup;
+			children = (
+				CA8A310524ACE80B008CB6D8 /* sideload_sat.db */,
+			);
+			path = offline_database;
+			sourceTree = "<group>";
+		};
+		CA8A310624ACE80B008CB6D8 /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				CA8A310724ACE80B008CB6D8 /* glyphs.pbf */,
+			);
+			path = resources;
 			sourceTree = "<group>";
 		};
 		DA1DC9411CB6C1C2006E619F = {
@@ -1846,6 +1874,7 @@
 		DA2E88521CC036F400F24E7B /* SDK Tests */ = {
 			isa = PBXGroup;
 			children = (
+				CA8A310124ACE80B008CB6D8 /* fixtures */,
 				DA2E88551CC036F400F24E7B /* Info.plist */,
 				DA2784FB1DF02FF4001D5B8D /* Media.xcassets */,
 				3502D6CB22AE88D5006BDFCE /* MGLAccountManagerTests.m */,
@@ -2826,7 +2855,7 @@
 			files = (
 				16376B3E1FFDB4B40000563E /* LaunchScreen.storyboard in Resources */,
 				16376B3B1FFDB4B40000563E /* Assets.xcassets in Resources */,
-				CABC52C22368CB5100B7E543 /* sideload_sat.db in Resources */,
+				CA8A310A24ACE825008CB6D8 /* sideload_sat.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2858,9 +2887,9 @@
 				DA2784FC1DF02FF4001D5B8D /* Media.xcassets in Resources */,
 				353BAEF71D646370009A8DA9 /* amsterdam.geojson in Resources */,
 				DA35D0881E1A6309007DED41 /* one-liner.json in Resources */,
-				DAC8A4822452971B00C795BB /* mixed.json in Resources */,
-				DAC8A48024527EDC00C795BB /* glyphs.pbf in Resources */,
-				1F7839A6235E137000D4D606 /* sideload_sat.db in Resources */,
+				CA8A310824ACE816008CB6D8 /* glyphs.pbf in Resources */,
+				CA8A310924ACE81B008CB6D8 /* mixed.json in Resources */,
+				CA8A310B24ACE82B008CB6D8 /* sideload_sat.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3628,24 +3657,10 @@
 		};
 		96AF1AA521B615A3007CB696 /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = GJZR2MEM28;
-				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/platform/default/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/variant/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/geometry.hpp/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/value/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/geojson.hpp/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/optional",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
-					"$(PROJECT_DIR)/../../platform/darwin/include",
-				);
 				INFOPLIST_FILE = benchmark/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.bench;
@@ -4040,24 +4055,10 @@
 		};
 		DABCABBC1CB80692000A7C39 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = GJZR2MEM28;
-				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/platform/default/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/variant/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/geometry.hpp/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/value/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/geojson.hpp/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/optional",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
-					"$(PROJECT_DIR)/../../platform/darwin/include",
-				);
 				INFOPLIST_FILE = benchmark/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.bench;
@@ -4067,24 +4068,10 @@
 		};
 		DABCABBD1CB80692000A7C39 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = GJZR2MEM28;
-				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/platform/default/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/variant/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/geometry.hpp/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/value/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/geojson.hpp/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/optional",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/typewrapper/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/mapbox/weak/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/mapbox-base/extras/rapidjson/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/polylabel/include",
-					"$(PROJECT_DIR)/../../vendor/mapbox-gl-native/vendor/expected/include",
-					"$(PROJECT_DIR)/../../platform/darwin/include",
-				);
 				INFOPLIST_FILE = benchmark/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.bench;
