@@ -61,6 +61,16 @@ BUILD_DEPS += ./vendor/mapbox-gl-native/CMakeLists.txt
 
 BUILD_DOCS ?= true
 
+NETRC_FILE=~/.netrc
+
+# See https://stackoverflow.com/a/7377522
+define NETRC
+machine api.mapbox.com
+login mapbox
+password $(SDK_REGISTRY_TOKEN)
+endef
+export NETRC
+
 #### iOS targets ##############################################################
 
 ifeq ($(HOST_PLATFORM), macos)
@@ -136,10 +146,8 @@ ifneq ($(CI),)
 	IOS_XCODEBUILD_SIM += -xcconfig platform/darwin/ci.xcconfig
 endif
 
-~/.netrc:
-	echo "machine api.mapbox.com" >> ~/.netrc
-    echo "login mapbox" >> ~/.netrc
-    echo "password $(SDK_REGISTRY_TOKEN)" >> ~/.netrc
+$(NETRC_FILE):
+	@echo "$$NETRC" > $(NETRC_FILE)
 
 $(CARTHAGE_DEPS): ~/.netrc
 	carthage bootstrap --platform iOS --use-netrc
