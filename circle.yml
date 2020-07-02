@@ -215,8 +215,8 @@ commands:
     - run:
         name: Install macOS dependencies
         command: |
-          brew update
-          brew install cmake ccache pkg-config glfw3 carthage github/gh/gh
+          brew upgrade carthage
+          brew install cmake ccache pkg-config glfw3 github/gh/gh
 
   trigger-metrics:
     steps:
