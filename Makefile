@@ -136,7 +136,12 @@ ifneq ($(CI),)
 	IOS_XCODEBUILD_SIM += -xcconfig platform/darwin/ci.xcconfig
 endif
 
-$(CARTHAGE_DEPS):
+~/.netrc:
+	echo "machine api.mapbox.com" >> ~/.netrc
+    echo "login mapbox" >> ~/.netrc
+    echo "password $(SDK_REGISTRY_TOKEN)" >> ~/.netrc
+
+$(CARTHAGE_DEPS): ~/.netrc
 	carthage bootstrap --platform iOS --use-netrc
 
 $(IOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings: platform/ios/WorkspaceSettings.xcsettings
