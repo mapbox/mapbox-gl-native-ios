@@ -33,7 +33,7 @@ workflows:
               only: /ios-.*/
             branches:
               ignore: /.*/
-      - macos-debug
+      # - macos-debug
   nightly:
     triggers:
       - schedule:
