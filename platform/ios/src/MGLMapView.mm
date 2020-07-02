@@ -1,3 +1,5 @@
+@import MBGLCore;
+
 #import "MGLMapView_Private.h"
 #import "MGLMapView+Impl.h"
 

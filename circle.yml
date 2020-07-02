@@ -67,6 +67,7 @@ commands:
     - run:
         name: Prepare submodules
         command: git submodule sync && git submodule update --init --recursive
+
   prepare-ccache:
     steps:
     - run:
@@ -213,7 +214,9 @@ commands:
     steps:
     - run:
         name: Install macOS dependencies
-        command: brew install cmake ccache pkg-config glfw3
+        command: |
+          brew update
+          brew install cmake ccache pkg-config glfw3 carthage github/gh/gh
 
   trigger-metrics:
     steps:
@@ -442,12 +445,12 @@ jobs:
             if [[ $CIRCLE_BRANCH == master ]]; then
               platform/ios/scripts/deploy-snapshot.sh
             fi
-      - deploy:
-          name: Deploy to Mapbox CocoaPods spec repo
-          command: |
-            if [[ $CIRCLE_BRANCH == master ]]; then
-              platform/ios/scripts/deploy-to-cocoapods.sh
-            fi
+#      - deploy:
+#          name: Deploy to Mapbox CocoaPods spec repo
+#          command: |
+#            if [[ $CIRCLE_BRANCH == master ]]; then
+#              platform/ios/scripts/deploy-to-cocoapods.sh
+#            fi
       - run:
          name: Record size
          command: |
@@ -488,9 +491,9 @@ jobs:
             export VERSION_TAG=${CIRCLE_TAG}
             platform/ios/scripts/deploy-packages.sh
           no_output_timeout: 20m
-      - deploy:
-          name: Deploy to CocoaPods
-          command: platform/ios/scripts/deploy-to-cocoapods.sh
+#      - deploy:
+#          name: Deploy to CocoaPods
+#          command: platform/ios/scripts/deploy-to-cocoapods.sh
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
