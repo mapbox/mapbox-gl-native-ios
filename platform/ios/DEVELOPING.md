@@ -1,6 +1,6 @@
 # Contributing to the Mapbox Maps SDK for iOS
 
-This document explains how to build the Mapbox Maps SDK for iOS from source. It is intended for advanced developers who wish to contribute to Mapbox GL and the Mapbox Maps SDK for iOS.
+This document explains how to build the Mapbox Maps SDK for iOS from source. It is intended for advanced developers who wish to contribute to the Mapbox Maps SDK for iOS.
 
 ## Requirements
 
