@@ -146,10 +146,13 @@ ifneq ($(CI),)
 	IOS_XCODEBUILD_SIM += -xcconfig platform/darwin/ci.xcconfig
 endif
 
+$(IOS_OUTPUT_PATH):
+	mkdir -p $@
+
 $(NETRC_FILE):
 	@echo "$$NETRC" > $(NETRC_FILE)
 
-$(CARTHAGE_DEPS): ~/.netrc
+$(CARTHAGE_DEPS): $(NETRC_FILE) | $(IOS_OUTPUT_PATH)
 	carthage bootstrap --platform iOS --use-netrc
 	@echo "Finishing bootstrapping"
 
