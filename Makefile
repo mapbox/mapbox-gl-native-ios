@@ -151,6 +151,7 @@ $(NETRC_FILE):
 
 $(CARTHAGE_DEPS): ~/.netrc
 	carthage bootstrap --platform iOS --use-netrc
+	@echo "Finishing bootstrapping"
 
 $(IOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings: platform/ios/WorkspaceSettings.xcsettings
 	mkdir -p "$(IOS_USER_DATA_PATH)"

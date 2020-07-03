@@ -383,7 +383,6 @@
 		CA0B3C022329DE9A00E4B493 /* MGLTestAssertionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAA65D82321BBA900F08A39 /* MGLTestAssertionHandler.m */; };
 		CA0C27922076C804001CE5B7 /* MGLShapeSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0C27912076C804001CE5B7 /* MGLShapeSourceTests.m */; };
 		CA0C27942076CA19001CE5B7 /* MGLMapViewIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0C27932076CA19001CE5B7 /* MGLMapViewIntegrationTest.m */; };
-		CA0FAA05237B3BB700C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA0FAA07237B3BC600C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA0FAA09237B3BEA00C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA17464E23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA17464D23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm */; };
@@ -405,7 +404,6 @@
 		CA88DC3021C85D900059ED5A /* MGLStyleURLIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88DC2F21C85D900059ED5A /* MGLStyleURLIntegrationTest.m */; };
 		CA8A30F024ACE3D3008CB6D8 /* MBGLCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EF24ACE3A1008CB6D8 /* MBGLCore.framework */; };
 		CA8A30F124ACE3EE008CB6D8 /* MBGLCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EF24ACE3A1008CB6D8 /* MBGLCore.framework */; };
-		CA8A30F224ACE406008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
 		CA8A30F324ACE411008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
 		CA8A30F724ACE43C008CB6D8 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
 		CA8A30F824ACE43C008CB6D8 /* MapboxMobileEvents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -424,6 +422,12 @@
 		CAAA65D92321BBA900F08A39 /* MGLTestAssertionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAA65D82321BBA900F08A39 /* MGLTestAssertionHandler.m */; };
 		CAD9D0AA22A86D6F001B25EE /* MGLResourceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CAD9D0A922A86D6F001B25EE /* MGLResourceTests.mm */; };
 		CAE7AD5520F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE7AD5420F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift */; };
+		CAF9808124AEADA100EC3CC1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F7839A3235E11FC00D4D606 /* libz.tbd */; };
+		CAF9808224AEADA700EC3CC1 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 358B3DB82359E491007BEB26 /* libsqlite3.tbd */; };
+		CAF9808424AEB98600EC3CC1 /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA4E4131CBB71D400178DFB /* libMapbox.a */; };
+		CAF9808624AEB9CF00EC3CC1 /* MapboxMobileEvents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EE24ACE396008CB6D8 /* MapboxMobileEvents.framework */; };
+		CAF9808724AEBB7900EC3CC1 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
+		CAF9808824AEBB8C00EC3CC1 /* MBGLCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA8A30EF24ACE3A1008CB6D8 /* MBGLCore.framework */; };
 		CAFB3C14234505D500399265 /* MGLMapSnapshotter_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB3C13234505D500399265 /* MGLMapSnapshotter_Private.h */; };
 		CAFB3C15234505D500399265 /* MGLMapSnapshotter_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CAFB3C13234505D500399265 /* MGLMapSnapshotter_Private.h */; };
 		CF75A91522D85E860058A5C4 /* MGLLoggingConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = CF75A91422D85E860058A5C4 /* MGLLoggingConfiguration.mm */; };
@@ -1362,8 +1366,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA0FAA05237B3BB700C9F3C9 /* Mapbox.framework in Frameworks */,
-				CA8A30F224ACE406008CB6D8 /* MapboxMobileEvents.framework in Frameworks */,
+				CAF9808724AEBB7900EC3CC1 /* Mapbox.framework in Frameworks */,
+				CAF9808624AEB9CF00EC3CC1 /* MapboxMobileEvents.framework in Frameworks */,
+				CAF9808824AEBB8C00EC3CC1 /* MBGLCore.framework in Frameworks */,
+				CAF9808424AEB98600EC3CC1 /* libMapbox.a in Frameworks */,
+				CAF9808224AEADA700EC3CC1 /* libsqlite3.tbd in Frameworks */,
+				CAF9808124AEADA100EC3CC1 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3737,7 +3745,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = test/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../Carthage/Build/iOS @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = "-fvisibility=hidden";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -3897,7 +3905,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = test/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../Carthage/Build/iOS @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = "-fvisibility=hidden";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -3929,7 +3937,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = test/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../Carthage/Build/iOS @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = "-fvisibility=hidden";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
