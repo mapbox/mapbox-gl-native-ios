@@ -12,6 +12,18 @@ The Mapbox Maps SDK for iOS may be installed as either a dynamic framework or a 
 
 Integrating the Mapbox Maps SDK for iOS requires Xcode 8.0 or higher.
 
+### Pre-requisite
+
+Before choosing either the dynamic or static route below, please ensure that you create a Mapbox API token (from your account page on [mapbox.com](https://www.mapbox.com)) with the `DOWNLOADS:READ` scope. 
+**PLEASE NOTE: This is not the same as your production Mapbox API token.** 
+
+Once you have the token, create a `~/.netrc` which looks like this:
+   ```
+   machine api.mapbox.com 
+      login mapbox
+      password <INSERT API TOKEN>
+   ```
+
 {{DYNAMIC}}
 
 ### Dynamic framework
