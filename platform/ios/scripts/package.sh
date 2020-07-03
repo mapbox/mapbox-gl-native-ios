@@ -7,7 +7,7 @@ set -u
 NAME=Mapbox
 OUTPUT=build/ios/pkg
 DERIVED_DATA=build/ios
-PRODUCTS=${DERIVED_DATA}
+PRODUCTS=${DERIVED_DATA}/Build/Products
 LOG_PATH=build/xcodebuild-$(date +"%Y-%m-%d_%H%M%S").log
 
 BUILD_FOR_DEVICE=${BUILD_DEVICE:-true}
