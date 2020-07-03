@@ -83,6 +83,8 @@ if [[ ! -z "${CI:=}" ]]; then
     CI_XCCONFIG="-xcconfig ./${xcconfig}"
 fi
 
+mkdir -p build/ios
+
 step "Building ${FORMAT} framework for iOS Simulator using ${SCHEME} scheme"
 xcodebuild \
     CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
