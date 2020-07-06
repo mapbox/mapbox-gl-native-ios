@@ -57,7 +57,7 @@ Starting this release, the Mapbox Maps SDK for iOS will use a pre-built GL Nativ
 
 - [core] Fix Filter comparison.
 
-- [core] Fix possible crash on empty style loading.
+* Fixed a potential crash when switching from a style with many layers to an empty style. ([mapbox/mapbox-gl-native#16480](https://github.com/mapbox/mapbox-gl-native/issues/16480))
 
 ## 5.9.0
 
