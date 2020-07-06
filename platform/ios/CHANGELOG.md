@@ -2,6 +2,63 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## 5.10.0-alpha.1
+Starting this release, the Mapbox Maps SDK for iOS will use a pre-built GL Native binary licensed under the [Mapbox Terms of Service](https://www.mapbox.com/legal/tos). The license of the Maps SDK for iOS remains BSD-2. For more information on using this and future releases, see [README.md](https://github.com/mapbox/mapbox-gl-native-iOS/blob/master/README.md). For more details on licensing, see [LICENSE.md](https://github.com/mapbox/mapbox-gl-native-iOS/blob/master/LICENSE.md).
+
+### ✨ New features
+
+- Source Modularization.
+  Introduces a SourceManager + *SourceFactory classes similar to the work done on layer modularization.
+
+- [core] Enable source "volatile" flag initialization in style.
+
+  The source `volatile` flag value can be defined in the style as following:
+
+  ```
+  "example_source": {
+    "volatile": true
+  }
+  ```
+
+  For the sources with the `volatile` flag set, the tiles are not stored in the local storage. The `volatile` flag is applicable for all source types, which allow loading tiles from a remote server i.e. `vector`, `raster`, `raster-dem` source types. For other source types this setting is ignored.
+
+- [core] Enable `Renderer::collectPlacedSymbolData()` API for all map modes.
+
+  Before, it was functional only for the `Tile` map mode.
+
+- [core] Add `emphasis-circle-color` and `emphasis-circle-radius` properties to LocationIndicator layer.
+
+  LocationIndicator layer gets the ability to draw an additional circle, controlled via these two properties, to create effects that emphasize the indicator.
+
+- [core] Introduce `hash()` function for `Expression` and `Filter`. Replace stringified `LayoutKey` with generated hash value.
+
+- [core] Performance improvement for `distance` expression.
+
+  The `GeoJSON` geometry will be clipped based on the tile of the evaluated feature if its contained points are over the `GeometryPointsThreshold`.
+
+- [core] Introduce `DatabaseFileSource::prefetchAmbientCache()`.
+  This method pre-fetches resources from network and populates the ambient cache.
+
+- Introduce LRU queue and setting to control queue size.
+
+  Last recently used (LRU) access events are recorded for single resource or tile request, therefore, reduce performance and deteriorate storage. LRU queue size setting allows to control how often queue is flushed to the database. Default queue size is 50.
+
+- [core] Batch API to pre-fetch ambient cache.
+  Now OfflineDownloadParameters can be initialized with a list of locations. Each location is represented with a `LatLngBoundsZoom` instance.
+
+  Thus, we can fetch multiple areas with a single `DatabaseFileSource::prefetchAmbientCache()` API call (and parsing the style only once).
+
+- [core] Introduce `hashLayout()` function for Layer::Impl.
+  `hashLayout()` is used to generate aggregated hash value for layout properties. It will replace `stringifyLayout()` when grouping layout.
+
+### 🐞 Bug fixes
+
+- [core] Fix symbol flickering while zooming out.
+
+- [core] Fix Filter comparison.
+
+- [core] Fix possible crash on empty style loading.
+
 ## 5.9.0
 
 ### Styles and rendering
