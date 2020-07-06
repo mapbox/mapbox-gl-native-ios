@@ -30,7 +30,7 @@ Starting this release, the Mapbox Maps SDK for iOS will use a pre-built GL Nativ
 
   LocationIndicator layer gets the ability to draw an additional circle, controlled via these two properties, to create effects that emphasize the indicator.
 
-- [core] Introduce `hash()` function for `Expression` and `Filter`. Replace stringified `LayoutKey` with generated hash value.
+* Added support for the `hash` expression operator that generates a hash value for the given string. Use this function in expressions in style JSON or with the `MGL_FUNCTION()` syntax in an `NSExpression` format string. ([#326](https://github.com/mapbox/mapbox-gl-native-ios/pull/326))
 
 - [core] Performance improvement for `distance` expression.
 
