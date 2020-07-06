@@ -1,6 +1,6 @@
 Pod::Spec.new do |m|
 
-  version = '5.9.0'
+  version = '5.10.0-alpha.1'
 
   m.name    = 'Mapbox-iOS-SDK-stripped'
   m.version = "#{version}-stripped"
@@ -14,8 +14,8 @@ Pod::Spec.new do |m|
   m.social_media_url  = 'https://twitter.com/mapbox'
   m.documentation_url = 'https://docs.mapbox.com/ios/api/maps/'
 
-  m.source = {
-    :http => "https://mapbox.s3.amazonaws.com/mapbox-gl-native/ios/builds/mapbox-ios-sdk-#{m.version.to_s}-dynamic.zip",
+  m.source = {    
+    :http => "https://api.mapbox.com/downloads/v2/mobile-maps/releases/ios/packages/#{version.to_s}/mapbox-ios-sdk-stripped-dynamic.zip",
     :flatten => true
   }
 

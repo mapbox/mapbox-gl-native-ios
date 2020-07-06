@@ -106,7 +106,7 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
     MGLLogDebug(@"Setting delegate: %@", newValue);
     _delegate = newValue;
     if ([self.delegate respondsToSelector:@selector(offlineStorage:URLForResourceOfKind:withURL:)]) {
-        _mbglResourceTransform = std::make_unique<mbgl::Actor<mbgl::ResourceTransform::TransformCallback>>(*mbgl::Scheduler::GetCurrent(), [offlineStorage = self](auto kind_, const std::string& url_, mbgl::ResourceTransform::FinishedCallback cb) {
+        _mbglResourceTransform = std::make_unique<mbgl::Actor<mbgl::ResourceTransform::TransformCallback>>(mbgl::Scheduler::GetCurrent(), [offlineStorage = self](auto kind_, const std::string& url_, mbgl::ResourceTransform::FinishedCallback cb) {
             NSURL* url =
             [NSURL URLWithString:[[NSString alloc] initWithBytes:url_.data()
                                                           length:url_.length()

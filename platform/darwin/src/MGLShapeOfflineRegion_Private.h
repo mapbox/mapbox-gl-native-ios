@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param definition A reference to an offline region definition backing the
     offline region.
  */
-- (instancetype)initWithOfflineRegionDefinition:(const mbgl::OfflineGeometryRegionDefinition &)definition;
+- (instancetype)initWithOfflineDownloadParameters:(const mbgl::OfflineDownloadParameters &)definition;
 
 @end
 

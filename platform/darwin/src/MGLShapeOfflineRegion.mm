@@ -77,9 +77,9 @@
     return self;
 }
 
-- (instancetype)initWithOfflineRegionDefinition:(const mbgl::OfflineGeometryRegionDefinition &)definition {
+- (instancetype)initWithOfflineDownloadParameters:(const mbgl::OfflineDownloadParameters &)definition {
     NSURL *styleURL = [NSURL URLWithString:@(definition.styleURL.c_str())];
-    MGLShape *shape = MGLShapeFromGeoJSON(definition.geometry);
+    MGLShape *shape = MGLShapeFromGeoJSON(definition.location.get<mbgl::Geometry<double>>());
     MGLShapeOfflineRegion* result = [self initWithStyleURL:styleURL shape:shape fromZoomLevel:definition.minZoom toZoomLevel:definition.maxZoom];
     result.includesIdeographicGlyphs = definition.includeIdeographs;
     return result;
@@ -91,10 +91,10 @@
 #elif TARGET_OS_MAC
     const float scaleFactor = [NSScreen mainScreen].backingScaleFactor;
 #endif
-    return mbgl::OfflineGeometryRegionDefinition(_styleURL.absoluteString.UTF8String,
-                                                 _shape.geometryObject,
-                                                 _minimumZoomLevel, _maximumZoomLevel,
-                                                 scaleFactor, _includesIdeographicGlyphs);
+    return mbgl::OfflineDownloadParameters(_styleURL.absoluteString.UTF8String,
+                                           _shape.geometryObject,
+                                           _minimumZoomLevel, _maximumZoomLevel,
+                                           scaleFactor, _includesIdeographicGlyphs);
 }
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder {

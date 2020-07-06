@@ -50,3 +50,4 @@ mapbox-gl-native.code-workspace
 /scripts/generate-shaders.list
 /scripts/generate-style-code.list
 *.patch
+Carthage

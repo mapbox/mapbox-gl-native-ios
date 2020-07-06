@@ -7,7 +7,7 @@ set -u
 NAME=Mapbox
 OUTPUT=build/ios/pkg
 DERIVED_DATA=build/ios
-PRODUCTS=${DERIVED_DATA}
+PRODUCTS=${DERIVED_DATA}/Build/Products
 LOG_PATH=build/xcodebuild-$(date +"%Y-%m-%d_%H%M%S").log
 
 BUILD_FOR_DEVICE=${BUILD_DEVICE:-true}
@@ -82,6 +82,8 @@ if [[ ! -z "${CI:=}" ]]; then
     echo "CI environment, using ${xcconfig}"
     CI_XCCONFIG="-xcconfig ./${xcconfig}"
 fi
+
+mkdir -p build/ios
 
 step "Building ${FORMAT} framework for iOS Simulator using ${SCHEME} scheme"
 xcodebuild \

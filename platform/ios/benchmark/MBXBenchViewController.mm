@@ -1,3 +1,5 @@
+@import Mapbox;
+
 #import "MBXBenchViewController.h"
 #import "MBXBenchAppDelegate.h"
 #import "MGLMapView_Private.h"
