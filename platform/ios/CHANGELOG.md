@@ -32,7 +32,7 @@ Starting this release, the Mapbox Maps SDK for iOS will use a pre-built GL Nativ
 
 * Added support for the `hash` expression operator that generates a hash value for the given string. Use this function in expressions in style JSON or with the `MGL_FUNCTION()` syntax in an `NSExpression` format string. ([#326](https://github.com/mapbox/mapbox-gl-native-ios/pull/326))
 
-- [core] Performance improvement for `distance` expression.
+* Improved the performance of the `mgl_distance:` expression function (`distance` expression operator in JSON). ([#326](https://github.com/mapbox/mapbox-gl-native-ios/pull/326))
 
   The `GeoJSON` geometry will be clipped based on the tile of the evaluated feature if its contained points are over the `GeometryPointsThreshold`.
 
