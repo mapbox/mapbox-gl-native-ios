@@ -813,8 +813,7 @@ static const CGPoint kAnnotationRelativeScale = { 0.05f, 0.125f };
     self.renderFinishedExpectation = [self expectationWithDescription:@"Map view should be rendered"];
     XCTestExpectation *timerExpired = [self expectationWithDescription:@"Timer expires"];
 
-    // Wait 1/2 second
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC >> 1)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [timerExpired fulfill];
     });
 
