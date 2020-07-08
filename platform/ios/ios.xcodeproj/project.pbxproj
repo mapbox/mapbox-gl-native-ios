@@ -374,6 +374,7 @@
 		9C6E282D22A9815D0056B7BE /* MGLMapboxEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C6E282922A980E50056B7BE /* MGLMapboxEvents.h */; };
 		9C6E282F22A9824B0056B7BE /* MGLTelemetryConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = AC518DFD201BB55A00EBC820 /* MGLTelemetryConfig.h */; };
 		9C6E283022A9824F0056B7BE /* MGLMapboxEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C6E282922A980E50056B7BE /* MGLMapboxEvents.h */; };
+		A42114E224B6463200727D61 /* points.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA1DC96C1CB6C6CE006E619F /* points.geojson */; };
 		A4DE3DCB23038C98005B3473 /* MGLMockGestureRecognizers.h in Sources */ = {isa = PBXBuildFile; fileRef = A4DE3DCA23038A7F005B3473 /* MGLMockGestureRecognizers.h */; };
 		A4DE3DCC23038CCA005B3473 /* MGLMockGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = A4DE3DC823038A07005B3473 /* MGLMockGestureRecognizers.m */; };
 		A4F3FB1D2254865900A30170 /* missing_icon.json in Resources */ = {isa = PBXBuildFile; fileRef = A4F3FB1C2254865900A30170 /* missing_icon.json */; };
@@ -2882,6 +2883,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A42114E224B6463200727D61 /* points.geojson in Resources */,
 				16376B3E1FFDB4B40000563E /* LaunchScreen.storyboard in Resources */,
 				16376B3B1FFDB4B40000563E /* Assets.xcassets in Resources */,
 				CA8A310A24ACE825008CB6D8 /* sideload_sat.db in Resources */,
