@@ -2,7 +2,7 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 5.10.0-alpha.1
+## 5.10.0-beta.1
 Starting this release, the Mapbox Maps SDK for iOS will use a pre-built GL Native binary licensed under the [Mapbox Terms of Service](https://www.mapbox.com/legal/tos). The license of the Maps SDK for iOS remains BSD-2. For more information on using this and future releases, see [README.md](https://github.com/mapbox/mapbox-gl-native-iOS/blob/master/README.md). For more details on licensing, see [LICENSE.md](https://github.com/mapbox/mapbox-gl-native-iOS/blob/master/LICENSE.md).
 
 ### ✨ New features
@@ -12,6 +12,7 @@ Starting this release, the Mapbox Maps SDK for iOS will use a pre-built GL Nativ
 ### 🐞 Bug fixes
 * Fixed an issue where symbols flickered when zooming out. ([mapbox/mapbox-gl-native#16471](https://github.com/mapbox/mapbox-gl-native/issues/16471), [#273](https://github.com/mapbox/mapbox-gl-native-ios/issues/273))
 * Fixed a potential crash when switching from a style with many layers to an empty style. ([mapbox/mapbox-gl-native#16480](https://github.com/mapbox/mapbox-gl-native/issues/16480))
+* Fixed a potential memory leak when using VoiceOver. ([mapbox/mapbox-gl-native-ios#318](https://github.com/mapbox/mapbox-gl-native-ios/pull/318))
 
 ## 5.9.0
 
