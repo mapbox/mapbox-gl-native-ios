@@ -36,6 +36,13 @@
             ReferencedContainer = "container:ios.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "MAPBOX_ACCESS_TOKEN"
+            value = "pk.eyJ1IjoianVsaWFucmV4IiwiYSI6ImNrMGp2N3k3ZzAwbWkzbnMzcG1zZ291cmkifQ.6Fv-dxHmzcqHHm_Tlf3x6A"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <Testables>
          <TestableReference
             skipped = "NO">
