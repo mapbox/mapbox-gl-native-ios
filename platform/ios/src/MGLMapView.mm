@@ -586,7 +586,7 @@ public:
     // setup interaction
     //
 
-    self.allowScrollGesturesDuringRotateOrZoom = YES;
+    self.anchorRotateOrZoomGesturesToCenterCoordinate = NO;
 
     _pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
     _pan.delegate = self;
@@ -1717,12 +1717,6 @@ public:
 {
     if ( ! self.isScrollEnabled) return;
 
-    if (!self.allowScrollGesturesDuringRotateOrZoom) {
-        if (self.isZooming || self.isRotating) {
-            return;
-        }
-    }
-
     [self cancelTransitions];
 
     MGLMapCamera *oldCamera = self.camera;
@@ -1801,7 +1795,7 @@ public:
     [self cancelTransitions];
 
     CGPoint centerPoint = [self anchorPointForGesture:pinch];
-    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+    if (self.anchorRotateOrZoomGesturesToCenterCoordinate) {
         if (pinch.numberOfTouches != 1 || pinch.state == UIGestureRecognizerStateEnded) {
             centerPoint = [self contentCenter];
         }
@@ -1914,7 +1908,7 @@ public:
     [self cancelTransitions];
 
     CGPoint centerPoint = [self anchorPointForGesture:rotate];
-    if (!self.allowScrollGesturesDuringRotateOrZoom) {
+    if (self.anchorRotateOrZoomGesturesToCenterCoordinate) {
         centerPoint = [self contentCenter];
     }
     MGLMapCamera *oldCamera = self.camera;
@@ -1927,7 +1921,7 @@ public:
     // Check whether a zoom triggered by a pinch gesture is occurring and if the rotation threshold has been met.
     if (MGLDegreesFromRadians(self.rotationBeforeThresholdMet) < self.rotationThresholdWhileZooming && self.isZooming && !self.isRotating) {
         self.rotationBeforeThresholdMet += fabs(rotate.rotation);
-        if (!self.allowScrollGesturesDuringRotateOrZoom) {
+        if (self.anchorRotateOrZoomGesturesToCenterCoordinate) {
             self.rotationBeforeThresholdMet = 0;
         }
         rotate.rotation = 0;
@@ -2451,6 +2445,14 @@ public:
         {
             id<MGLAnnotation> annotation = [self annotationForGestureRecognizer:(UITapGestureRecognizer*)gestureRecognizer persistingResults:NO];
             if (!annotation) {
+                return NO;
+            }
+        }
+    }
+    else if (gestureRecognizer == _pan)
+    {
+        if (self.anchorRotateOrZoomGesturesToCenterCoordinate) {
+            if (self.isZooming || self.isRotating) {
                 return NO;
             }
         }
