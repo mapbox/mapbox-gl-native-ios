@@ -28,7 +28,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * When an offline pack encounters an HTTP 404 error, the `MGLOfflinePackUserInfoKeyError` user info key of the `MGLOfflinePackErrorNotification` now indicates the resource that could not be downloaded. ([#16240](https://github.com/mapbox/mapbox-gl-native/pull/16240))
 
 ### Other changes
-
+* Added `MGLMapView.anchorRotateOrZoomGesturesToCenterCoordinate` property that anchors zoom and rotating gestures to the map's view center coordinate. ([#268](https://github.com/mapbox/mapbox-gl-native-ios/pull/268))
 * Added the `MGLMapView.minimumPitch` and `MGLMapView.maximumPitch` properties to further limit how much the user or your code can tilt the map. ([#208](https://github.com/mapbox/mapbox-gl-native-ios/pull/208))
 * Fixed a crash while quitting the application after adding an annotation to `MGLMapView`. ([#252](https://github.com/mapbox/mapbox-gl-native-ios/pull/252))
 * Improved performance when continuously animating a tilted map. ([#16287](https://github.com/mapbox/mapbox-gl-native/pull/16287))
