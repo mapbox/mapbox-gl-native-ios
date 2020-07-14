@@ -263,6 +263,14 @@ MGL_EXPORT
  */
 @property (nonatomic, assign) BOOL performsPlacementTransitions;
 
+// TODO: Docs
+/**
+ A set containing the custom source layer identifiers for place features available for accessibility. These features must have a `name` attribute.
+
+ This set does not include place or road source identifiers included by default.
+ */
+@property (nonatomic) NSSet *accessiblePlaceSourceLayerIdentifiers;
+
 /**
  Returns a source with the given identifier in the current style.
 
@@ -330,7 +338,6 @@ MGL_EXPORT
  an `NSError` object describing the problem.
  */
 - (BOOL)removeSource:(MGLSource *)source error:(NSError * __nullable * __nullable)outError;
-
 
 #pragma mark Managing Style Layers
 
