@@ -87,6 +87,7 @@ const MGLExceptionName MGLRedundantSourceIdentifierException = @"MGLRedundantSou
 @property (readonly, copy, nullable) NSURL *URL;
 @property (nonatomic, readwrite, strong) NSMutableDictionary<NSString *, MGLOpenGLStyleLayer *> *openGLLayers;
 @property (nonatomic) NSMutableDictionary<NSString *, NSDictionary<NSObject *, MGLTextLanguage *> *> *localizedLayersByIdentifier;
+
 @end
 
 @implementation MGLStyle
@@ -638,6 +639,7 @@ static_assert(6 == mbgl::util::default_styles::numOrderedStyles,
 
 - (NSArray<MGLStyleLayer *> *)placeStyleLayers {
     NSSet *streetsSourceIdentifiers = [self.mapboxStreetsSources valueForKey:@"identifier"];
+
     NSSet *placeSourceLayerIdentifiers = [NSSet setWithObjects:@"marine_label", @"country_label", @"state_label", @"place_label", @"water_label", @"poi_label", @"rail_station_label", @"mountain_peak_label", @"natural_label", @"transit_stop_label", nil];
     if (self.accessiblePlaceSourceIdentifiers == nil) {
         _accessiblePlaceSourceIdentifiers = [NSMutableSet set];

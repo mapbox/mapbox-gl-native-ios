@@ -62,7 +62,6 @@
         NSString *dominantScript = [NSOrthography mgl_dominantScriptForMapboxStreetsLanguage:languageCode];
         name = [name mgl_stringByTransliteratingIntoScript:dominantScript];
 
-
         self.accessibilityLabel = name;
     }
     return self;

@@ -243,6 +243,7 @@ MGL_EXPORT
  */
 @property (readonly, copy, nullable) NSString *name;
 
+
 #pragma mark Managing Sources
 
 /**
