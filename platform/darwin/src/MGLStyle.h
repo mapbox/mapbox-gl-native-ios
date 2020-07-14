@@ -265,11 +265,11 @@ MGL_EXPORT
 
 // TODO: Docs
 /**
- A set containing the custom source layer identifiers for place features available for accessibility. These features must have a `name` attribute.
-
- This set does not include place or road source identifiers included by default.
- */
-@property (nonatomic) NSSet *accessiblePlaceSourceLayerIdentifiers;
+A set containing user-specified source identifiers for point features available for accessibility. The point features must have a `name` attribute and belong to a `MGLVectorStyleLayer`.
+ 
+This set does not include Mapbox source identifiers included by default.
+*/
+@property (nonatomic) NSSet *accessiblePlaceSourceIdentifiers;
 
 /**
  Returns a source with the given identifier in the current style.

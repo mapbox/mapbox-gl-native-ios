@@ -121,7 +121,7 @@ MGL_DEFINE_STYLE(satelliteStreets, satellite-streets)
 static_assert(6 == mbgl::util::default_styles::numOrderedStyles,
               "mbgl::util::default_styles::orderedStyles and MGLStyle have different numbers of styles.");
 
-@synthesize accessiblePlaceSourceLayerIdentifiers = _accessiblePlaceSourceLayerIdentifiers;
+@synthesize accessiblePlaceSourceIdentifiers = _accessiblePlaceSourceIdentifiers;
 
 #pragma mark -
 
@@ -626,25 +626,25 @@ static_assert(6 == mbgl::util::default_styles::numOrderedStyles,
     }];
 }
 
-- (void)setAccessiblePlaceSourceLayerIdentifiers:(NSSet *)accessiblePlaceSourceLayerIdentifiers {
-    if (![_accessiblePlaceSourceLayerIdentifiers isEqualToSet:accessiblePlaceSourceLayerIdentifiers]) {
-        _accessiblePlaceSourceLayerIdentifiers = accessiblePlaceSourceLayerIdentifiers;
+- (void)setAccessiblePlaceSourceIdentifiers:(NSSet *)accessiblePlaceSourceLayerIdentifiers {
+    if (![_accessiblePlaceSourceIdentifiers isEqualToSet:accessiblePlaceSourceLayerIdentifiers]) {
+        _accessiblePlaceSourceIdentifiers = accessiblePlaceSourceLayerIdentifiers;
     }
 }
 
-- (NSSet *)accessiblePlaceSourceLayerIdentifiers {
-    return _accessiblePlaceSourceLayerIdentifiers;
+- (NSSet *)accessiblePlaceSourceIdentifiers {
+    return _accessiblePlaceSourceIdentifiers;
 }
 
 - (NSArray<MGLStyleLayer *> *)placeStyleLayers {
     NSSet *streetsSourceIdentifiers = [self.mapboxStreetsSources valueForKey:@"identifier"];
     NSSet *placeSourceLayerIdentifiers = [NSSet setWithObjects:@"marine_label", @"country_label", @"state_label", @"place_label", @"water_label", @"poi_label", @"rail_station_label", @"mountain_peak_label", @"natural_label", @"transit_stop_label", nil];
-    if (self.accessiblePlaceSourceLayerIdentifiers == nil) {
-        _accessiblePlaceSourceLayerIdentifiers = [NSMutableSet set];
+    if (self.accessiblePlaceSourceIdentifiers == nil) {
+        _accessiblePlaceSourceIdentifiers = [NSMutableSet set];
     }
 
     NSPredicate *isPlacePredicate = [NSPredicate predicateWithBlock:^BOOL (MGLVectorStyleLayer * _Nullable layer, NSDictionary<NSString *, id> * _Nullable bindings) {
-        return [layer isKindOfClass:[MGLVectorStyleLayer class]] && (([streetsSourceIdentifiers containsObject:layer.sourceIdentifier] && [placeSourceLayerIdentifiers containsObject:layer.sourceLayerIdentifier]) || [self.accessiblePlaceSourceLayerIdentifiers containsObject:layer.sourceIdentifier]);
+        return [layer isKindOfClass:[MGLVectorStyleLayer class]] && (([streetsSourceIdentifiers containsObject:layer.sourceIdentifier] && [placeSourceLayerIdentifiers containsObject:layer.sourceLayerIdentifier]) || [self.accessiblePlaceSourceIdentifiers containsObject:layer.sourceIdentifier]);
     }];
     return [self.layers filteredArrayUsingPredicate:isPlacePredicate];
 }
