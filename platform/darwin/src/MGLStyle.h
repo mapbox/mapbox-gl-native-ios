@@ -263,11 +263,10 @@ MGL_EXPORT
  */
 @property (nonatomic, assign) BOOL performsPlacementTransitions;
 
-// TODO: Docs
 /**
-A set containing user-specified source identifiers for point features available for accessibility. The point features must have a `name` attribute and belong to a `MGLVectorStyleLayer`.
+A set containing user-specified source identifiers for point features available for accessibility. The point features must have a `name` attribute that matches those specified by <a href="https://www.mapbox.com/vector-tiles/mapbox-streets-v8/#overview">Mapbox Streets</a> source and belong to a `MGLVectorStyleLayer`.
  
-This set does not include Mapbox source identifiers included by default.
+This set does not include Mapbox Streets source identifiers included by default.
 */
 @property (nonatomic) NSSet *accessiblePlaceSourceIdentifiers;
 
