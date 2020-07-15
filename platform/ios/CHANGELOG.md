@@ -2,8 +2,21 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 5.10.0-beta.1
-Starting this release, the Mapbox Maps SDK for iOS will use a pre-built GL Native binary licensed under the [Mapbox Terms of Service](https://www.mapbox.com/legal/tos). The license of the Maps SDK for iOS remains BSD-2. For more information on using this and future releases, see [README.md](https://github.com/mapbox/mapbox-gl-native-iOS/blob/master/README.md). For more details on licensing, see [LICENSE.md](https://github.com/mapbox/mapbox-gl-native-iOS/blob/master/LICENSE.md).
+## 6.0.0
+ 
+This major release does not include any breaking changes to public APIs. We are treating this release as a SEMVER major change because our installation instructions have changed. 
+ 
+**Distribution Updates**
+ 
+Standard installation methods still apply – we will continue to support SDK installation via CocoaPods, Carthage, and manual integration. However, you are now required to authenticate installation with a new access token. For more information about this new process, [view our installation guide](https://docs.mapbox.com/ios/maps/overview/#install-the-sdk).
+ 
+**Licensing Updates**
+ 
+Release v6.0.0 updates the Mapbox Maps SDK for iOS to use a pre-built GL Native binary rather than building from source as a submodule dependency. GL Native is changing some of its development workflows to build some Mapbox platform-specific features internally, similar to Chrome/Chromium development. Please refer to the [README.md](https://github.com/mapbox/mapbox-gl-native-ios/blob/master/platform/ios/README.md) and/or [DEVELOPING.md](https://github.com/mapbox/mapbox-gl-native-ios/blob/master/platform/ios/DEVELOPING.md) for guidance.
+ 
+Starting today, new binary releases of GL Native are licensed under the Mapbox Terms of Service. The Mapbox Maps SDKs repos will continue to be public and licensed under BSD-2.
+ 
+If you have any questions about how this change may impact your use of the Maps SDK, please don’t hesitate to reach out to Mapbox Support to connect with the Mapbox mobile team.
 
 ### ✨ New features
 * Added support for the `hash` expression operator that generates a hash value for the given string. Use this function in expressions in style JSON or with the `MGL_FUNCTION()` syntax in an `NSExpression` format string. ([#326](https://github.com/mapbox/mapbox-gl-native-ios/pull/326))
