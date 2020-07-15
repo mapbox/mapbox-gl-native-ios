@@ -3083,7 +3083,6 @@ public:
             NSMutableSet *placesSet = [NSMutableSet setWithCapacity:numberOfPlaces];
 
           for (id <MGLFeature> placeFeature in sortedPlaceFeatures){
-
               NSString *languageCode = [MGLVectorTileSource preferredMapboxStreetsLanguage];
               NSString *nameAttribute = [NSString stringWithFormat:@"name_%@", languageCode];
               NSString *name = [placeFeature attributeForKey:nameAttribute];
