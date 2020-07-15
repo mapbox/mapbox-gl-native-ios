@@ -3092,7 +3092,7 @@ public:
                   name = [placeFeature attributeForKey:@"name"];
               }
 
-                if (![placesSet containsObject:name] && name != nil) {
+                if (![placesSet containsObject:name]) {
                     [placesArray addObject:name];
                     [placesSet addObject:name];
                 }

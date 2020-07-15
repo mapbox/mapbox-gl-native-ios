@@ -52,15 +52,16 @@
         NSString *nameAttribute = [NSString stringWithFormat:@"name_%@", languageCode];
         NSString *name = [feature attributeForKey:nameAttribute];
 
-        if (name == nil && [feature attributeForKey:@"name"] != nil) {
-            name = [feature attributeForKey:@"name"];
-        }
         // If a feature hasn’t been translated into the preferred language, it
         // may be in the local language, which may be written in another script.
         // Attempt to transform to the script of the preferred language, keeping
         // the original string if no transform exists or if transformation fails.
         NSString *dominantScript = [NSOrthography mgl_dominantScriptForMapboxStreetsLanguage:languageCode];
         name = [name mgl_stringByTransliteratingIntoScript:dominantScript];
+
+        if (name == nil && [feature attributeForKey:@"name"] != nil) {
+            name = [feature attributeForKey:@"name"];
+        }
 
         self.accessibilityLabel = name;
     }
