@@ -50,10 +50,17 @@ fi
 
 step "Uploading ${ZIP_FILENAME} to s3… ${DRYRUN}"
 
-aws s3 cp ${ZIP_FILENAME} s3://mapbox-api-downloads-production/v2/mobile-maps/releases/ios/${PUBLISH_VERSION}/packages/${ZIP_FILENAME} ${PROGRESS} ${DRYRUN}
+if [ ${PUBLISH_STYLE} = "dynamic-with-events" ]; then
+    S3_DESTINATION=s3://mapbox-api-downloads-production/v2/mobile-maps/releases/ios/${PUBLISH_VERSION}/${ZIP_FILENAME}
+    DOWNLOAD_URL=https://api.mapbox.com/downloads/v2/mobile-maps/releases/ios/${PUBLISH_VERSION}/${ZIP_FILENAME}
+else
+    S3_DESTINATION=s3://mapbox-api-downloads-production/v2/mobile-maps/releases/ios/${PUBLISH_VERSION}/packages/${ZIP_FILENAME}
+    DOWNLOAD_URL=https://api.mapbox.com/downloads/v2/mobile-maps/releases/ios/packages/${PUBLISH_VERSION}/${ZIP_FILENAME}
+fi 
 
-S3_URL=https://api.mapbox.com/downloads/v2/mobile-maps/releases/ios/packages/${PUBLISH_VERSION}/${ZIP_FILENAME}
-step "Download URL will be ${S3_URL}"
+step "About to upload binaries to ${S3_DESTINATION}"
+aws s3 cp ${ZIP_FILENAME} ${S3_DESTINATION} ${PROGRESS} ${DRYRUN}
+step "Download URL will be ${DOWNLOAD_URL}"
 
 # TODO:
 

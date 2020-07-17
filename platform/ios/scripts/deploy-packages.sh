@@ -112,12 +112,8 @@ if [[ "${GITHUB_RELEASE}" == true ]]; then
         --description "${RELEASE_NOTES}"
 fi
 
-# TODO: Use bundle here. Consider using
-#    carthage build --no-skip-current
-#    carthage archive Mapbox MapboxMobileEvents
-# ?
-#
-#buildPackageStyle "iframework" "dynamic-with-events"
+# Build bundle
+buildPackageStyle "iframework" "dynamic-with-events"
 
 # Used for Cocoapods/Carthage
 buildPackageStyle "iframework" "dynamic"

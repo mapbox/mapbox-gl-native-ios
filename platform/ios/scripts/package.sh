@@ -164,10 +164,11 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
         copyAndMakeFatFramework "${NAME}"
 
         if [[ ${INCLUDE_EVENTS_IN_PACKAGE} == true ]]; then
-            copyAndMakeFatFramework "MapboxMobileEvents"
+            step "Copying in MapboxMobileEvents.framework from Carthage directory"
+            cp -rv Carthage/Build/iOS/MapboxMobileEvents.framework ${OUTPUT}/dynamic
+            cp -rv Carthage/Build/iOS/MapboxMobileEvents.framework.dSYM ${OUTPUT}/dynamic
+            cp -rv Carthage/Build/iOS/*.bcsymbolmap ${OUTPUT}/dynamic
         fi
-
-        # Bundling mapbox-events-ios
     fi
     
     cp -rv platform/ios/app/Settings.bundle ${OUTPUT}
