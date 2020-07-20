@@ -3091,7 +3091,7 @@ public:
                   name = [placeFeature attributeForKey:@"name"];
               }
 
-                if (![placesSet containsObject:name]) {
+                if (![placesSet containsObject:name] && name != nil) {
                     [placesArray addObject:name];
                     [placesSet addObject:name];
                 }
