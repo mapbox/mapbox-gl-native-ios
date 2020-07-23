@@ -3105,8 +3105,15 @@ public:
             NSMutableSet *placesSet = [NSMutableSet setWithCapacity:numberOfPlaces];
 
           for (id <MGLFeature> placeFeature in sortedPlaceFeatures){
-                NSString *name = [placeFeature attributeForKey:@"name"];
-                if (![placesSet containsObject:name]) {
+              NSString *languageCode = [MGLVectorTileSource preferredMapboxStreetsLanguage];
+              NSString *nameAttribute = [NSString stringWithFormat:@"name_%@", languageCode];
+              NSString *name = [placeFeature attributeForKey:nameAttribute];
+
+              if (name == nil && [placeFeature attributeForKey:@"name"] != nil) {
+                  name = [placeFeature attributeForKey:@"name"];
+              }
+
+                if (![placesSet containsObject:name] && name != nil) {
                     [placesArray addObject:name];
                     [placesSet addObject:name];
                 }

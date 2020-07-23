@@ -243,6 +243,7 @@ MGL_EXPORT
  */
 @property (readonly, copy, nullable) NSString *name;
 
+
 #pragma mark Managing Sources
 
 /**
@@ -262,6 +263,13 @@ MGL_EXPORT
  The default value of this property is `YES`.
  */
 @property (nonatomic, assign) BOOL performsPlacementTransitions;
+
+/**
+A set containing user-specified source layer identifiers for point features available for accessibility. The features should have a `MGLVectorTileSource` and belong to a source layer. The point features must have a `name` attribute that matches those specified by <a href="https://www.mapbox.com/vector-tiles/mapbox-streets-v8/#overview">Mapbox Streets</a> source and belong to a `MGLVectorStyleLayer`.
+ 
+This set does not include Mapbox Streets source identifiers, which are included by default.
+*/
+@property (nonatomic) NSSet <NSString *> *accessiblePlaceSourceLayerIdentifiers;
 
 /**
  Returns a source with the given identifier in the current style.
@@ -330,7 +338,6 @@ MGL_EXPORT
  an `NSError` object describing the problem.
  */
 - (BOOL)removeSource:(MGLSource *)source error:(NSError * __nullable * __nullable)outError;
-
 
 #pragma mark Managing Style Layers
 
