@@ -28,9 +28,10 @@ FOUNDATION_EXPORT MGL_EXPORT MGLResourceType const    MGLResourceTypeImage;
 
 @end
 
-@interface MGLEventMonitoring : NSObject
+@protocol MGLObserver
 
-- (MGLEvemtMonitoringResponse *)getResponseFromMapView:(MGLMapView *)mapView for (MGLEventMonitoringRequest *)request;
+- (void)subscribeToObserver:
+//- (MGLEventMonitoringResponse *)getResponseFromMapView:(MGLMapView *)mapView for (MGLEventMonitoringRequest *)request;
 @end
 
 
