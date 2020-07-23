@@ -375,7 +375,8 @@
 		9C6E282F22A9824B0056B7BE /* MGLTelemetryConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = AC518DFD201BB55A00EBC820 /* MGLTelemetryConfig.h */; };
 		9C6E283022A9824F0056B7BE /* MGLMapboxEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C6E282922A980E50056B7BE /* MGLMapboxEvents.h */; };
 		A42114E224B6463200727D61 /* points.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA1DC96C1CB6C6CE006E619F /* points.geojson */; };
-		A499489D24CA10E300B8180F /* MGLObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = A499489C24CA10E300B8180F /* MGLObserver.m */; };
+		A499489E24CA389C00B8180F /* MGLObserver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A499489C24CA10E300B8180F /* MGLObserver.mm */; };
+		A499489F24CA38A200B8180F /* MGLObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = A499489B24CA10E300B8180F /* MGLObserver.h */; };
 		A4DE3DCB23038C98005B3473 /* MGLMockGestureRecognizers.h in Sources */ = {isa = PBXBuildFile; fileRef = A4DE3DCA23038A7F005B3473 /* MGLMockGestureRecognizers.h */; };
 		A4DE3DCC23038CCA005B3473 /* MGLMockGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = A4DE3DC823038A07005B3473 /* MGLMockGestureRecognizers.m */; };
 		A4F3FB1D2254865900A30170 /* missing_icon.json in Resources */ = {isa = PBXBuildFile; fileRef = A4F3FB1C2254865900A30170 /* missing_icon.json */; };
@@ -1039,7 +1040,7 @@
 		9C6E286622A9849E0056B7BE /* deploy-snapshot.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "deploy-snapshot.sh"; sourceTree = "<group>"; };
 		9C6E286722A9849E0056B7BE /* release-notes.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "release-notes.js"; sourceTree = "<group>"; };
 		A499489B24CA10E300B8180F /* MGLObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLObserver.h; sourceTree = "<group>"; };
-		A499489C24CA10E300B8180F /* MGLObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLObserver.m; sourceTree = "<group>"; };
+		A499489C24CA10E300B8180F /* MGLObserver.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLObserver.mm; sourceTree = "<group>"; };
 		A4DE3DC823038A07005B3473 /* MGLMockGestureRecognizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGLMockGestureRecognizers.m; sourceTree = "<group>"; };
 		A4DE3DCA23038A7F005B3473 /* MGLMockGestureRecognizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGLMockGestureRecognizers.h; sourceTree = "<group>"; };
 		A4F3FB1C2254865900A30170 /* missing_icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = missing_icon.json; sourceTree = "<group>"; };
@@ -1997,7 +1998,7 @@
 				DA8847E21CBAFA5100AB86E3 /* MGLMapCamera.h */,
 				DA8848031CBAFA6200AB86E3 /* MGLMapCamera.mm */,
 				A499489B24CA10E300B8180F /* MGLObserver.h */,
-				A499489C24CA10E300B8180F /* MGLObserver.m */,
+				A499489C24CA10E300B8180F /* MGLObserver.mm */,
 				927FBCFD1F4DB05500F8BF1F /* MGLMapSnapshotter.h */,
 				CAFB3C13234505D500399265 /* MGLMapSnapshotter_Private.h */,
 				927FBCFE1F4DB05500F8BF1F /* MGLMapSnapshotter.mm */,
@@ -2366,6 +2367,7 @@
 				DA35D9C2240916290013ECB0 /* MGLReachability.h in Headers */,
 				6F018BB0220031BF003E7269 /* UIView+MGLAdditions.h in Headers */,
 				1FCAE2A820B88B3800C577DD /* MGLLocationManager_Private.h in Headers */,
+				A499489F24CA38A200B8180F /* MGLObserver.h in Headers */,
 				5580B45B229570A10091291B /* MGLMapView+OpenGL.h in Headers */,
 				DA8847EF1CBAFA5100AB86E3 /* MGLAccountManager.h in Headers */,
 				DA35A2C91CCAAAD200E826B2 /* NSValue+MGLAdditions.h in Headers */,
@@ -3072,7 +3074,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA1DC9971CB6E046006E619F /* main.m in Sources */,
-				A499489D24CA10E300B8180F /* MGLObserver.m in Sources */,
 				354B839C1D2E9B48005D9406 /* MBXUserLocationAnnotationView.m in Sources */,
 				965DF51120F9430500438AAC /* MBXFrameTimeGraphView.m in Sources */,
 				DA1DC9991CB6E054006E619F /* MBXAppDelegate.m in Sources */,
@@ -3172,6 +3173,7 @@
 				30E578191DAA855E0050F07E /* UIImage+MGLAdditions.mm in Sources */,
 				550570C622958FB400228ECF /* MGLMapView+Impl.mm in Sources */,
 				40EDA1C11CFE0E0500D9EA68 /* MGLAnnotationContainerView.m in Sources */,
+				A499489E24CA389C00B8180F /* MGLObserver.mm in Sources */,
 				DA8848541CBAFB9800AB86E3 /* MGLCompactCalloutView.m in Sources */,
 				DA8848251CBAFA6200AB86E3 /* MGLPointAnnotation.mm in Sources */,
 				5580B45D229570A10091291B /* MGLMapView+OpenGL.mm in Sources */,

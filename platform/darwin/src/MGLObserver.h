@@ -17,20 +17,25 @@ FOUNDATION_EXPORT MGL_EXPORT MGLResourceType const    MGLResourceTypeImage;
 
 @interface MGLEventMonitoringRequest : NSObject
 @property (nonatomic) NSURL *url;
-@property (nonatomic) MGLResourceType *resourceType;
+@property (nonatomic) MGLResourceType resourceType;
 @property (nonatomic) NSString *priority; // This can have two values, regular or low. Should make enum?
 
-- (MGLEventMonitoringRequest *)requestWithURL:(NSURL *)url andResourceType:(MGLResourceType)resourceType withPriorityLevel
-@property
+- (MGLEventMonitoringRequest *)requestWithURL:(NSURL *)url andResourceType:(MGLResourceType)resourceType withPriorityLevel:(NSString *)priorityLevel;
 @end
 
 @interface MGLEventMonitoringResponse : NSObject
 
 @end
 
-@protocol MGLObserver
+@interface MGLObserver : NSObject
+@property (nonatomic) NSUInteger identifier;
+@end
 
-- (void)subscribeToObserver:
+
+@protocol MGLObservable
+
+- (void)subscribeToObserver:(MGLObserver *)observer forEventType:(NSString *)eventType;
+- (void)unsubscribeFromObserver:(MGLObserver *)observer;
 //- (MGLEventMonitoringResponse *)getResponseFromMapView:(MGLMapView *)mapView for (MGLEventMonitoringRequest *)request;
 @end
 

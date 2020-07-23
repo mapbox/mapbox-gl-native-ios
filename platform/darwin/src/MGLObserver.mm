@@ -1,5 +1,6 @@
 
-#import <mbgl/map/map_observer.hpp>
+#include <mbgl/util/observable.hpp>
+
 #import "MGLObserver.h"
 
 
@@ -13,13 +14,13 @@
 //const MGLResourceTypeImage = @"image";
 @implementation MGLObserver
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.
-    }
-    return self;
-}
+//- (instancetype)init
+//{
+//    self = [super init];
+//    if (self) {
+//        
+//    }
+//    return self;
+//}
 
 @end
