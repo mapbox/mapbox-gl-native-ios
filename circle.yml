@@ -16,23 +16,31 @@ workflows:
       #     unique aspect of the build environment.
       #   - {build type} is typically "debug" or "release".
       #
-      - ios-debug
-      - ios-debug-xcode10
-      - ios-debug-xcode11-5
+      - ios-build:
+          matrix:
+            parameters:
+              xcode: ["11.3.1", "11.5.0"]
+              buildtype: ["Debug", "Release"]
       - ios-release-template:
           name: ios-release
-      - ios-trigger-metrics:
-          requires: 
-            - ios-release
-          filters:
-            branches:
-              only: master
+      # This should depend on sanitize jobs              
       - ios-release-tag:
+          requires: 
+            - ios-build
+            - ios-release
           filters:
             tags:
               only: /ios-.*/
             branches:
               ignore: /.*/
+      - ios-trigger-metrics:
+          requires: 
+            - ios-build
+            - ios-release
+          filters:
+            branches:
+              only: master
+
       # - macos-debug
   nightly:
     triggers:
@@ -43,13 +51,28 @@ workflows:
               only:
                 - master
     jobs:
-      - metrics-nightly
+      - ios-build:
+          matrix:
+            parameters:
+              xcode: ["11.3.1", "11.4.1", "11.5.0", "11.6.0", "12.0.0"]
+              buildtype: ["Debug", "Release"]
+      - ios-sanitize-nightly:
+          requires:
+            - ios-build
+      # TODO: Add matrix for these                  
+      - ios-sanitize-address-nightly:
+          requires:
+            - ios-build
+      - ios-static-analyzer-nightly:
+          requires:
+            - ios-build
       - ios-release-template:
+          requires:
+            - ios-build
           name: ios-release-nightly
-      - ios-sanitize-nightly
-      - ios-sanitize-address-nightly
-      - ios-static-analyzer-nightly
-      - ios-static-analyzer-nightly-xcode10
+      - metrics-nightly:      
+          requires:
+            - ios-release-nightly
 
 commands:
   npm-install:
@@ -275,11 +298,18 @@ commands:
           fi
 
 jobs:
-  ios-debug:
+
+  ios-build:
+    parameters:
+      xcode:
+        type: string
+      buildtype:
+        type: string
+        default: Debug
     macos:
-      xcode: "11.4.1"
+      xcode: << parameters.xcode >>
     environment:
-      BUILDTYPE: Debug
+      BUILDTYPE: << parameters.buildtype >>
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
@@ -295,47 +325,7 @@ jobs:
       - collect-xcode-build-logs
       - upload-xcode-build-logs
 
-# ------------------------------------------------------------------------------
-# TODO: Update to latest on macOS 10.14 Mojave, i.e. 11.3.1
-  ios-debug-xcode10:
-    macos:
-      xcode: "10.3.0"
-    environment:
-      BUILDTYPE: Debug
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-    steps:
-      - install-macos-dependencies
-      - install-dependencies
-      - check-public-symbols
-      - run:
-          name: Lint podspecs and plist files
-          command: make ios-lint
-      - check-if-this-job-can-be-skipped
-      - build-ios-test
-      - save-dependencies
-      - collect-xcode-build-logs
-      - upload-xcode-build-logs
 
-  ios-debug-xcode11-5:
-    macos:
-      xcode: "11.5.0"
-    environment:
-      BUILDTYPE: Debug
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-    steps:
-      - install-macos-dependencies
-      - install-dependencies
-      - check-public-symbols
-      - run:
-          name: Lint podspecs and plist files
-          command: make ios-lint
-      - check-if-this-job-can-be-skipped
-      - build-ios-test
-      - save-dependencies
-      - collect-xcode-build-logs
-      - upload-xcode-build-logs
 
 
 # ------------------------------------------------------------------------------
@@ -402,24 +392,24 @@ jobs:
       - upload-xcode-build-logs
       - notify-slack-nightly-failure
 
-# ------------------------------------------------------------------------------
-  ios-static-analyzer-nightly-xcode10:
-    macos:
-      xcode: "10.3.0"
-    environment:
-      BUILDTYPE: Debug
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-    steps:
-      - install-macos-dependencies
-      - install-dependencies
-      - run:
-          name: Build and run SDK unit tests with the static analyzer
-          command: make ios-static-analyzer
-      - save-dependencies
-      - collect-xcode-build-logs
-      - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+# # ------------------------------------------------------------------------------
+#   ios-static-analyzer-nightly-xcode10:
+#     macos:
+#       xcode: "10.3.0"
+#     environment:
+#       BUILDTYPE: Debug
+#       HOMEBREW_NO_AUTO_UPDATE: 1
+#       HOMEBREW_NO_INSTALL_CLEANUP: 1
+#     steps:
+#       - install-macos-dependencies
+#       - install-dependencies
+#       - run:
+#           name: Build and run SDK unit tests with the static analyzer
+#           command: make ios-static-analyzer
+#       - save-dependencies
+#       - collect-xcode-build-logs
+#       - upload-xcode-build-logs
+#       - notify-slack-nightly-failure
 
 # ------------------------------------------------------------------------------
   ios-release-template:

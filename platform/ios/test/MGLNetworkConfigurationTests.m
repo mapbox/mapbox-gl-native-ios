@@ -21,7 +21,7 @@
     
     for (NSUInteger i = 0; i < numberOfConcurrentBlocks; i++) {
         
-        NSString *event = [NSString stringWithFormat:@"test://event-%ld", i];
+        NSString *event = [NSString stringWithFormat:@"test://event-%lu", (unsigned long)i];
         NSString *resourceType = @"test";
         
         dispatch_async(queue, ^{
