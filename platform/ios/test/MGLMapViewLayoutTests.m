@@ -237,12 +237,16 @@
 
         //invoke layout
         [self.superView setNeedsLayout];
+#if defined(NS_BLOCK_ASSERTIONS)
+        NSLog(@"NSAssertions are blocked (Release build?), skipping layoutIfNeeded XCTAssert.");
+#else
         XCTAssertThrowsSpecificNamed(
                                      [self.superView layoutIfNeeded],
                                      NSException,
                                      NSInternalInconsistencyException,
                                      @"should throw NSInternalInconsistencyException"
                                      );
+#endif
     }
 }
 
@@ -350,12 +354,17 @@
 
         //invoke layout
         [self.superView setNeedsLayout];
+#if defined(NS_BLOCK_ASSERTIONS)
+        NSLog(@"NSAssertions are blocked (Release build?), skipping layoutIfNeeded XCTAssert.");
+#else
+        
         XCTAssertThrowsSpecificNamed(
                                      [self.superView layoutIfNeeded],
                                      NSException,
                                      NSInternalInconsistencyException,
                                      @"should throw NSInternalInconsistencyException"
                                      );
+#endif
     }
 }
 
@@ -392,12 +401,17 @@
 
         //invoke layout
         [self.superView setNeedsLayout];
+#if defined(NS_BLOCK_ASSERTIONS)
+        NSLog(@"NSAssertions are blocked (Release build?), skipping layoutIfNeeded XCTAssert.");
+#else
+        
         XCTAssertThrowsSpecificNamed(
                                      [self.superView layoutIfNeeded],
                                      NSException,
                                      NSInternalInconsistencyException,
                                      @"should throw NSInternalInconsistencyException"
                                      );
+#endif
     }
 }
 
