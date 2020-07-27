@@ -334,9 +334,9 @@ jobs:
       - collect-xcode-build-logs
       - upload-xcode-build-logs
       - when:
-        condition: << parameters.notify-slack >>
-        steps:
-          - notify-slack-failure
+          condition: << parameters.notify-slack >>
+          steps:
+            - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-sanitize-nightly:
