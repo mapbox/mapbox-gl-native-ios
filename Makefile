@@ -102,9 +102,10 @@ ifeq ($(MORE_SIMULATORS),true)
 	IOS_9 = true
 endif
 
+#	-destination 'platform=iOS Simulator,OS=latest,name=iPhone SE' \
+
 ifdef IOS_LATEST
 	IOS_XCODEBUILD_SIM += \
-	-destination 'platform=iOS Simulator,OS=latest,name=iPhone SE' \
 	-destination 'platform=iOS Simulator,OS=latest,name=iPhone 11 Pro Max' \
 	-destination 'platform=iOS Simulator,OS=latest,name=iPad Pro (11-inch) (2nd generation)'
 endif
@@ -170,8 +171,8 @@ $(NETRC_FILE):
 	@echo "$$NETRC" > $(NETRC_FILE)
 
 $(CARTHAGE_DEPS): $(NETRC_FILE) | $(IOS_OUTPUT_PATH)
-	export XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-beta-3-build-fix.xconfig
-	carthage bootstrap --platform iOS --use-netrc
+#	export XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-beta-3-build-fix.xconfig
+	XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-beta-3-build-fix.xconfig carthage bootstrap --platform iOS --use-netrc
 	@echo "Finishing bootstrapping"
 
 $(IOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings: platform/ios/WorkspaceSettings.xcsettings
