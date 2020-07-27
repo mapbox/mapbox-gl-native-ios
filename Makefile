@@ -171,7 +171,6 @@ $(NETRC_FILE):
 	@echo "$$NETRC" > $(NETRC_FILE)
 
 $(CARTHAGE_DEPS): $(NETRC_FILE) | $(IOS_OUTPUT_PATH)
-#	export XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-beta-3-build-fix.xconfig
 	XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-beta-3-build-fix.xconfig carthage bootstrap --platform iOS --use-netrc
 	@echo "Finishing bootstrapping"
 
