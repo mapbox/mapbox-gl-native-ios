@@ -104,9 +104,9 @@ endif
 
 ifdef IOS_LATEST
 	IOS_XCODEBUILD_SIM += \
-	-destination 'platform=iOS Simulator,OS=latest,name=iPhone SE (2nd generation)' \
+	-destination 'platform=iOS Simulator,OS=latest,name=iPhone SE' \
 	-destination 'platform=iOS Simulator,OS=latest,name=iPhone 11 Pro Max' \
-	-destination 'platform=iOS Simulator,OS=latest,name=iPad Pro (11-inch)'
+	-destination 'platform=iOS Simulator,OS=latest,name=iPad Pro (11-inch) (2nd generation)'
 endif
 
 ifdef IOS_13
@@ -139,8 +139,8 @@ endif
 
 ifdef IOS_9
 	IOS_XCODEBUILD_SIM += \
-	-destination 'platform=iOS Simulator,OS=9.3.6,name=iPhone 4s' \
-	-destination 'platform=iOS Simulator,OS=9.3.6,name=iPhone SE (1st generation)'
+	-destination 'platform=iOS Simulator,OS=9.3.6,name=iPhone 4s'
+	-destination 'platform=iOS Simulator,OS=9.3.6,name=iPhone 6s'
 endif
 
 # If IOS_XCODEBUILD_SIM does not contain a simulator destination, add the default.
