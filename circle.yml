@@ -260,7 +260,7 @@ commands:
         command: |
           export XCODE_LOG_DIR=build/logs
           mkdir -p $XCODE_LOG_DIR
-          cp build/*.log $XCODE_LOG_DIR
+          cp build/*.log $XCODE_LOG_DIR || true
   upload-xcode-build-logs:
     steps:
     - store_artifacts:
