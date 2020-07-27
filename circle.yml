@@ -19,8 +19,10 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.5.0"]
+#             xcode: ["11.1.0", "11.6.0"]
+              xcode: ["11.1.0", "11.3.1", "11.5.0", "11.6.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
+              more_simulators: [ true ]
       - ios-release-template:
           name: ios-release
       # This should depend on sanitize jobs              
@@ -54,7 +56,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.4.1", "11.5.0", "11.6.0", "12.0.0"]
+              xcode: ["11.1.0", "11.3.1", "11.5.0", "11.6.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -306,6 +308,9 @@ jobs:
       buildtype:
         type: string
         default: Debug
+      more_simulators:
+        type: boolean
+        default: false
       notify-slack:
         type: boolean
         default: false
@@ -313,6 +318,7 @@ jobs:
       xcode: << parameters.xcode >>
     environment:
       BUILDTYPE: << parameters.buildtype >>
+      MORE_SIMULATORS: << parameters.more_simulators >>
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
