@@ -52,9 +52,13 @@ workflows:
                 - master
     jobs:
       - ios-build:
+          name: ios-build-12
+          xcode: "12.0.0"
+          beta: true          
+      - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.4.1", "11.5.0", "11.6.0", "12.0.0"]
+              xcode: ["11.3.1", "11.4.1", "11.5.0", "11.6.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -260,20 +264,20 @@ commands:
         command: |
           export XCODE_LOG_DIR=build/logs
           mkdir -p $XCODE_LOG_DIR
-          cp build/*.log $XCODE_LOG_DIR
+          cp build/*.log $XCODE_LOG_DIR || true
   upload-xcode-build-logs:
     steps:
     - store_artifacts:
         path: build/logs
 
   # Must be last step of a job
-  notify-slack-nightly-failure:
+  notify-slack-failure:
     steps:
     - slack/status:
         fail_only: true
         only_for_branches: 'internal,master'
         include_visit_job_action: true
-        failure_message: ':red_circle: Nightly build of \`$CIRCLE_JOB\` <$CIRCLE_BUILD_URL|failed>.'
+        failure_message: ':red_circle: Job \`$CIRCLE_JOB\` <$CIRCLE_BUILD_URL|failed>.'
 
   #
   # Add this step to all regular jobs to enable skipping of certain non-code-related changes.
@@ -306,10 +310,17 @@ jobs:
       buildtype:
         type: string
         default: Debug
+      notify-slack:
+        type: boolean
+        default: false
+      beta:
+        type: boolean
+        default: false
     macos:
       xcode: << parameters.xcode >>
     environment:
       BUILDTYPE: << parameters.buildtype >>
+      BETA: << parameters.beta >>
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
@@ -324,9 +335,10 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-
-
-
+      - when:
+          condition: << parameters.notify-slack >>
+          steps:
+            - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-sanitize-nightly:
@@ -352,7 +364,7 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-sanitize-address-nightly:
@@ -371,7 +383,7 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-static-analyzer-nightly:
@@ -390,7 +402,7 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
 # # ------------------------------------------------------------------------------
 #   ios-static-analyzer-nightly-xcode10:
@@ -409,7 +421,7 @@ jobs:
 #       - save-dependencies
 #       - collect-xcode-build-logs
 #       - upload-xcode-build-logs
-#       - notify-slack-nightly-failure
+#       - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-release-template:
@@ -450,7 +462,7 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-release-tag:

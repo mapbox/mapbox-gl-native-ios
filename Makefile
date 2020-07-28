@@ -50,7 +50,7 @@ ifeq ($(V), 1)
   export XCPRETTY
   NINJA_ARGS ?= -v
 else
-  export XCPRETTY ?= | tee '$(shell pwd)/build/xcodebuild-$(shell date +"%Y-%m-%d_%H%M%S").log' | xcpretty
+  export XCPRETTY ?= | tee '$(CURDIR)/build/xcodebuild-$(shell date +"%Y-%m-%d_%H%M%S").log' | xcpretty
   NINJA_ARGS ?=
 endif
 
@@ -153,7 +153,12 @@ $(NETRC_FILE):
 	@echo "$$NETRC" > $(NETRC_FILE)
 
 $(CARTHAGE_DEPS): $(NETRC_FILE) | $(IOS_OUTPUT_PATH)
+ifeq ($(BETA),true)
+	@echo "Beta Xcode - applying Carthage workaround"
+	XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-beta-3-build-fix.xcconfig carthage bootstrap --platform iOS --use-netrc
+else	
 	carthage bootstrap --platform iOS --use-netrc
+endif	
 	@echo "Finishing bootstrapping"
 
 $(IOS_USER_DATA_PATH)/WorkspaceSettings.xcsettings: platform/ios/WorkspaceSettings.xcsettings
