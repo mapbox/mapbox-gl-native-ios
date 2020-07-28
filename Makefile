@@ -94,7 +94,7 @@ IOS_XCODEBUILD_SIM = xcodebuild \
 # simctl to fetch uuid
 
 ifeq ($(MORE_SIMULATORS),true)
-	IOS_LATEST = true
+	IOS_14 = true
 	IOS_13 = true
 	IOS_12 = true
 	IOS_11 = true
@@ -104,18 +104,17 @@ endif
 
 #	-destination 'platform=iOS Simulator,OS=latest,name=iPhone SE' \
 
-ifdef IOS_LATEST
+ifdef IOS_14
 	IOS_XCODEBUILD_SIM += \
-	-destination 'platform=iOS Simulator,OS=latest,name=iPhone 11 Pro Max' \
-	-destination 'platform=iOS Simulator,OS=latest,name=iPad Pro (11-inch) (2nd generation)'
+	-destination 'platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max' \
+	-destination 'platform=iOS Simulator,OS=14.0,name=iPad Pro (11-inch) (2nd generation)'
 endif
 
 ifdef IOS_13
 	IOS_XCODEBUILD_SIM += \
-	-destination 'platform=iOS Simulator,OS=13.6,name=iPhone 6s' \
-	-destination 'platform=iOS Simulator,OS=13.6,name=iPhone 8' \
-	-destination 'platform=iOS Simulator,OS=latest,name=iPhone 11 Pro Max' \
-	-destination 'platform=iOS Simulator,OS=13.6,name=iPad (5th generation)'
+	-destination 'platform=iOS Simulator,OS=13.5,name=iPhone 8' \
+	-destination 'platform=iOS Simulator,OS=13.5,name=iPhone 11 Pro Max' \
+	-destination 'platform=iOS Simulator,OS=13.5,name=iPad (7th generation)'
 endif
 
 ifdef IOS_12
