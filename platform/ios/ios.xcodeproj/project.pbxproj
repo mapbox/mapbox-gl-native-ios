@@ -377,6 +377,8 @@
 		A42114E224B6463200727D61 /* points.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA1DC96C1CB6C6CE006E619F /* points.geojson */; };
 		A499489E24CA389C00B8180F /* MGLObserver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A499489C24CA10E300B8180F /* MGLObserver.mm */; };
 		A499489F24CA38A200B8180F /* MGLObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = A499489B24CA10E300B8180F /* MGLObserver.h */; };
+		A49948A024CA3D8F00B8180F /* MGLObserver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A499489C24CA10E300B8180F /* MGLObserver.mm */; };
+		A49948A124CA3D9300B8180F /* MGLObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = A499489B24CA10E300B8180F /* MGLObserver.h */; };
 		A4DE3DCB23038C98005B3473 /* MGLMockGestureRecognizers.h in Sources */ = {isa = PBXBuildFile; fileRef = A4DE3DCA23038A7F005B3473 /* MGLMockGestureRecognizers.h */; };
 		A4DE3DCC23038CCA005B3473 /* MGLMockGestureRecognizers.m in Sources */ = {isa = PBXBuildFile; fileRef = A4DE3DC823038A07005B3473 /* MGLMockGestureRecognizers.m */; };
 		A4F3FB1D2254865900A30170 /* missing_icon.json in Resources */ = {isa = PBXBuildFile; fileRef = A4F3FB1C2254865900A30170 /* missing_icon.json */; };
@@ -2533,6 +2535,7 @@
 				DA35D9C3240916290013ECB0 /* MGLReachability.h in Headers */,
 				DA17BE311CC4BDAA00402C41 /* MGLMapView_Private.h in Headers */,
 				DABFB86C1CBE99E500D62B32 /* MGLTypes.h in Headers */,
+				A49948A124CA3D9300B8180F /* MGLObserver.h in Headers */,
 				96E516F720005A2700A02306 /* MGLAnnotationContainerView.h in Headers */,
 				DABFB8691CBE99E500D62B32 /* MGLShape.h in Headers */,
 				9620BB391E69FE1700705A1D /* MGLSDKUpdateChecker.h in Headers */,
@@ -3264,6 +3267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A49948A024CA3D8F00B8180F /* MGLObserver.mm in Sources */,
 				35136D3A1D42271A00C20EFD /* MGLBackgroundStyleLayer.mm in Sources */,
 				3510FFED1D6D9C7A00F413B2 /* NSComparisonPredicate+MGLAdditions.mm in Sources */,
 				354B83991D2E873E005D9406 /* MGLUserLocationAnnotationView.mm in Sources */,
