@@ -4,7 +4,15 @@
 #import "MGLObserver.h"
 
 // TODO: Should there be separate bindings for each observer (map, file source, etc)?
-const MGLObserverEvent MGLObserverEventResourceRequest = @"resource-request";
+
+/*
+ TODO: This is an enum for when additional event types are added.
+ */
+const MGLObserverEventType MGLObserverEventTypeResourceRequest = @"resource-request";
+
+@implementation MGLObserverEvent
+
+@end
 
 @interface MGLObserver()
 @property (nonatomic) std::shared_ptr<mbgl::Observable> mbglObservable;
@@ -22,11 +30,12 @@ const MGLObserverEvent MGLObserverEventResourceRequest = @"resource-request";
     return self;
 }
 
-- (void)subscribeToObserver:(MGLObserver *)observer forEventType:(MGLObserverEvent)eventType
+- (void)subscribeToObserver:(MGLObserver *)observer forEventType:(MGLObserverEventType)eventType
 {
 
-    auto *cEventType = [eventType cStringUsingEncoding:NSUTF8StringEncoding];
-    _mbglObservable->subscribe(_mbglObserver, eventType);
+//    auto *cEventType = [eventType cStringUsingEncoding:NSUTF8StringEncoding];
+    // TODO: Reference to type 'const std::vector<std::string>' (aka 'const vector<basic_string<char, char_traits<char>, allocator<char> > >') could not bind to an lvalue of type 'const char '
+//    _mbglObservable->subscribe(_mbglObserver, cEventType);
 }
 
 - (void)unsubscribeFromObserver:(MGLObserver *)observer
