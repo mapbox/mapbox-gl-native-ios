@@ -323,7 +323,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }];
     
     self.testObserver = [[MyTestObserver alloc] init];
-    [self.mapView subscribeForObserver:self.testObserver events:[NSSet setWithObject:@"resource-request"]];
+    [self.mapView subscribeForObserver:self.testObserver event:MGLEventTypeResourceRequest];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.mapView unsubscribeForObserver:self.testObserver];

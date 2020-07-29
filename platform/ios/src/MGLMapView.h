@@ -6,6 +6,7 @@
 #import "MGLMapCamera.h"
 #import "MGLTypes.h"
 #import "MGLStyle.h"
+#import "MGLObserver.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -189,7 +190,7 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const MGLUserLocationAnnotationTyp
  Simple map view</a> example to learn how to initialize a basic `MGLMapView`.
  */
 MGL_EXPORT
-@interface MGLMapView : UIView <MGLStylable>
+@interface MGLMapView : UIView <MGLStylable, MGLObservable>
 
 #pragma mark Creating Instances
 
@@ -2016,26 +2017,28 @@ MGL_EXPORT
 @property (nonatomic) MGLMapDebugMaskOptions debugMask;
 
 
-
-
-
-
 - (void)subscribeForObserver:(nonnull MGLObserver *)observer
-                      events:(nonnull NSSet<NSString *> *)events;
-/**
- * @brief Unsubscribes an \sa Observer from a provided list of event types.
- *
- * @param observer an \sa Observer
- * @param events an array of event types to be unsubscribed from.
- */
-- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer
-                        events:(nonnull NSSet<NSString *> *)events;
-/**
- * @brief Unsubscribes an \sa Observer from all events.
- *
- * @param observer an \sa Observer
- */
-- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer;
+                       event:(nonnull MGLEventType)event;
+
+
+
+//
+//- (void)subscribeForObserver:(nonnull MGLObserver *)observer
+//                      events:(nonnull NSSet<MGLObserverEvent> *)events;
+///**
+// * @brief Unsubscribes an \sa Observer from a provided list of event types.
+// *
+// * @param observer an \sa Observer
+// * @param events an array of event types to be unsubscribed from.
+// */
+//- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer
+//                        events:(nonnull NSSet<MGLObserverEvent> *)events;
+///**
+// * @brief Unsubscribes an \sa Observer from all events.
+// *
+// * @param observer an \sa Observer
+// */
+//- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer;
 
 @end
 

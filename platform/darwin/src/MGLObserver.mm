@@ -5,11 +5,6 @@
 
 // TODO: Should there be separate bindings for each observer (map, file source, etc)?
 
-/*
- TODO: This is an enum for when additional event types are added.
- */
-const MGLObserverEventType MGLObserverEventTypeResourceRequest = @"resource-request";
-
 
 namespace mbgl {
 namespace darwin {

@@ -376,7 +376,7 @@
 		9C6E283022A9824F0056B7BE /* MGLMapboxEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C6E282922A980E50056B7BE /* MGLMapboxEvents.h */; };
 		A42114E224B6463200727D61 /* points.geojson in Resources */ = {isa = PBXBuildFile; fileRef = DA1DC96C1CB6C6CE006E619F /* points.geojson */; };
 		A499489E24CA389C00B8180F /* MGLObserver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A499489C24CA10E300B8180F /* MGLObserver.mm */; };
-		A499489F24CA38A200B8180F /* MGLObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = A499489B24CA10E300B8180F /* MGLObserver.h */; };
+		A499489F24CA38A200B8180F /* MGLObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = A499489B24CA10E300B8180F /* MGLObserver.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A49948A024CA3D8F00B8180F /* MGLObserver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A499489C24CA10E300B8180F /* MGLObserver.mm */; };
 		A49948A124CA3D9300B8180F /* MGLObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = A499489B24CA10E300B8180F /* MGLObserver.h */; };
 		A4DE3DCB23038C98005B3473 /* MGLMockGestureRecognizers.h in Sources */ = {isa = PBXBuildFile; fileRef = A4DE3DCA23038A7F005B3473 /* MGLMockGestureRecognizers.h */; };
@@ -406,7 +406,7 @@
 		CA6914B520E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA6914B420E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm */; };
 		CA7766832229C10E0008DE9E /* MGLCompactCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA8848451CBAFB9800AB86E3 /* MGLCompactCalloutView.m */; };
 		CA7766842229C11A0008DE9E /* SMCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA88488A1CBB037E00AB86E3 /* SMCalloutView.m */; };
-		CA7965A824D212D60007E0C4 /* MGLEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = CA7965A624D212D60007E0C4 /* MGLEvent.h */; };
+		CA7965A824D212D60007E0C4 /* MGLEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = CA7965A624D212D60007E0C4 /* MGLEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CA7965A924D212D60007E0C4 /* MGLEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = CA7965A624D212D60007E0C4 /* MGLEvent.h */; };
 		CA7965AA24D212D60007E0C4 /* MGLEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA7965A724D212D60007E0C4 /* MGLEvent.mm */; };
 		CA7965AB24D212D60007E0C4 /* MGLEvent.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA7965A724D212D60007E0C4 /* MGLEvent.mm */; };
@@ -2323,7 +2323,6 @@
 			files = (
 				556660DB1E1D8E8D00E2C41B /* MGLFoundation.h in Headers */,
 				92FC0AEA207CEE16007B6B54 /* MGLShapeOfflineRegion.h in Headers */,
-				CA7965A824D212D60007E0C4 /* MGLEvent.h in Headers */,
 				35D13AC31D3D19DD00AFB4E0 /* MGLFillStyleLayer.h in Headers */,
 				DA88483A1CBAFB8500AB86E3 /* MGLAnnotationImage.h in Headers */,
 				74CB5EBD219B280400102936 /* MGLFillStyleLayer_Private.h in Headers */,
@@ -2387,11 +2386,12 @@
 				DA35D9C2240916290013ECB0 /* MGLReachability.h in Headers */,
 				6F018BB0220031BF003E7269 /* UIView+MGLAdditions.h in Headers */,
 				1FCAE2A820B88B3800C577DD /* MGLLocationManager_Private.h in Headers */,
-				A499489F24CA38A200B8180F /* MGLObserver.h in Headers */,
 				5580B45B229570A10091291B /* MGLMapView+OpenGL.h in Headers */,
 				DA8847EF1CBAFA5100AB86E3 /* MGLAccountManager.h in Headers */,
 				DA35A2C91CCAAAD200E826B2 /* NSValue+MGLAdditions.h in Headers */,
+				CA7965A824D212D60007E0C4 /* MGLEvent.h in Headers */,
 				1F6A82A82138871900BA5B41 /* MGLLoggingConfiguration_Private.h in Headers */,
+				A499489F24CA38A200B8180F /* MGLObserver.h in Headers */,
 				3510FFEA1D6D9C7A00F413B2 /* NSComparisonPredicate+MGLAdditions.h in Headers */,
 				DA6408DB1DA4E7D300908C90 /* MGLVectorStyleLayer.h in Headers */,
 				DA704CC21F65A475004B3F28 /* MGLMapAccessibilityElement.h in Headers */,

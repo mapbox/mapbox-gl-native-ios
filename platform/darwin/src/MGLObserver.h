@@ -1,12 +1,12 @@
 //#import "MGLMapView+Impl.h"
 #import "MGLFoundation.h"
+#import "MGLEvent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 
 
 
-@class MGLEvent;
 
 
 MGL_EXPORT
@@ -29,7 +29,7 @@ MGL_EXPORT
  * @param events an array of event types to be subscribed to.
  */
 - (void)subscribeForObserver:(nonnull MGLObserver *)observer
-                      events:(nonnull NSSet<NSString *> *)events;
+                      events:(nonnull NSSet<MGLEventType> *)events;
 /**
  * @brief Unsubscribes an \sa Observer from a provided list of event types.
  *
@@ -37,7 +37,7 @@ MGL_EXPORT
  * @param events an array of event types to be unsubscribed from.
  */
 - (void)unsubscribeForObserver:(nonnull MGLObserver *)observer
-                        events:(nonnull NSSet<NSString *> *)events;
+                        events:(nonnull NSSet<MGLEventType> *)events;
 /**
  * @brief Unsubscribes an \sa Observer from all events.
  *
@@ -49,9 +49,7 @@ MGL_EXPORT
 
 
 
-//// TODO: DOCS, this might not need to be public
-typedef NSString *MGLObserverEventType NS_TYPED_ENUM;
-//FOUNDATION_EXPORT MGL_EXPORT MGLObserverEventType const MGLObserverEventResourceRequest;
+
 //
 ////@interface MGLObserver : NSObject
 ////@property (nonatomic) NSUInteger identifier;

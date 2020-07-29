@@ -953,7 +953,12 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
 //}
 //
 
-- (void)subscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<NSString *> *)events {
+// Convenience
+- (void)subscribeForObserver:(nonnull MGLObserver *)observer event:(nonnull MGLEventType)event {
+    [self subscribeForObserver:observer events:[NSSet setWithObject:event]];
+}
+
+- (void)subscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<MGLEventType> *)events {
     [self.observerSet addObject:observer]; // duplicates will be handled.
     
     auto eventTypes = vectorOfStringsFromSet(events);
@@ -963,7 +968,7 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
     NSLog(@"observerMap %@", self.observerSet);
 }
 
-- (void)unsubscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<NSString *> *)events {
+- (void)unsubscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<MGLEventType> *)events {
     auto eventTypes = vectorOfStringsFromSet(events);
     self.mbglMap.unsubscribe(observer.peer, eventTypes);
 }

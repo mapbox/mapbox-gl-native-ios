@@ -1,5 +1,14 @@
 #import "MGLEvent_Private.h"
 
+
+/*
+ TODO: This is an enum for when additional event types are added.
+ */
+const MGLEventType MGLEventTypeResourceRequest = @"resource-request";
+
+
+
+
 // From value.md
 id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
     // Supported types are `int`, `uint`, `bool`, `double`, `array`, `object` and `string`.
@@ -51,7 +60,7 @@ id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
     auto beginTime  = std::chrono::duration<double, std::ratio<1>>(begin.time_since_epoch()).count();
     auto endTime    = std::chrono::duration<double, std::ratio<1>>(end.time_since_epoch()).count();
 
-    _type   = [NSString stringWithUTF8String:event.type.c_str()];
+    _type   = (MGLEventType)[NSString stringWithUTF8String:event.type.c_str()];
     _begin  = beginTime;
     _end    = endTime;
 //    _begin = [NSDate dateWithTimeIntervalSince1970:beginTime];
