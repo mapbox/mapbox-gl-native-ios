@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class MGLPolyline;
 @class MGLPolygon;
 @class MGLShape;
+@class MGLObserver;
 
 @protocol MGLMapViewDelegate;
 @protocol MGLAnnotation;
@@ -2013,6 +2014,28 @@ MGL_EXPORT
  released software for performance and aesthetic reasons.
  */
 @property (nonatomic) MGLMapDebugMaskOptions debugMask;
+
+
+
+
+
+
+- (void)subscribeForObserver:(nonnull MGLObserver *)observer
+                      events:(nonnull NSSet<NSString *> *)events;
+/**
+ * @brief Unsubscribes an \sa Observer from a provided list of event types.
+ *
+ * @param observer an \sa Observer
+ * @param events an array of event types to be unsubscribed from.
+ */
+- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer
+                        events:(nonnull NSSet<NSString *> *)events;
+/**
+ * @brief Unsubscribes an \sa Observer from all events.
+ *
+ * @param observer an \sa Observer
+ */
+- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer;
 
 @end
 
