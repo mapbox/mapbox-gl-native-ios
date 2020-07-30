@@ -1,35 +1,7 @@
 #import "MGLEvent_Private.h"
+#import "MGLStyleValue_Private.h"
 
 const MGLEventType MGLEventTypeResourceRequest = @"resource-request";
-
-#pragma mark - Value conversion
-
-// From value.md
-static id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
-    // Supported types are `int`, `uint`, `bool`, `double`, `array`, `object` and `string`.
-    return value.match(
-                       [](const mapbox::base::NullValue) -> id { return [NSNull null]; },
-                       [](const std::string &value)            { return @(value.c_str()); },
-                       [](bool value)                          { return @(value); },
-                       [](uint64_t value)                      { return @(value); },
-                       [](int64_t value)                       { return @(value); },
-                       [](double value)                        { return @(value); },
-                       [](const mapbox::base::ValueArray& valueArray) {
-                            NSMutableArray *array = [NSMutableArray arrayWithCapacity:valueArray.size()];
-                            for (const auto& v : valueArray) {
-                                [array addObject:MGLJSONObjectFromMapboxBaseValue(v)];
-                            }
-                            return array;
-                       },
-                       [](const mapbox::base::ValueObject& object) {
-                            NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:object.size()];
-                            for (const auto& kv : object) {
-                                dictionary[@(kv.first.c_str())] = MGLJSONObjectFromMapboxBaseValue(kv.second);
-                            }
-                            return dictionary;
-                       }
-                       );
-}
 
 #pragma mark - Event
 
@@ -61,9 +33,10 @@ static id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
     _type   = (MGLEventType)[NSString stringWithUTF8String:event.type.c_str()];
     _begin  = beginTime;
     _end    = endTime;
-//    _begin = [NSDate dateWithTimeIntervalSince1970:beginTime];
-//    _end   = [NSDate dateWithTimeIntervalSince1970:endTime];
-    _data  = MGLJSONObjectFromMapboxBaseValue(event.data);
+    
+    // From value.md
+    // Supported types are `int`, `uint`, `bool`, `double`, `array`, `object` and `string`.
+    _data = MGLJSONObjectFromMBGLValue(event.data);
     
     return self;
 }
