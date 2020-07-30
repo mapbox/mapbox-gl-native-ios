@@ -1,16 +1,11 @@
 #import "MGLEvent_Private.h"
 
-
-/*
- TODO: This is an enum for when additional event types are added.
- */
 const MGLEventType MGLEventTypeResourceRequest = @"resource-request";
 
-
-
+#pragma mark - Value conversion
 
 // From value.md
-id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
+static id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
     // Supported types are `int`, `uint`, `bool`, `double`, `array`, `object` and `string`.
     return value.match(
                        [](const mapbox::base::NullValue) -> id { return [NSNull null]; },
@@ -36,6 +31,8 @@ id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
                        );
 }
 
+#pragma mark - Event
+
 @implementation MGLEvent
 
 - (instancetype)init {
@@ -44,12 +41,13 @@ id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
 }
 
 - (instancetype)initWithEvent:(const mbgl::ObservableEvent&)event {
-    
     self = [super init];
 
     if (!self)
         return nil;
 
+    // mbgl::ObservableEvent timestamps do not use the system_clock, i.e. they
+    // are not relative to the Unix epoch, so we'll need to offset appropriately
     auto systemClockNow = std::chrono::system_clock::now();
     auto steadyClockNow = std::chrono::steady_clock::now();
     auto begin = std::chrono::time_point_cast<std::chrono::system_clock::duration>(systemClockNow +
@@ -78,6 +76,8 @@ id MGLJSONObjectFromMapboxBaseValue(const mapbox::base::Value &value) {
             self.end,
             self.data];
 }
+
+#pragma mark - Equality
 
 - (NSUInteger)hash {
     return self.type.hash ^ @(self.begin).hash ^ @(self.end).hash;

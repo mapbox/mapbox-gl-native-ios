@@ -196,216 +196,6 @@ public:
     NSString *viewReuseIdentifier;
 };
 
-
-
-//@interface MGLEvent: NSObject
-//- (instancetype)initWithEvent:(const mbgl::ObservableEvent&)event;
-//
-//@property (nonatomic, readonly, nonnull, copy) NSString *type;
-//@property (nonatomic, readonly) NSTimeInterval begin;
-//@property (nonatomic, readonly) NSTimeInterval end;
-//@property (nonatomic, readonly, nonnull, copy) id data;
-//
-//@end
-
-
-
-//@implementation MGLEvent
-//- (instancetype)initWithEvent:(const mbgl::ObservableEvent&)event {
-//    
-//    self = [super init];
-//
-//    if (!self)
-//        return nil;
-//
-//    // This uses steady_clock, not system_clock.
-//    auto beginTime  = std::chrono::duration<double, std::ratio<1>>(event.begin.time_since_epoch()).count();
-//    auto endTime    = std::chrono::duration<double, std::ratio<1>>(event.end.time_since_epoch()).count();
-//
-//    _type  = [NSString stringWithUTF8String:event.type.c_str()];
-//    _begin = beginTime;
-//    _end   = endTime;
-//    _data  = MGLJSONObjectFromMapboxBaseValue(event.data);
-//    
-//    return self;
-//}
-//
-//- (NSString *)description {
-//    return [NSString stringWithFormat:@"<%@: %p; type = %@, begin = %f, end = %f, data = %@>",
-//            NSStringFromClass([self class]), (void *)self,
-//            self.type,
-//            self.begin,
-//            self.end,
-//            self.data];
-//}
-//
-//@end
-
-
-//@interface MGLObserver: NSObject
-//- (void)notifyWithEvent:(MGLEvent*)event;
-//@property (nonatomic, readonly) NSUInteger identifier;
-//- (BOOL)isEqualToObserver:(MGLObserver *)other;
-//
-//@end
-
-//@protocol MGLObservable
-///**
-// * @brief Subscribes an \sa Observer to a provided list of event types.
-// * Observable will hold a strong reference to an \sa Observer instance, therefore,
-// * in order to stop receiving notifications, caller must call unsubscribe with an
-// * \sa Observer instance used for an initial subscription.
-// *
-// * @param observer an \sa Observer
-// * @param events an array of event types to be subscribed to.
-// */
-//- (void)subscribeForObserver:(nonnull MGLObserver *)observer
-//                      events:(nonnull NSSet<NSString *> *)events;
-///**
-// * @brief Unsubscribes an \sa Observer from a provided list of event types.
-// *
-// * @param observer an \sa Observer
-// * @param events an array of event types to be unsubscribed from.
-// */
-//- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer
-//                        events:(nonnull NSSet<NSString *> *)events;
-///**
-// * @brief Unsubscribes an \sa Observer from all events.
-// *
-// * @param observer an \sa Observer
-// */
-//- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer;
-//
-//@end
-
-
-
-//namespace mbgl {
-//namespace darwin {
-//class Observer : public mbgl::Observer {
-//public:
-//    
-//    Observer(MGLObserver *observer_): observer(observer_) {}
-//    
-//    virtual ~Observer() = default;
-//    
-//    // Notifies Observer about an event
-//    virtual void notify(const ObservableEvent& event) {
-//                
-//        if (!observer) {
-//            MGLLogWarning(@"Platform observer has been deallocated");
-//            return;
-//        }
-//        
-//        MGLEvent *eventThing = [[MGLEvent alloc] initWithEvent:event];
-//        [observer notifyWithEvent:eventThing];
-//    }
-//
-//    virtual std::size_t id() const {
-//        if (!observer) {
-//            MGLLogWarning(@"Platform observer has been deallocated");
-//            return 0;
-//        }
-//        
-//        return static_cast<std::size_t>(observer.identifier);
-//    }
-//    
-//protected:
-//    /// Cocoa map view that this adapter bridges to.
-//    __weak MGLObserver *observer = nullptr;
-//};
-//}
-//}
-
-//@interface MGLObserver ()
-//@property (nonatomic, assign) std::shared_ptr<mbgl::darwin::Observer> peer;
-//@end
-//
-//
-//@implementation MGLObserver
-////@synthesize peer = _peer;
-//
-//+ (NSUInteger)nextIdentifier {
-//    static NSUInteger identifier;
-//    return ++identifier;
-//}
-//
-//- (void)dealloc {
-//    NSLog(@"Observer dealloc");
-//}
-//
-//- (instancetype)init {
-//    self = [super init];
-//    
-//    if (!self) return nil;
-//    
-//    auto peer = std::make_shared<mbgl::darwin::Observer>(self);
-//    
-//    _identifier = [MGLObserver nextIdentifier];
-//    _peer = peer;
-//    
-//    return self;
-//}
-//
-//- (void)notifyWithEvent:(MGLEvent*)event {
-//    // Do nothing
-//    NSLog(@"Hello event: %@", event);
-//}
-//
-//- (BOOL)isEqualToObserver:(MGLObserver *)other {
-//    if (self == other)
-//        return YES;
-//
-//    if (self.identifier != other.identifier)
-//        return NO;
-//    
-//    return (self.peer == other.peer);
-//}
-//
-//- (BOOL)isEqual:(id)other {
-//    if (self == other)
-//        return YES;
-//
-//    if (![other isKindOfClass:[MGLObserver class]]) {
-//        return NO;
-//    }
-//    
-//    return [self isEqualToObserver:(MGLObserver*)other];
-//}
-//
-//- (NSUInteger)hash {
-//    NSUInteger peerHash = reinterpret_cast<NSUInteger>(self.peer.get());
-//    
-//    NSUInteger width = (sizeof(NSUInteger) * __CHAR_BIT__);
-//    NSUInteger shift = self.identifier % width;
-//    
-//    NSUInteger newHash = (peerHash << shift) | (peerHash >> (width - shift));
-//    return newHash;
-//}
-//
-//- (NSString *)description {
-//    return [NSString stringWithFormat:@"<%@: %p; identifier = %lu, peer = %p, hash = %lu>",
-//            NSStringFromClass([self class]), (void *)self,
-//            (unsigned long)self.identifier,
-//            self.peer.get(),
-//            [self hash]];
-//}
-//
-// 
-//@end
-
-std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings) {
-    __block std::vector<std::string> strings;
-    strings.reserve(setOfStrings.count);
-    [setOfStrings enumerateObjectsUsingBlock:^(NSString * _Nonnull text, BOOL * _Nonnull stop) {
-        strings.push_back(text.UTF8String);
-    }];
-    return strings;
-}
-
-
-
-
 #pragma mark - Private -
 
 @interface MGLMapView () <UIGestureRecognizerDelegate,
@@ -413,8 +203,7 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
                           MGLSMCalloutViewDelegate,
                           MGLCalloutViewDelegate,
                           MGLMultiPointDelegate,
-                          MGLAnnotationImageDelegate,
-                          MGLObservable>
+                          MGLAnnotationImageDelegate>
 
 @property (nonatomic) UIImageView *glSnapshotView;
 
@@ -501,24 +290,19 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
 @property (nonatomic, copy) NSString *cachedAccessibilityValue;
 @property (nonatomic) NSArray *cachedAccessibilityElements;
 
-@property (nonatomic) os_log_t log;
+@property (nonatomic) NSMutableSet<MGLObserver *> *observerCache;
 
-@property (nonatomic) NSMutableSet<MGLObserver *> *observerSet;
+@property (nonatomic) os_log_t log;
 
 - (mbgl::Map &)mbglMap;
 
 @end
-
-
-
 
 @implementation MGLMapView
 {
     std::unique_ptr<mbgl::Map> _mbglMap;
     std::unique_ptr<MGLMapViewImpl> _mbglView;
     std::unique_ptr<MGLRenderFrontend> _rendererFrontend;
-    
-    
     
     BOOL _opaque;
 
@@ -683,20 +467,6 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
 
     _log = os_log_create("com.mapbox.signposts", "MGLMapView");
 
-
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
     // setup accessibility
 //  self.isAccessibilityElement = YES;
 
@@ -778,7 +548,7 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
     _selectedAnnotationTag = MGLAnnotationTagNotFound;
     _annotationsNearbyLastTap = {};
     
-    _observerSet = [NSMutableSet set];
+    _observerCache = [NSMutableSet set];
     
     // TODO: This warning should be removed when automaticallyAdjustsScrollViewInsets is removed from
     // the UIViewController api.
@@ -935,53 +705,8 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
         [MGLMapboxEvents pushTurnstileEvent];
         [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
     }
+
 }
-
-
-
-//
-//- (NSArray<id <MGLFeature>> *)featuresInSourceLayersWithIdentifiers:(NSSet<NSString *> *)sourceLayerIdentifiers predicate:(nullable NSPredicate *)predicate {
-//MGLAssertStyleSourceIsValid();
-//mbgl::optional<std::vector<std::string>> optionalSourceLayerIDs;
-//if (sourceLayerIdentifiers) {
-//    __block std::vector<std::string> layerIDs;
-//    layerIDs.reserve(sourceLayerIdentifiers.count);
-//    [sourceLayerIdentifiers enumerateObjectsUsingBlock:^(NSString * _Nonnull identifier, BOOL * _Nonnull stop) {
-//        layerIDs.push_back(identifier.UTF8String);
-//    }];
-//    optionalSourceLayerIDs = layerIDs;
-//}
-//
-
-// Convenience
-- (void)subscribeForObserver:(nonnull MGLObserver *)observer event:(nonnull MGLEventType)event {
-    [self subscribeForObserver:observer events:[NSSet setWithObject:event]];
-}
-
-- (void)subscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<MGLEventType> *)events {
-    [self.observerSet addObject:observer]; // duplicates will be handled.
-    
-    auto eventTypes = vectorOfStringsFromSet(events);
-    self.mbglMap.subscribe(observer.peer, eventTypes);
-    
-    
-    NSLog(@"observerMap %@", self.observerSet);
-}
-
-- (void)unsubscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<MGLEventType> *)events {
-    auto eventTypes = vectorOfStringsFromSet(events);
-    self.mbglMap.unsubscribe(observer.peer, eventTypes);
-}
-
-- (void)unsubscribeForObserver:(MGLObserver *)observer {
-    self.mbglMap.unsubscribe(observer.peer);
-    [self.observerSet removeObject:observer];
-    
-    
-    
-    NSLog(@"observerMap %@", self.observerSet);
-}
-
 
 - (mbgl::Size)size
 {
@@ -7236,7 +6961,43 @@ std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings)
     return _annotationViewReuseQueueByIdentifier[identifier];
 }
 
+#pragma mark - MGLObservable methods -
+
+static std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfStrings) {
+    __block std::vector<std::string> strings;
+    strings.reserve(setOfStrings.count);
+    [setOfStrings enumerateObjectsUsingBlock:^(NSString * _Nonnull text, BOOL * _Nonnull stop) {
+        strings.push_back(text.UTF8String);
+    }];
+    return strings;
+}
+
+// Convenience method
+- (void)subscribeForObserver:(nonnull MGLObserver *)observer event:(nonnull MGLEventType)event {
+    [self subscribeForObserver:observer events:[NSSet setWithObject:event]];
+}
+
+- (void)subscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<MGLEventType> *)events {
+    observer.observing = YES;
+    [self.observerCache addObject:observer];
+    
+    auto eventTypes = vectorOfStringsFromSet(events);
+    self.mbglMap.subscribe(observer.peer, eventTypes);
+}
+
+- (void)unsubscribeForObserver:(MGLObserver *)observer events:(nonnull NSSet<MGLEventType> *)events {
+    auto eventTypes = vectorOfStringsFromSet(events);
+    self.mbglMap.unsubscribe(observer.peer, eventTypes);
+}
+
+- (void)unsubscribeForObserver:(MGLObserver *)observer {
+    self.mbglMap.unsubscribe(observer.peer);
+    [self.observerCache removeObject:observer];
+    observer.observing = NO;
+}
+
 @end
+
 
 #pragma mark - IBAdditions methods
 

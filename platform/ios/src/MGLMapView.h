@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 @class MGLPolyline;
 @class MGLPolygon;
 @class MGLShape;
-@class MGLObserver;
 
 @protocol MGLMapViewDelegate;
 @protocol MGLAnnotation;
@@ -2016,30 +2015,13 @@ MGL_EXPORT
  */
 @property (nonatomic) MGLMapDebugMaskOptions debugMask;
 
-
+/**
+ :nodoc:
+ Convenience method for subscribing to a single event. See `-[MGLObservable
+ subscribeForObserver:events:]`.
+ */
 - (void)subscribeForObserver:(nonnull MGLObserver *)observer
                        event:(nonnull MGLEventType)event;
-
-
-
-//
-//- (void)subscribeForObserver:(nonnull MGLObserver *)observer
-//                      events:(nonnull NSSet<MGLObserverEvent> *)events;
-///**
-// * @brief Unsubscribes an \sa Observer from a provided list of event types.
-// *
-// * @param observer an \sa Observer
-// * @param events an array of event types to be unsubscribed from.
-// */
-//- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer
-//                        events:(nonnull NSSet<MGLObserverEvent> *)events;
-///**
-// * @brief Unsubscribes an \sa Observer from all events.
-// *
-// * @param observer an \sa Observer
-// */
-//- (void)unsubscribeForObserver:(nonnull MGLObserver *)observer;
-
 @end
 
 NS_ASSUME_NONNULL_END

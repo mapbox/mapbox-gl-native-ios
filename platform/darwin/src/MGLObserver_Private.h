@@ -4,6 +4,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#pragma mark - Native C++ peer object
+
 namespace mbgl {
 namespace darwin {
 
@@ -16,15 +18,22 @@ public:
 
 protected:
 
-    /// Cocoa map view that this adapter bridges to.
+    /// Cocoa observer that this adapter bridges to.
     __weak MGLObserver *observer = nullptr;
 };
+
 }
 }
 
-
+#pragma mark -
 @interface MGLObserver ()
 @property (nonatomic, assign) std::shared_ptr<mbgl::darwin::Observer> peer;
+
+// TODO: Consider making public
+@property (nonatomic, copy) void (^notificationHandler)(MGLEvent *);
+
+// Debug property used for development.
+@property (nonatomic, assign) BOOL observing;
 @end
 
 NS_ASSUME_NONNULL_END

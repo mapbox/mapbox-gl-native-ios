@@ -1,13 +1,12 @@
-
 #import "MGLObserver_Private.h"
 #import "MGLLoggingConfiguration_Private.h"
 #import "MGLEvent_Private.h"
 
-// TODO: Should there be separate bindings for each observer (map, file source, etc)?
-
+#pragma mark - Native C++ peer object
 
 namespace mbgl {
 namespace darwin {
+
 void Observer::notify(const ObservableEvent& event) {
     
     if (!observer) {
@@ -15,8 +14,7 @@ void Observer::notify(const ObservableEvent& event) {
         return;
     }
     
-    MGLEvent *eventThing = [[MGLEvent alloc] initWithEvent:event];
-    [observer notifyWithEvent:eventThing];
+    [observer notifyWithEvent:[[MGLEvent alloc] initWithEvent:event]];
 }
 
 std::size_t Observer::id() const {
@@ -27,20 +25,20 @@ std::size_t Observer::id() const {
     
     return static_cast<std::size_t>(observer.identifier);
 }
+
 }
 }
 
+#pragma mark - Cocoa observer
 
 @implementation MGLObserver
-//@synthesize peer = _peer;
-
 + (NSUInteger)nextIdentifier {
     static NSUInteger identifier;
     return ++identifier;
 }
 
 - (void)dealloc {
-    NSLog(@"Observer dealloc");
+    MGLAssert(!_observing, @"Ensure the observer is unsubscribed before deallocating");
 }
 
 - (instancetype)init {
@@ -48,17 +46,16 @@ std::size_t Observer::id() const {
     
     if (!self) return nil;
     
-    auto peer = std::make_shared<mbgl::darwin::Observer>(self);
-    
     _identifier = [MGLObserver nextIdentifier];
-    _peer = peer;
+    _peer = std::make_shared<mbgl::darwin::Observer>(self);
     
     return self;
 }
 
 - (void)notifyWithEvent:(MGLEvent*)event {
-    // Do nothing
-    NSLog(@"Hello event: %@", event);
+    if (self.notificationHandler) {
+        self.notificationHandler(event);
+    }
 }
 
 - (BOOL)isEqualToObserver:(MGLObserver *)other {
@@ -83,6 +80,7 @@ std::size_t Observer::id() const {
 }
 
 - (NSUInteger)hash {
+    // Rotate the address
     NSUInteger peerHash = reinterpret_cast<NSUInteger>(self.peer.get());
     
     NSUInteger width = (sizeof(NSUInteger) * __CHAR_BIT__);
@@ -99,6 +97,5 @@ std::size_t Observer::id() const {
             self.peer.get(),
             [self hash]];
 }
-
  
 @end
