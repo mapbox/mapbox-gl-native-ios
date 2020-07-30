@@ -95,7 +95,7 @@ std::size_t Observer::id() const {
             NSStringFromClass([self class]), (void *)self,
             (unsigned long)self.identifier,
             self.peer.get(),
-            [self hash]];
+            (unsigned long)[self hash]];
 }
  
 @end
