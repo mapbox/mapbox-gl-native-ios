@@ -4,7 +4,9 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ## master
 
-* * Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
+* Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
+
+* Added `MGLObserver`, `MGLObservable` and `MGLEvent` to monitor events from the map view. ([#358](https://github.com/mapbox/mapbox-gl-native-ios/pull/358))
 
 ## 6.0.0
  
