@@ -16,6 +16,7 @@ FOUNDATION_EXPORT MGL_EXPORT MGLEventType const MGLEventTypeResourceRequest;
  expected to be created by the application developer. It will be provided as
  part of an `MGLObservable` notification.
  */
+MGL_EXPORT
 @interface MGLEvent: NSObject
 
 /// Type of an event. Matches an original event type used for a subscription.
