@@ -15,7 +15,6 @@
 
 #import "MBXFrameTimeGraphView.h"
 #import "../src/MGLMapView_Experimental.h"
-
 #import <objc/runtime.h>
 
 static const CLLocationCoordinate2D WorldTourDestinations[] = {
@@ -193,11 +192,20 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 @implementation MBXSpriteBackedAnnotation
 @end
 
+@interface MBXTestObserver: MGLObserver
+@end
+
+@implementation MBXTestObserver
+- (void)notifyWithEvent:(MGLEvent *)event {
+    NSLog(@"Received event: %@", event);
+}
+@end
+
+
 @interface MBXViewController () <UITableViewDelegate,
                                  UITableViewDataSource,
                                  MGLMapViewDelegate,
                                  MGLComputedShapeSourceDataSource>
-
 
 @property (nonatomic) IBOutlet MGLMapView *mapView;
 @property (nonatomic) MBXState *currentState;
@@ -213,7 +221,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 @property (nonatomic) BOOL zoomLevelOrnamentEnabled;
 @property (nonatomic) NSMutableArray<UIWindow *> *helperWindows;
 @property (nonatomic) NSMutableArray<UIView *> *contentInsetsOverlays;
-
+@property (nonatomic) MBXTestObserver *testObserver;
 @end
 
 @interface MGLMapView (MBXViewController)
@@ -300,6 +308,15 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             }
         }
     }];
+    
+    // TODO: Replace with menu implementation
+    self.testObserver = [[MBXTestObserver alloc] init];
+    [self.mapView subscribeForObserver:self.testObserver event:MGLEventTypeResourceRequest];
+        
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.mapView unsubscribeForObserver:self.testObserver];
+        self.testObserver = nil;
+    });
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations

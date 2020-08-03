@@ -6,6 +6,7 @@
 #import "MGLMapCamera.h"
 #import "MGLTypes.h"
 #import "MGLStyle.h"
+#import "MGLObserver.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -188,7 +189,7 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const MGLUserLocationAnnotationTyp
  Simple map view</a> example to learn how to initialize a basic `MGLMapView`.
  */
 MGL_EXPORT
-@interface MGLMapView : UIView <MGLStylable>
+@interface MGLMapView : UIView <MGLStylable, MGLObservable>
 
 #pragma mark Creating Instances
 
@@ -2014,6 +2015,13 @@ MGL_EXPORT
  */
 @property (nonatomic) MGLMapDebugMaskOptions debugMask;
 
+/**
+ :nodoc:
+ Convenience method for subscribing to a single event. See `-[MGLObservable
+ subscribeForObserver:events:]`.
+ */
+- (void)subscribeForObserver:(nonnull MGLObserver *)observer
+                       event:(nonnull MGLEventType)event;
 @end
 
 NS_ASSUME_NONNULL_END
