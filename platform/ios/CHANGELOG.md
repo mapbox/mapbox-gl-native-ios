@@ -2,13 +2,13 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## master
+## 6.1.0
 
 * Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
 
 * Added `MGLObserver`, `MGLObservable` and `MGLEvent` to monitor events from the map view. ([#358](https://github.com/mapbox/mapbox-gl-native-ios/pull/358))
 
-## 6.0.0
+## 6.0.0 - July 16, 2020
  
 This major release does not include any breaking changes to public APIs. We are treating this release as a SEMVER major change because our installation instructions have changed. 
  
@@ -33,7 +33,7 @@ If you have any questions about how this change may impact your use of the Maps 
 * Fixed a potential crash when switching from a style with many layers to an empty style. ([mapbox/mapbox-gl-native#16480](https://github.com/mapbox/mapbox-gl-native/issues/16480))
 * Fixed a potential memory leak when using VoiceOver. ([mapbox/mapbox-gl-native-ios#318](https://github.com/mapbox/mapbox-gl-native-ios/pull/318))
 
-## 5.9.0
+## 5.9.0 - May 7, 2020
 
 ### Styles and rendering
 
@@ -59,7 +59,7 @@ If you have any questions about how this change may impact your use of the Maps 
 * Certain logging statements no longer run on the main thread. ([mapbox/mapbox-gl-native#16325](https://github.com/mapbox/mapbox-gl-native/pull/16325))
 * Fixed an issue that prevented the Maps SDK from warning about a misconfiguration that violated the Mapbox ToS. ([#288](https://github.com/mapbox/mapbox-gl-native-ios/pull/288))
 
-## 5.8.0
+## 5.8.0 - April 7, 2020
 
 ### Styles and rendering
 
