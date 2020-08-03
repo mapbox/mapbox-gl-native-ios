@@ -88,6 +88,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setActivityType:(CLActivityType)activityType;
 
+/**
+ Requests the user's permission to temporarily use location update services
+ with full accuracy.
+ 
+ @note If the user turned off location accuracy you may use this method to
+ request full accuracy for a session.
+ */
+- (void)requestTemporaryFullAccuracyAuthorizationWithPurposeKey:(NSString *)purposeKey API_AVAILABLE(ios(14));
+
 @required
 
 /**

@@ -61,6 +61,12 @@
     }
 }
 
+- (void)requestTemporaryFullAccuracyAuthorizationWithPurposeKey:(NSString *)purposeKey {
+    if (@available(iOS 14.0, *)) {
+        [self.locationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:purposeKey];
+    } 
+}
+
 - (void)dismissHeadingCalibrationDisplay {
     [self.locationManager dismissHeadingCalibrationDisplay];
 }
