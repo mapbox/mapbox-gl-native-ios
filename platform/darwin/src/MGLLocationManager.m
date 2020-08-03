@@ -38,7 +38,11 @@
 }
 
 - (CLAuthorizationStatus)authorizationStatus {
-    return [CLLocationManager authorizationStatus];
+    if (@available(iOS 14.0, *)) {
+        return self.locationManager.authorizationStatus;
+    } else {
+        return [CLLocationManager authorizationStatus];
+    }
 }
 
 - (void)setActivityType:(CLActivityType)activityType {
@@ -47,6 +51,14 @@
 
 - (CLActivityType)activityType {
     return self.locationManager.activityType;
+}
+
+- (CLAccuracyAuthorization)accuracyAuthorization {
+    if (@available(iOS 14.0, *)) {
+        return self.locationManager.accuracyAuthorization;
+    } else {
+        return CLAccuracyAuthorizationFullAccuracy;
+    }
 }
 
 - (void)dismissHeadingCalibrationDisplay {

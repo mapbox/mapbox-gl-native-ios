@@ -59,6 +59,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy;
 
 /**
+ Specifies the level of location accuracy the Maps SDK has permission to use.
+ 
+ @note If the value of this property is `CLAccuracyAuthorizationFullAccuracy`, you can set the
+ `desiredAccuracy` property to any value. If the value is `CLAccuracyAuthorizationReducedAccuracy`,
+ setting `desiredAccuracy` to a value other than` kCLLocationAccuracyReduced` has no effect on
+ the location information.
+ */
+- (CLAccuracyAuthorization)accuracyAuthorization API_AVAILABLE(ios(14));
+
+/**
  Specifies the type of user activity associated with the location updates.
  
  The location manager uses this property as a cue to determine when location updates
