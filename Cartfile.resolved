@@ -1,2 +1,2 @@
-binary "https://api.mapbox.com/downloads/v2/carthage/mobile-maps-gl-core/mapbox-ios-sdk-gl-core-static.json" "1.8.1"
+binary "https://api.mapbox.com/downloads/v2/carthage/mobile-maps-gl-core/mapbox-ios-sdk-gl-core-static.json" "3.0.0-rc.1"
 github "mapbox/mapbox-events-ios" "v0.10.2"

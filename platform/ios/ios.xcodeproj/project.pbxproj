@@ -3719,7 +3719,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15260;
+				CURRENT_PROJECT_VERSION = 15261;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
@@ -3765,20 +3765,28 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
-				BITCODE_GENERATION_MODE = bitcode;
+				BITCODE_GENERATION_MODE = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 15260;
+				DYLIB_CURRENT_VERSION = 15261;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				INFOPLIST_FILE = framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LLVM_LTO = YES;
+				OTHER_LDFLAGS = (
+					"-Wl,-U,_mapbox_common_get_version_string",
+					"-Wl,-U,_mapbox_common_offline_service_register_observer",
+					"-Wl,-U,_mapbox_common_get_major_version",
+					"-Wl,-U,_mapbox_common_get_minor_version",
+					"-Wl,-U,_mapbox_common_offline_service_unregister_observer",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.Mapbox;
 				PRODUCT_NAME = Mapbox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3794,7 +3802,7 @@
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
-				DYLIB_CURRENT_VERSION = 15260;
+				DYLIB_CURRENT_VERSION = 15261;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3916,7 +3924,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15260;
+				CURRENT_PROJECT_VERSION = 15261;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -3940,7 +3948,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15260;
+				CURRENT_PROJECT_VERSION = 15261;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
@@ -4051,18 +4059,26 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
-				BITCODE_GENERATION_MODE = bitcode;
+				BITCODE_GENERATION_MODE = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 15260;
+				DYLIB_CURRENT_VERSION = 15261;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"-Wl,-U,_mapbox_common_get_version_string",
+					"-Wl,-U,_mapbox_common_offline_service_register_observer",
+					"-Wl,-U,_mapbox_common_get_major_version",
+					"-Wl,-U,_mapbox_common_get_minor_version",
+					"-Wl,-U,_mapbox_common_offline_service_unregister_observer",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.Mapbox;
 				PRODUCT_NAME = Mapbox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4076,7 +4092,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
-				BITCODE_GENERATION_MODE = bitcode;
+				BITCODE_GENERATION_MODE = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -4084,13 +4100,21 @@
 				DEFINES_MODULE = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 15260;
+				DYLIB_CURRENT_VERSION = 15261;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				INFOPLIST_FILE = framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LLVM_LTO = YES;
+				OTHER_LDFLAGS = (
+					"-Wl,-U,_mapbox_common_get_version_string",
+					"-Wl,-U,_mapbox_common_offline_service_register_observer",
+					"-Wl,-U,_mapbox_common_get_major_version",
+					"-Wl,-U,_mapbox_common_get_minor_version",
+					"-Wl,-U,_mapbox_common_offline_service_unregister_observer",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.Mapbox;
 				PRODUCT_NAME = Mapbox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4129,7 +4153,7 @@
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
-				DYLIB_CURRENT_VERSION = 15260;
+				DYLIB_CURRENT_VERSION = 15261;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4154,7 +4178,7 @@
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_CURRENT_VERSION = 15260;
+				DYLIB_CURRENT_VERSION = 15261;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
