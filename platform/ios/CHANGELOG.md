@@ -2,6 +2,12 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+# master
+
+### ✨ New features
+
+* Added `MGLLocationManager.accuracyAuthorization` and `[MGLLocationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKeyproperty:]` to support iOS 14 location accuracy privacy changes. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
+
 ## 6.1.0
 
 * Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
