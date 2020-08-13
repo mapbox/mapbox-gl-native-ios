@@ -127,13 +127,15 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
     [self sendEventForURLResponse:response withAction:@"cancel"];
 }
 
-- (void)debugLog:(NSString *)format, ... {
-    MGLLogDebug(format);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+// TODO: Remove in future release.
+- (void)debugLog:(nonnull NSString *)format, ... {
 }
 
-- (void)errorLog:(NSString *)format, ... {
-    MGLLogError(format);
+- (void)errorLog:(nonnull NSString *)format, ... {
 }
+#pragma clang diagnostic pop
 
 #pragma mark - Event management
 

@@ -18,10 +18,13 @@ NS_INLINE NSString *MGLStringFromNSEdgeInsets(NSEdgeInsets insets) {
 #define MGLLogError(...)
 #define MGLLogFault(...)
 
+#define MGLLogInfoV(message, args)
+#define MGLLogErrorV(message, args)
+
 #else
 
 #if MGL_LOGGING_ENABLE_DEBUG
-    #define MGLLogDebug(message, ...) MGLLogWithType(MGLLoggingLevelDebug, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+    #define MGLLogDebug(message, ...)   MGLLogWithType(MGLLoggingLevelDebug, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
 #else
     #define MGLLogDebug(...)
 #endif
@@ -30,6 +33,9 @@ NS_INLINE NSString *MGLStringFromNSEdgeInsets(NSEdgeInsets insets) {
 #define MGLLogWarning(message, ...)  MGLLogWithType(MGLLoggingLevelWarning, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
 #define MGLLogError(message, ...)    MGLLogWithType(MGLLoggingLevelError, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
 #define MGLLogFault(message, ...)    MGLLogWithType(MGLLoggingLevelFault, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+
+#define MGLLogInfoV(message, args)   MGLLogWithTypeV(MGLLoggingLevelInfo, __PRETTY_FUNCTION__, __LINE__, message, args)
+#define MGLLogErrorV(message, args)  MGLLogWithTypeV(MGLLoggingLevelError, __PRETTY_FUNCTION__, __LINE__, message, args)
 
 #endif
 
@@ -59,8 +65,17 @@ NS_INLINE NSString *MGLStringFromNSEdgeInsets(NSEdgeInsets insets) {
     } \
 }
 
+#define MGLLogWithTypeV(type, function, line, message, args) \
+{ \
+    if ([MGLLoggingConfiguration sharedConfiguration].loggingLevel != MGLLoggingLevelNone && type <= [MGLLoggingConfiguration sharedConfiguration].loggingLevel) \
+    { \
+        [[MGLLoggingConfiguration sharedConfiguration] logCallingFunction:function functionLine:line messageType:type format:(message) arguments:args]; \
+    } \
+}
+
 @interface MGLLoggingConfiguration (Private)
 
+- (void)logCallingFunction:(const char *)callingFunction functionLine:(NSUInteger)functionLine messageType:(MGLLoggingLevel)type format:(id)messageFormat arguments:(va_list)args;
 - (void)logCallingFunction:(const char *)callingFunction functionLine:(NSUInteger)functionLine messageType:(MGLLoggingLevel)type format:(id)messageFormat, ...;
 
 @end
