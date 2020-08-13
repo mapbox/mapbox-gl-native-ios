@@ -128,22 +128,32 @@
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"vaargs test"];
     expectation.expectedFulfillmentCount = 2;
-    [MGLLoggingConfiguration sharedConfiguration].loggingLevel = MGLLoggingLevelVerbose;
 
-    [MGLLoggingConfiguration sharedConfiguration].handler = ^(MGLLoggingLevel loggingLevel, NSString * _Nonnull filePath, NSUInteger line, NSString * _Nonnull message) {
+    MGLLoggingConfiguration *logger = [MGLLoggingConfiguration sharedConfiguration];
+
+    logger.loggingLevel = MGLLoggingLevelVerbose;
+
+    logger.handler = ^(MGLLoggingLevel loggingLevel, NSString * _Nonnull filePath, NSUInteger line, NSString * _Nonnull message) {
         NSLog(@"(%lu) Level %ld: %@", (unsigned long)line, (long)loggingLevel, message);
         XCTAssertEqualObjects(message, expected);
         [expectation fulfill];
     };
 
     va_list formatList;
-
     va_start(formatList, messageFormat);
-    MGLLogInfoV(messageFormat, formatList);
+    [logger logCallingFunction:__PRETTY_FUNCTION__
+                  functionLine:__LINE__
+                   messageType:MGLLoggingLevelInfo
+                        format:messageFormat
+                     arguments:formatList];
     va_end(formatList);
 
     va_start(formatList, messageFormat);
-    MGLLogErrorV(messageFormat, formatList);
+    [logger logCallingFunction:__PRETTY_FUNCTION__
+                  functionLine:__LINE__
+                   messageType:MGLLoggingLevelError
+                        format:messageFormat
+                     arguments:formatList];
     va_end(formatList);
     [self waitForExpectations:@[expectation] timeout:0.1];
 }
