@@ -3769,7 +3769,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
-				BITCODE_GENERATION_MODE = "";
+				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -3778,7 +3778,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 15262;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				INFOPLIST_FILE = framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -4063,7 +4063,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
-				BITCODE_GENERATION_MODE = "";
+				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -4072,7 +4072,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 15262;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -4096,7 +4096,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */;
 			buildSettings = {
-				BITCODE_GENERATION_MODE = "";
+				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -4106,7 +4106,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 15262;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
 				INFOPLIST_FILE = framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
