@@ -3784,13 +3784,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LLVM_LTO = YES;
-				OTHER_LDFLAGS = (
-					"-Wl,-U,_mapbox_common_get_version_string",
-					"-Wl,-U,_mapbox_common_offline_service_register_observer",
-					"-Wl,-U,_mapbox_common_get_major_version",
-					"-Wl,-U,_mapbox_common_get_minor_version",
-					"-Wl,-U,_mapbox_common_offline_service_unregister_observer",
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.Mapbox;
 				PRODUCT_NAME = Mapbox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4076,13 +4070,7 @@
 				INFOPLIST_FILE = framework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-Wl,-U,_mapbox_common_get_version_string",
-					"-Wl,-U,_mapbox_common_offline_service_register_observer",
-					"-Wl,-U,_mapbox_common_get_major_version",
-					"-Wl,-U,_mapbox_common_get_minor_version",
-					"-Wl,-U,_mapbox_common_offline_service_unregister_observer",
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.Mapbox;
 				PRODUCT_NAME = Mapbox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4112,13 +4100,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LLVM_LTO = YES;
-				OTHER_LDFLAGS = (
-					"-Wl,-U,_mapbox_common_get_version_string",
-					"-Wl,-U,_mapbox_common_offline_service_register_observer",
-					"-Wl,-U,_mapbox_common_get_major_version",
-					"-Wl,-U,_mapbox_common_get_minor_version",
-					"-Wl,-U,_mapbox_common_offline_service_unregister_observer",
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.Mapbox;
 				PRODUCT_NAME = Mapbox;
 				PROVISIONING_PROFILE_SPECIFIER = "";
