@@ -222,6 +222,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 @property (nonatomic) NSMutableArray<UIWindow *> *helperWindows;
 @property (nonatomic) NSMutableArray<UIView *> *contentInsetsOverlays;
 @property (nonatomic) MBXTestObserver *testObserver;
+@property (nonatomic, copy) void (^locationBlock)(void);
 @end
 
 @interface MGLMapView (MBXViewController)
@@ -1971,6 +1972,22 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 
 - (IBAction)locateUser:(id)sender
 {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+    if (@available(iOS 14, *)) {
+        if (self.mapView.locationManager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
+            [self.mapView.locationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:@"MBXRequestAccuracy"];
+            __weak MBXViewController *weakSelf = self;
+            self.locationBlock = ^{
+                [weakSelf nextTrackingMode:sender];
+            };
+            return;
+        }
+    }
+#endif
+    [self nextTrackingMode:sender];
+}
+
+- (void)nextTrackingMode:(id)sender {
     MGLUserTrackingMode nextMode;
     NSString *nextAccessibilityValue;
     switch (self.mapView.userTrackingMode) {
@@ -2349,6 +2366,36 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     if (self.frameTimeGraphEnabled) {
         [self.frameTimeGraphView updatePathWithFrameDuration:mapView.frameTime];
     }
+}
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+- (void)mapView:(nonnull MGLMapView *)mapView didChangeAccuracyAuthorization:(CLAccuracyAuthorization)accuracyAuthorization {
+    if (accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
+        [self alertAccuracyChanges];
+    } else {
+        if (self.locationBlock) {
+            self.locationBlock();
+        }
+    }
+}
+#endif
+- (void)alertAccuracyChanges {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Mapbox GL works best with your precise location."
+                                   message:@"You'll get turn-by-turn directions."
+                                   preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:@"Turn On in Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }];
+    __weak MBXViewController *weakSelf = self;
+    UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"Keep Precise Location Off" style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {
+        weakSelf.mapView.userTrackingMode = MGLUserTrackingModeNone;
+        weakSelf.mapView.showsUserLocation = NO;
+    }];
+    [alert addAction:settingsAction];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)saveCurrentMapState:(__unused NSNotification *)notification {
