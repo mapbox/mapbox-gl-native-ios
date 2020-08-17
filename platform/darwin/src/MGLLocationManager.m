@@ -136,5 +136,9 @@
         [self.delegate locationManager:self didFailWithError:error];
     }
 }
-
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+- (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager {
+    [self.delegate locationManagerDidChangeAuthorization:self];
+}
+#endif
 @end

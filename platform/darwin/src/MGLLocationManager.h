@@ -217,6 +217,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)locationManager:(id<MGLLocationManager>)manager
        didFailWithError:(nonnull NSError *)error;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+/**
+ Notifies the delegate that the location authorization status has changed.
+ 
+ @param manager The location manager reporting the change.
+ */
+- (void)locationManagerDidChangeAuthorization:(id<MGLLocationManager>)manager;
+#endif
 
 @optional
 
