@@ -368,7 +368,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (CGPoint)mapViewUserLocationAnchorPoint:(MGLMapView *)mapView;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
 /**
  Tells the delegate that the map's location updates accuracy authorization has changed.
  
@@ -376,11 +375,10 @@ NS_ASSUME_NONNULL_BEGIN
  requesting location permissions or in privacy settings.
  
  @param mapView The map view that changed its location accuracy authorization.
- @param accuracyAuthorization The new accuracy authorization value.
+ @param manager The location manager reporting the update.
  
  */
-- (void)mapView:(MGLMapView *)mapView didChangeAccuracyAuthorization:(CLAccuracyAuthorization)accuracyAuthorization;
-#endif
+- (void)mapView:(MGLMapView *)mapView didChangeLocationManagerAuthorization:(id<MGLLocationManager>)manager API_AVAILABLE(ios(14));
 
 #pragma mark Managing the Appearance of Annotations
 

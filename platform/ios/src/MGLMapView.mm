@@ -6089,7 +6089,7 @@ public:
         }
     }
 }
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+
 - (void)locationManagerDidChangeAuthorization:(id<MGLLocationManager>)manager
 {
     if (![self shouldShowLocationDotBasedOnCurrentLocationPermissions])
@@ -6102,10 +6102,10 @@ public:
     }
     
     if (@available(iOS 14, *)) {
-        [self.delegate mapView:self didChangeAccuracyAuthorization:manager.accuracyAuthorization];
+        [self.delegate mapView:self didChangeLocationManagerAuthorization:manager];
     }
 }
-#endif
+
 - (BOOL)shouldShowLocationDotBasedOnCurrentLocationPermissions
 {
     return self.locationManager && (self.locationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways
