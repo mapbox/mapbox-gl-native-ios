@@ -17,19 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
  individual annotations.
  */
 @protocol MGLMapViewDelegate <NSObject>
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
-/**
- Tells the delegate that the map's location updates accuracy authorization has changed.
- 
- This method is called after the user changes location accuracy authorization when
- requesting location permissions or in privacy settings.
- 
- @param mapView The map view that changed its location accuracy authorization.
- @param accuracyAuthorization The new accuracy authorization value.
- 
- */
-- (void)mapView:(MGLMapView *)mapView didChangeAccuracyAuthorization:(CLAccuracyAuthorization)accuracyAuthorization;
-#endif
+
 @optional
 
 #pragma mark Responding to Map Position Changes
@@ -379,6 +367,20 @@ NS_ASSUME_NONNULL_BEGIN
  @param mapView The map view that is tracking the user's location.
  */
 - (CGPoint)mapViewUserLocationAnchorPoint:(MGLMapView *)mapView;
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+/**
+ Tells the delegate that the map's location updates accuracy authorization has changed.
+ 
+ This method is called after the user changes location accuracy authorization when
+ requesting location permissions or in privacy settings.
+ 
+ @param mapView The map view that changed its location accuracy authorization.
+ @param accuracyAuthorization The new accuracy authorization value.
+ 
+ */
+- (void)mapView:(MGLMapView *)mapView didChangeAccuracyAuthorization:(CLAccuracyAuthorization)accuracyAuthorization;
+#endif
 
 #pragma mark Managing the Appearance of Annotations
 
