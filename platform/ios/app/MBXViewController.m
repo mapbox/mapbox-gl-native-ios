@@ -2368,17 +2368,20 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }
 }
 
+- (void)mapView:(nonnull MGLMapView *)mapView didChangeLocationManagerAuthorization:(nonnull id<MGLLocationManager>)manager {
+    if (@available(iOS 14, *)) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
-- (void)mapView:(nonnull MGLMapView *)mapView didChangeAccuracyAuthorization:(CLAccuracyAuthorization)accuracyAuthorization {
-    if (accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
-        [self alertAccuracyChanges];
-    } else {
-        if (self.locationBlock) {
-            self.locationBlock();
+        if (manager.authorizationStatus == kCLAuthorizationStatusDenied || manager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
+            [self alertAccuracyChanges];
+        } else {
+            if (self.locationBlock) {
+                self.locationBlock();
+            }
         }
+#endif
     }
 }
-#endif
+
 - (void)alertAccuracyChanges {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Mapbox GL works best with your precise location."
                                    message:@"You'll get turn-by-turn directions."
