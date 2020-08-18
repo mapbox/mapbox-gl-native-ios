@@ -6090,6 +6090,28 @@ public:
     }
 }
 
+- (void)locationManagerDidChangeAuthorization:(id<MGLLocationManager>)manager
+{
+    if (![self shouldShowLocationDotBasedOnCurrentLocationPermissions])
+    {
+        [self.userLocationAnnotationView removeFromSuperview];
+        [self.locationManager stopUpdatingLocation];
+        [self.locationManager stopUpdatingHeading];
+    } else {
+        [self validateLocationServices];
+    }
+    
+    if (@available(iOS 14, *)) {
+        [self.delegate mapView:self didChangeLocationManagerAuthorization:manager];
+    }
+}
+
+- (BOOL)shouldShowLocationDotBasedOnCurrentLocationPermissions
+{
+    return self.locationManager && (self.locationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways
+                                    || self.locationManager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse);
+}
+
 - (void)updateHeadingForDeviceOrientation
 {
     if (self.locationManager)

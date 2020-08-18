@@ -368,6 +368,18 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (CGPoint)mapViewUserLocationAnchorPoint:(MGLMapView *)mapView;
 
+/**
+ Tells the delegate that the map's location updates accuracy authorization has changed.
+ 
+ This method is called after the user changes location accuracy authorization when
+ requesting location permissions or in privacy settings.
+ 
+ @param mapView The map view that changed its location accuracy authorization.
+ @param manager The location manager reporting the update.
+ 
+ */
+- (void)mapView:(MGLMapView *)mapView didChangeLocationManagerAuthorization:(id<MGLLocationManager>)manager API_AVAILABLE(ios(14));
+
 #pragma mark Managing the Appearance of Annotations
 
 /**
