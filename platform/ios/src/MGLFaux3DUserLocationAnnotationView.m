@@ -15,6 +15,8 @@ const CGFloat MGLUserLocationAnnotationArrowSize = MGLUserLocationAnnotationPuck
 
 const CGFloat MGLUserLocationHeadingUpdateThreshold = 0.01;
 
+const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
+
 @implementation MGLFaux3DUserLocationAnnotationView
 {
     BOOL _puckModeActivated;
@@ -485,19 +487,18 @@ const CGFloat MGLUserLocationHeadingUpdateThreshold = 0.01;
         _approximateModeActivated = YES;
     }
 
-    // update accuracy ring (if zoom or horizontal accuracy have changed)
+    // update approximate ring (if zoom or horizontal accuracy have changed)
     if (_approximateLayer && (_oldZoom != self.mapView.zoomLevel || _oldHorizontalAccuracy != self.userLocation.location.horizontalAccuracy))
     {
         CGFloat borderWidth = 2;
-        if (self.mapView.zoomLevel < 7) {
+        if (self.mapView.zoomLevel < MGLUserLocationApproximateZoomThreshold) {
             borderWidth = 3;
         }
         _approximateLayer.borderWidth = borderWidth;
         
-        if (self.mapView.zoomLevel >= 7) {
+        if (self.mapView.zoomLevel >= MGLUserLocationApproximateZoomThreshold) {
             CGFloat accuracyRingSize = [self calculateAccuracyRingSize];
 
-            // only show the accuracy ring if it won't be obscured by the location dot
             _approximateLayer.hidden = NO;
 
             // disable implicit animation of the accuracy ring, unless triggered by a change in accuracy
@@ -517,7 +518,7 @@ const CGFloat MGLUserLocationHeadingUpdateThreshold = 0.01;
         _oldZoom = self.mapView.zoomLevel;
     }
 
-    // accuracy ring
+    // approximate ring
     if ( ! _approximateLayer && self.userLocation.location.horizontalAccuracy)
     {
         CGFloat accuracyRingSize = [self calculateAccuracyRingSize];
