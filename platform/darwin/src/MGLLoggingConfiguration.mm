@@ -66,14 +66,16 @@ public:
     }
 }
 
+- (void)logCallingFunction:(const char *)callingFunction functionLine:(NSUInteger)functionLine messageType:(MGLLoggingLevel)type format:(id)messageFormat arguments:(va_list)args {
+    NSString *formattedMessage = [[NSString alloc] initWithFormat:messageFormat arguments:args];
+    _handler(type, @(callingFunction), functionLine, formattedMessage);
+}
+
 - (void)logCallingFunction:(const char *)callingFunction functionLine:(NSUInteger)functionLine messageType:(MGLLoggingLevel)type format:(id)messageFormat, ... {
     va_list formatList;
     va_start(formatList, messageFormat);
-    NSString *formattedMessage = [[NSString alloc] initWithFormat:messageFormat arguments:formatList];
+    [self logCallingFunction:callingFunction functionLine:functionLine messageType:type format:messageFormat arguments:formatList];
     va_end(formatList);
-    
-    _handler(type, @(callingFunction), functionLine, formattedMessage);
-    
 }
 
 - (MGLLoggingBlockHandler)defaultBlockHandler {

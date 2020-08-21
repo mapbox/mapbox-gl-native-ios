@@ -21,7 +21,7 @@ NS_INLINE NSString *MGLStringFromNSEdgeInsets(NSEdgeInsets insets) {
 #else
 
 #if MGL_LOGGING_ENABLE_DEBUG
-    #define MGLLogDebug(message, ...) MGLLogWithType(MGLLoggingLevelDebug, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+    #define MGLLogDebug(message, ...)   MGLLogWithType(MGLLoggingLevelDebug, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
 #else
     #define MGLLogDebug(...)
 #endif
@@ -61,6 +61,7 @@ NS_INLINE NSString *MGLStringFromNSEdgeInsets(NSEdgeInsets insets) {
 
 @interface MGLLoggingConfiguration (Private)
 
+- (void)logCallingFunction:(const char *)callingFunction functionLine:(NSUInteger)functionLine messageType:(MGLLoggingLevel)type format:(id)messageFormat arguments:(va_list)args;
 - (void)logCallingFunction:(const char *)callingFunction functionLine:(NSUInteger)functionLine messageType:(MGLLoggingLevel)type format:(id)messageFormat, ...;
 
 @end

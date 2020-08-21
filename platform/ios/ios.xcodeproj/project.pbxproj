@@ -404,6 +404,7 @@
 		CA65C4F821E9BB080068B0D4 /* MGLCluster.h in Headers */ = {isa = PBXBuildFile; fileRef = CA65C4F721E9BB080068B0D4 /* MGLCluster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CA65C4F921E9BB080068B0D4 /* MGLCluster.h in Headers */ = {isa = PBXBuildFile; fileRef = CA65C4F721E9BB080068B0D4 /* MGLCluster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CA6914B520E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA6914B420E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm */; };
+		CA70A58224E44F03008B5361 /* MBXLoggingConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA70A58124E44F03008B5361 /* MBXLoggingConfigurationTests.m */; };
 		CA7766832229C10E0008DE9E /* MGLCompactCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA8848451CBAFB9800AB86E3 /* MGLCompactCalloutView.m */; };
 		CA7766842229C11A0008DE9E /* SMCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA88488A1CBB037E00AB86E3 /* SMCalloutView.m */; };
 		CA7965A824D212D60007E0C4 /* MGLEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = CA7965A624D212D60007E0C4 /* MGLEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1073,6 +1074,7 @@
 		CA60014A242BD8710041BBEC /* MGLIntegrationTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLIntegrationTestCase.h; sourceTree = "<group>"; };
 		CA65C4F721E9BB080068B0D4 /* MGLCluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGLCluster.h; sourceTree = "<group>"; };
 		CA6914B420E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = MGLAnnotationViewIntegrationTests.mm; path = "Annotation Tests/MGLAnnotationViewIntegrationTests.mm"; sourceTree = "<group>"; };
+		CA70A58124E44F03008B5361 /* MBXLoggingConfigurationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBXLoggingConfigurationTests.m; sourceTree = "<group>"; };
 		CA7965A624D212D60007E0C4 /* MGLEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLEvent.h; sourceTree = "<group>"; };
 		CA7965A724D212D60007E0C4 /* MGLEvent.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLEvent.mm; sourceTree = "<group>"; };
 		CA7965AC24D2135F0007E0C4 /* MGLEvent_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGLEvent_Private.h; sourceTree = "<group>"; };
@@ -1965,6 +1967,7 @@
 				409F43FB1E9E77D10048729D /* Swift Integration */,
 				4031ACFD1E9FD26900A3EA26 /* Test Helpers */,
 				CA86FF0D22D8D5A0009EB14A /* MGLNetworkConfigurationTests.m */,
+				CA70A58124E44F03008B5361 /* MBXLoggingConfigurationTests.m */,
 			);
 			name = "SDK Tests";
 			path = test;
@@ -3185,6 +3188,7 @@
 				1F8E8A81233A9FD9009B51ED /* MGLMapViewGestureRecognizerTests.mm in Sources */,
 				353D23961D0B0DFE002BE09D /* MGLAnnotationViewTests.m in Sources */,
 				DA0CD5901CF56F6A00A5F5A5 /* MGLFeatureTests.mm in Sources */,
+				CA70A58224E44F03008B5361 /* MBXLoggingConfigurationTests.m in Sources */,
 				556660D81E1D085500E2C41B /* MGLVersionNumber.m in Sources */,
 				4031ACFF1E9FD29F00A3EA26 /* MGLSDKTestHelpers.swift in Sources */,
 				16376B491FFEED010000563E /* MGLMapViewLayoutTests.m in Sources */,
