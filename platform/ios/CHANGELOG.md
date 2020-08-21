@@ -10,6 +10,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Added `[MGLLocationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKeyproperty:]` to allow developers request just-in-time full-accuracy permissions. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
 * Added `[MGLLocationManagerDelegate locationManagerDidChangeAuthorization:]` to let `MGLMapView` know about privacy changes. ([#376](https://github.com/mapbox/mapbox-gl-native-ios/pull/376))
 * Added `[MGLMapViewDelegate mapView:didChangeLocationManagerAuthorization:]` to allow developers adjust their apps to privacy settings changes. ([#376](https://github.com/mapbox/mapbox-gl-native-ios/pull/376))
+* Added an approximate user location halo when `MGLLocationManager.accuracyAuthorization` is set to `CLAccuracyAuthorizationReducedAccuracy`. ([#381](https://github.com/mapbox/mapbox-gl-native-ios/pull/381))
 
 ## 6.1.0
 
