@@ -27,7 +27,7 @@
     NSUInteger expectedCount = expectedLevels.count;
 
     XCTestExpectation *expectation = [self expectationWithDescription:
-                                      [NSString stringWithFormat:@"Logging expecting %lu levels", expectedCount]];
+                                      [NSString stringWithFormat:@"Logging expecting %lu levels", (unsigned long)expectedCount]];
     if (expectedCount > 0) {
         expectation.expectedFulfillmentCount = expectedCount;
     }
