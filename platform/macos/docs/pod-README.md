@@ -27,7 +27,7 @@ There are three ways to install the Mapbox Maps SDK for macOS:
 The Mapbox Maps SDK for macOS is a binary-only dependency, so you’ll need Carthage 0.19 or above. In your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#binary-only-frameworks), specify this dependency (plus an optional version requirement):
 
 ```
-binary "https://mapbox.github.io/mapbox-gl-native-ios/macos/Mapbox-macOS-SDK.json"
+binary "https://mapbox.github.io/mapbox-gl-native/macos/Mapbox-macOS-SDK.json"
 ```
 
 After running `carthage update`, you’ll find Mapbox.framework in the Carthage/Build/ folder. Follow [these instructions](https://github.com/Carthage/Carthage#if-youre-building-for-os-x) to integrate it into your project.
