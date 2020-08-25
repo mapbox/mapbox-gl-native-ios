@@ -152,4 +152,17 @@ static MGLMapView *mapView;
     [self waitForExpectations:@[expectation] timeout:1];
 }
 
+- (void)testCoordinateConversion {
+    CLLocationCoordinate2D originalCoordinate = CLLocationCoordinate2DMake(37.3388998652851, -122.0322914835960);
+    NSLog(@"Original coordinate latitude: %.13f, longitude: %.13f", originalCoordinate.latitude, originalCoordinate.longitude);
+    
+    CGPoint point = [mapView convertCoordinate:originalCoordinate toPointToView:mapView];
+    CLLocationCoordinate2D convertedCoordinate = [mapView convertPoint:point toCoordinateFromView:mapView];
+    
+    NSLog(@"Converted coordinate latitude: %.13f, longitude: %.13f", convertedCoordinate.latitude, convertedCoordinate.longitude);
+
+    XCTAssertEqual(originalCoordinate.latitude, convertedCoordinate.latitude, @"Latitudes of original and converted coordinates should be equal.");
+    XCTAssertEqual(originalCoordinate.longitude, convertedCoordinate.longitude, @"Longitudes of original and converted coordinates should be equal.");
+}
+
 @end
