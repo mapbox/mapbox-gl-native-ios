@@ -26,7 +26,7 @@
 	<true/>
 	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
 	<dict>
-		<key>MBXRequestAccuracy</key>
+		<key>MGLAccuracyAuthorizationDescription</key>
 		<string>Mapbox requires your precise location to help you navigate the map.</string>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
