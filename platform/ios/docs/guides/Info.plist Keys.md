@@ -12,7 +12,7 @@ As an alternative, you can use `MGLAccountManager.accessToken` to set a token in
 
 ## MGLAccuracyAuthorizationDescription
 
-Set the Mapbox accuracy authorization description string as an element of `NSLocationTemporaryUsageDescriptionDictionary` to be used by the map to request authorization when the `MGLLocationManager.accuracyAuthorization` is set to `CLAccuracyAuthorizationReducedAccuracy`.
+Set the Mapbox accuracy authorization description string as an element of `NSLocationTemporaryUsageDescriptionDictionary` to be used by the map to request authorization when the `MGLLocationManager.accuracyAuthorization` is set to `CLAccuracyAuthorizationReducedAccuracy`. Requesting accuracy authorization is available for devices running iOS 14.0 and above. 
 
 Example:
 ```
