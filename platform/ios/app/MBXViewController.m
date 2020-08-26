@@ -1972,18 +1972,6 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 
 - (IBAction)locateUser:(id)sender
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
-    if (@available(iOS 14, *)) {
-        if (self.mapView.locationManager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
-            [self.mapView.locationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:@"MBXRequestAccuracy"];
-            __weak MBXViewController *weakSelf = self;
-            self.locationBlock = ^{
-                [weakSelf nextTrackingMode:sender];
-            };
-            return;
-        }
-    }
-#endif
     [self nextTrackingMode:sender];
 }
 
@@ -2373,10 +2361,6 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
         if (manager.authorizationStatus == kCLAuthorizationStatusDenied || manager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
             [self alertAccuracyChanges];
-        } else {
-            if (self.locationBlock) {
-                self.locationBlock();
-            }
         }
 #endif
     }
@@ -2390,12 +2374,9 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:@"Turn On in Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
     }];
-    __weak MBXViewController *weakSelf = self;
+
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"Keep Precise Location Off" style:UIAlertActionStyleDefault
-       handler:^(UIAlertAction * action) {
-        weakSelf.mapView.userTrackingMode = MGLUserTrackingModeNone;
-        weakSelf.mapView.showsUserLocation = NO;
-    }];
+       handler:nil];
     [alert addAction:settingsAction];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];

@@ -5532,6 +5532,11 @@ public:
     }
 }
 
+- (NSString *)accuracyDescriptionString {
+    NSDictionary *dictionary = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationTemporaryUsageDescriptionDictionary"];
+    return dictionary[@"MGLAccuracyAuthorizationDescription"];
+}
+
 - (void)setShowsUserLocation:(BOOL)showsUserLocation
 {
     MGLLogDebug(@"Setting showsUserLocation: %@", MGLStringFromBOOL(showsUserLocation));
@@ -6098,7 +6103,21 @@ public:
         [self.locationManager stopUpdatingLocation];
         [self.locationManager stopUpdatingHeading];
     } else {
-        [self validateLocationServices];
+        if (@available(iOS 14, *)) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+            if ((manager.authorizationStatus != kCLAuthorizationStatusRestricted ||
+                 manager.authorizationStatus != kCLAuthorizationStatusAuthorizedAlways ||
+                 manager.authorizationStatus != kCLAuthorizationStatusAuthorizedWhenInUse) &&
+                manager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy &&
+                [self accuracyDescriptionString] != nil ) {
+                [self.locationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:@"MGLAccuracyAuthorizationDescription"];
+            } else {
+                [self validateLocationServices];
+            }
+#endif
+        } else {
+            [self validateLocationServices];
+        }
     }
     
     if (@available(iOS 14, *)) {
