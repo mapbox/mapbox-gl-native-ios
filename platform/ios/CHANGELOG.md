@@ -2,7 +2,7 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-# 6.2.0
+## 6.2.0
 
 ### ✨ New features
 
