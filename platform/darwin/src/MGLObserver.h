@@ -26,7 +26,7 @@ MGL_EXPORT
 #pragma mark -
 
 /**
- Protocol that yypes that wish to support subscriptions for events should conform
+ Protocol that types that wish to support subscriptions for events should conform
  to.
  */
 MGL_EXPORT
