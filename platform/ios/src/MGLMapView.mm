@@ -6121,7 +6121,9 @@ public:
     }
     
     if (@available(iOS 14, *)) {
-        [self.delegate mapView:self didChangeLocationManagerAuthorization:manager];
+        if ([self.delegate respondsToSelector:@selector(mapView:didChangeLocationManagerAuthorization:)]) {
+            [self.delegate mapView:self didChangeLocationManagerAuthorization:manager];
+        }
     }
 }
 
