@@ -313,6 +313,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)mapViewDidStopLocatingUser:(MGLMapView *)mapView;
 
+- (MGLUserLocationStyle)mapViewStyleForUserLocationView:(MGLMapView *)mapView;
+
 /**
  Tells the delegate that the location of the user was updated.
 

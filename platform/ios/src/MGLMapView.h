@@ -134,6 +134,25 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const MGLMissingLocationServicesUs
 FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const MGLUserLocationAnnotationTypeException;
 
 /**
+ A structure containing information about the default User Location view style.
+ */
+typedef struct __attribute__((objc_boxable)) MGLUserLocationStyle {
+    UIColor *puckFillColor;
+    UIColor *puckShadowColor;
+    CGFloat puckShadowOpacity;
+    
+    UIColor *puckArrowFillColor;
+    
+    UIColor *haloFillColor;
+    
+    UIColor *approximateHaloFillColor;
+    UIColor *approximateHaloBorderColor;
+    CGFloat approximateHaloBorderWidth;
+    CGFloat approximateHaloOpacity;
+    
+} MGLUserLocationStyle;
+
+/**
  An interactive, customizable map view with an interface similar to the one
  provided by Apple’s MapKit.
 
