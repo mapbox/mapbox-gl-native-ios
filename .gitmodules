@@ -1,3 +1,0 @@
-[submodule "platform/darwin/docs/theme"]
-	path = platform/darwin/docs/theme
-	url = https://github.com/mapbox/jazzy-theme.git
