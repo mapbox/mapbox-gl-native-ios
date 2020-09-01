@@ -89,23 +89,26 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
 - (void)setTintColor:(UIColor *)tintColor
 {
     CGColorRef newTintColor = [tintColor CGColor];
-
-    if (_puckModeActivated)
-    {
-        _puckArrow.fillColor = newTintColor;
-        _puckArrow.strokeColor = newTintColor;
+    
+    if (![self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
+        if (_puckModeActivated)
+        {
+            _puckArrow.fillColor = newTintColor;
+            _puckArrow.strokeColor = newTintColor;
+        }
+        else if (_approximateModeActivated)
+        {
+            _approximateLayer.backgroundColor = newTintColor;
+        }
+        else
+        {
+            _accuracyRingLayer.backgroundColor = newTintColor;
+            _haloLayer.backgroundColor = newTintColor;
+            _dotLayer.backgroundColor = newTintColor;
+            [_headingIndicatorLayer updateTintColor:newTintColor];
+        }
     }
-    else if (_approximateModeActivated)
-    {
-        _approximateLayer.backgroundColor = newTintColor;
-    }
-    else
-    {
-        _accuracyRingLayer.backgroundColor = newTintColor;
-        _haloLayer.backgroundColor = newTintColor;
-        _dotLayer.backgroundColor = newTintColor;
-        [_headingIndicatorLayer updateTintColor:newTintColor];
-    }
+    
 }
 
 - (void)updatePitch
@@ -185,8 +188,8 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     CGFloat shadowOpacity = 0.25;
 
     
-    if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForUserLocationView:)]) {
-        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForUserLocationView:self.mapView];
+    if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
+        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         arrowColor = style.puckArrowFillColor ? style.puckArrowFillColor : arrowColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
         shadowOpacity = style.puckShadowOpacity;
@@ -275,13 +278,13 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     }
     
     UIColor *haloColor = self.mapView.tintColor;
-    UIColor *puckBackgroundColor = UIColor.blackColor;
+    UIColor *puckBackgroundColor = self.mapView.tintColor;
     UIColor *puckShadowColor = UIColor.blackColor;
     CGFloat shadowOpacity = 0.25;
 
     
-    if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForUserLocationView:)]) {
-        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForUserLocationView:self.mapView];
+    if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
+        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         haloColor = style.haloFillColor ? style.haloFillColor : haloColor;
         puckBackgroundColor = style.puckFillColor ? style.puckFillColor : puckBackgroundColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
@@ -521,8 +524,8 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     CGFloat borderSize = 2.0;
     CGFloat opacity = 0.25;
     
-    if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForUserLocationView:)]) {
-        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForUserLocationView:self.mapView];
+    if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
+        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         backgroundColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : backgroundColor;
         strokeColor = style.approximateHaloBorderColor ? style.approximateHaloBorderColor : strokeColor;
         opacity = style.approximateHaloOpacity;

@@ -134,20 +134,46 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const MGLMissingLocationServicesUs
 FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const MGLUserLocationAnnotationTypeException;
 
 /**
- A structure containing information about the default User Location view style.
+ A structure containing information about the default User Location annotation view style.
  */
 typedef struct __attribute__((objc_boxable)) MGLUserLocationStyle {
+    /**
+     The puck's view fill color.
+     */
     UIColor *puckFillColor;
+    /**
+     The puck's view shadow color.
+     */
     UIColor *puckShadowColor;
+    /**
+     The puck's view shadow opacity.
+     Set any value between 0.0 and 1.0
+     */
     CGFloat puckShadowOpacity;
-    
+    /**
+     The puck's arrow fill color.
+     */
     UIColor *puckArrowFillColor;
-    
+    /**
+     The puck's halo fill color.
+     */
     UIColor *haloFillColor;
-    
+    /**
+     The approximate's view halo fill color.
+     */
     UIColor *approximateHaloFillColor;
+    /**
+     The approximate's view halo border color.
+     */
     UIColor *approximateHaloBorderColor;
+    /**
+     The approximate's view halo border width.
+     */
     CGFloat approximateHaloBorderWidth;
+    /**
+     The approximate's view halo opacity.
+     Set any value between 0.0 and 1.0
+     */
     CGFloat approximateHaloOpacity;
     
 } MGLUserLocationStyle;
