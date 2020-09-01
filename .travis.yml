@@ -1,0 +1,30 @@
+# once a new release tag is recreated, circle.yml sends a request to travis.yml
+# travis.yml builds the documentation in this repo and create a pull request
+sudo: false
+notifications:
+  email: false
+cache:
+  bundler: true
+  directories:
+    - node_modules
+    - /home/travis/.rvm/
+git:
+  depth: 3
+  submodules: false
+env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+before_install:
+  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+
+jobs:
+  include:
+    - name: "Build Maps Release Docs"
+      os: osx
+      osx_image: xcode10.2
+      if: env(SDK_FLAVOR) = maps AND env(RELEASE_TAG) IS PRESENT
+      script:
+        - npm install --ignore-scripts
+        - git config user.email "MapboxCI@users.noreply.github.com"
+        - ./scripts/docs-update-maps.sh $RELEASE_TAG
+        - ./scripts/docs-github-pull-request.js $SDK_FLAVOR $RELEASE_TAG

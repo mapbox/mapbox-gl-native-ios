@@ -10,7 +10,7 @@ workflows:
     jobs:
       #
       # Naming convention: {platform}-{additional description}-{build type}
-      #   - {platform} is the client platform/framework, which may differ from 
+      #   - {platform} is the client platform/framework, which may differ from
       #     the build platform. Specify both if applicable, e.g., "qt5-macos".
       #   - {additional description} optionally describes the compiler or other
       #     unique aspect of the build environment.
@@ -23,10 +23,10 @@ workflows:
               buildtype: ["Debug", "Release"]
       - ios-release-template:
           name: ios-release
-      # This should depend on sanitize jobs              
+      # This should depend on sanitize jobs
       - ios-release-tag:
         # Commenting out to test for release.
-          # requires: 
+          # requires:
           #   - ios-build
           #   - ios-release
           filters:
@@ -35,7 +35,7 @@ workflows:
             branches:
               ignore: /.*/
       - ios-trigger-metrics:
-          requires: 
+          requires:
             - ios-build
             - ios-release
           filters:
@@ -55,7 +55,7 @@ workflows:
       - ios-build:
           name: ios-build-12
           xcode: "12.0.0"
-          beta: true          
+          beta: true
       - ios-build:
           matrix:
             parameters:
@@ -64,7 +64,7 @@ workflows:
       - ios-sanitize-nightly:
           requires:
             - ios-build
-      # TODO: Add matrix for these                  
+      # TODO: Add matrix for these
       - ios-sanitize-address-nightly:
           requires:
             - ios-build
@@ -75,7 +75,7 @@ workflows:
           requires:
             - ios-build
           name: ios-release-nightly
-      - metrics-nightly:      
+      - metrics-nightly:
           requires:
             - ios-release-nightly
 
@@ -488,7 +488,13 @@ jobs:
       - install-dependencies
       - install-ios-packaging-dependencies
       - run:
-          name: Trigger external deploy steps
+          name: Trigger documentation deploy steps
+          command: |
+            export VERSION_TAG=${CIRCLE_TAG}
+            export DOCS_REPO="mapbox-gl-native-ios"
+            scripts/trigger-maps-documentation-deploy-steps.sh
+      - run:
+          name: Trigger external deploy steps in ios-sdk
           command: |
             export VERSION_TAG=${CIRCLE_TAG}
             export DOCS_REPO="ios-sdk"
