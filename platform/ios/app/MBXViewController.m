@@ -1931,6 +1931,10 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }
 }
 
++ (NSURL *)greenStyleURL {
+    return [[NSBundle bundleForClass:[self class]] URLForResource:@"green" withExtension:@"json"];
+}
+
 - (IBAction)cycleStyles:(__unused id)sender
 {
     static NSArray *styleNames;
@@ -1945,6 +1949,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             @"Dark",
             @"Satellite",
             @"Satellite Streets",
+            @"Green"
         ];
         styleURLs = @[
             [MGLStyle streetsStyleURL],
@@ -1952,7 +1957,8 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             [MGLStyle lightStyleURL],
             [MGLStyle darkStyleURL],
             [MGLStyle satelliteStyleURL],
-            [MGLStyle satelliteStreetsStyleURL]
+            [MGLStyle satelliteStreetsStyleURL],
+            [MBXViewController greenStyleURL]
         ];
         NSAssert(styleNames.count == styleURLs.count, @"Style names and URLs don’t match.");
 
@@ -1971,9 +1977,9 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             }
         }
         free(methods);
-        NSAssert(numStyleURLMethods == styleNames.count,
+        NSAssert(numStyleURLMethods == styleNames.count - 1,
                  @"MGLStyle provides %u default styles but iosapp only knows about %lu of them.",
-                 numStyleURLMethods, (unsigned long)styleNames.count);
+                 numStyleURLMethods, (unsigned long)styleNames.count - 1);
     });
 
     self.styleIndex = (self.styleIndex + 1) % styleNames.count;
