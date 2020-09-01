@@ -6105,7 +6105,8 @@ public:
     } else {
         if (@available(iOS 14, *)) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
-            if ((manager.authorizationStatus != kCLAuthorizationStatusRestricted ||
+            if (self.userTrackingMode != MGLUserTrackingModeNone &&
+                (manager.authorizationStatus != kCLAuthorizationStatusRestricted ||
                  manager.authorizationStatus != kCLAuthorizationStatusAuthorizedAlways ||
                  manager.authorizationStatus != kCLAuthorizationStatusAuthorizedWhenInUse) &&
                 manager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy &&
