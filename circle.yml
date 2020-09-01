@@ -319,6 +319,7 @@ jobs:
         default: false
     macos:
       xcode: << parameters.xcode >>
+      beta: << parameters.beta >>
     environment:
       BUILDTYPE: << parameters.buildtype >>
       BETA: << parameters.beta >>
