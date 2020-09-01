@@ -467,11 +467,16 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-tag:
+    parameters:
+      beta:
+        type: boolean
+        default: false
     macos:
       xcode: "12.0.0"
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
+      BETA: << parameters.beta >>
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
