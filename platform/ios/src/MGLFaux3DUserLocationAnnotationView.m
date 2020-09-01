@@ -189,7 +189,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
 
     
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
-        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
+        MGLUserLocationAnnotationViewStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         arrowColor = style.puckArrowFillColor ? style.puckArrowFillColor : arrowColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
         shadowOpacity = style.puckShadowOpacity;
@@ -284,7 +284,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
 
     
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
-        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
+        MGLUserLocationAnnotationViewStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         haloColor = style.haloFillColor ? style.haloFillColor : haloColor;
         puckBackgroundColor = style.puckFillColor ? style.puckFillColor : puckBackgroundColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
@@ -525,7 +525,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     CGFloat opacity = 0.25;
     
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
-        MGLUserLocationStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
+        MGLUserLocationAnnotationViewStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         backgroundColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : backgroundColor;
         strokeColor = style.approximateHaloBorderColor ? style.approximateHaloBorderColor : strokeColor;
         opacity = style.approximateHaloOpacity;

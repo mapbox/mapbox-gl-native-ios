@@ -136,7 +136,7 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const MGLUserLocationAnnotationTyp
 /**
  A structure containing information about the default User Location annotation view style.
  */
-typedef struct __attribute__((objc_boxable)) MGLUserLocationStyle {
+typedef struct __attribute__((objc_boxable)) MGLUserLocationAnnotationViewStyle {
     /**
      The puck's view fill color.
      */
@@ -176,7 +176,7 @@ typedef struct __attribute__((objc_boxable)) MGLUserLocationStyle {
      */
     CGFloat approximateHaloOpacity;
     
-} MGLUserLocationStyle;
+} MGLUserLocationAnnotationViewStyle;
 
 /**
  An interactive, customizable map view with an interface similar to the one
