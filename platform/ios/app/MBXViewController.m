@@ -48,7 +48,8 @@ typedef NS_ENUM(NSInteger, MBXSettingsDebugToolsRows) {
     MBXSettingsDebugToolsOverdrawVisualization,
     MBXSettingsDebugToolsShowZoomLevel,
     MBXSettingsDebugToolsShowFrameTimeGraph,
-    MBXSettingsDebugToolsShowReuseQueueStats
+    MBXSettingsDebugToolsShowReuseQueueStats,
+    MBXSettingsDebugToolsSetPreferredFramesPerSecond
 };
 
 typedef NS_ENUM(NSInteger, MBXSettingsAnnotationsRows) {
@@ -391,7 +392,10 @@ CLLocationCoordinate2D randomWorldCoordinate() {
                     (debugMask & MGLMapDebugOverdrawVisualizationMask ? @"Hide" :@"Show")],
                 [NSString stringWithFormat:@"%@ zoom level ornament", (self.zoomLevelOrnamentEnabled ? @"Hide" :@"Show")],
                 [NSString stringWithFormat:@"%@ frame time graph", (self.frameTimeGraphEnabled ? @"Hide" :@"Show")],
-                [NSString stringWithFormat:@"%@ reuse queue stats", (self.reuseQueueStatsEnabled ? @"Hide" :@"Show")]
+                [NSString stringWithFormat:@"%@ reuse queue stats", (self.reuseQueueStatsEnabled ? @"Hide" :@"Show")],
+                ((self.mapView.preferredFramesPerSecond != MGLMapViewPreferredFramesPerSecondLowPower)?
+                 [NSString stringWithFormat:@"Set preferred FPS to: %ld", (long)MGLMapViewPreferredFramesPerSecondLowPower ] :
+                 @"Set preferred FPS to: Maximum")
             ]];
             break;
         case MBXSettingsAnnotations:
@@ -514,6 +518,16 @@ CLLocationCoordinate2D randomWorldCoordinate() {
                     self.hudLabel.hidden = !self.currentState.reuseQueueStatsEnabled;
                     self.zoomLevelOrnamentEnabled = NO;
                     [self updateHUD];
+                    break;
+                }
+                case MBXSettingsDebugToolsSetPreferredFramesPerSecond:
+                {
+                    if (self.mapView.preferredFramesPerSecond != MGLMapViewPreferredFramesPerSecondLowPower) {
+                        self.mapView.preferredFramesPerSecond = MGLMapViewPreferredFramesPerSecondLowPower;
+                    }
+                    else {
+                        self.mapView.preferredFramesPerSecond = MGLMapViewPreferredFramesPerSecondMaximum;
+                    }
                     break;
                 }
                 default:
