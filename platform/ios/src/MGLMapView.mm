@@ -292,7 +292,8 @@ public:
 
 @property (nonatomic) NSMutableSet<MGLObserver *> *observerCache;
 
-@property (nonatomic) os_log_t log;
+@property (nonatomic, readwrite, nonnull) os_log_t log;
+@property (nonatomic, readwrite) os_signpost_id_t signpost;
 
 - (mbgl::Map &)mbglMap;
 
@@ -466,6 +467,7 @@ public:
     _opaque = NO;
 
     _log = os_log_create("com.mapbox.signposts", "MGLMapView");
+    _signpost = OS_SIGNPOST_ID_INVALID;
 
     // setup accessibility
 //  self.isAccessibilityElement = YES;
@@ -7038,6 +7040,25 @@ static std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfS
     self.mbglMap.unsubscribe(observer.peer);
     [self.observerCache removeObject:observer];
     observer.observing = NO;
+}
+
+#pragma mark - Signposts -
+
+- (void)setExperimental_enableSignpost:(BOOL)enable
+{
+    if (enable) {
+        self.signpost = MGL_CREATE_SIGNPOST(self.log);
+        MGL_SIGNPOST_EVENT(self.log, self.signpost, "enableSignpost", "Signpost:YES");
+    }
+    else {
+        MGL_SIGNPOST_EVENT(self.log, self.signpost, "enableSignpost", "Signpost:NO");
+        self.signpost = OS_SIGNPOST_ID_INVALID;
+    }
+}
+
+- (BOOL)experimental_enableSignpost {
+    return ((self.signpost != OS_SIGNPOST_ID_INVALID) &&
+            (self.signpost != OS_SIGNPOST_ID_NULL));
 }
 
 @end

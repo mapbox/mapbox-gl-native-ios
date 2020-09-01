@@ -7,6 +7,9 @@
 /** Enable rendering performance measurement. */
 @property (nonatomic) BOOL experimental_enableFrameRateMeasurement;
 
+/** Enable MGLMapView measurement via os_signpost. */
+@property (nonatomic) BOOL experimental_enableSignpost;
+
 /**
  Average frames per second over the previous second, updated once per second.
 

@@ -49,7 +49,8 @@ typedef NS_ENUM(NSInteger, MBXSettingsDebugToolsRows) {
     MBXSettingsDebugToolsShowZoomLevel,
     MBXSettingsDebugToolsShowFrameTimeGraph,
     MBXSettingsDebugToolsShowReuseQueueStats,
-    MBXSettingsDebugToolsSetPreferredFramesPerSecond
+    MBXSettingsDebugToolsSetPreferredFramesPerSecond,
+    MBXSettingsDebugToolsSetSignpostEnabled
 };
 
 typedef NS_ENUM(NSInteger, MBXSettingsAnnotationsRows) {
@@ -395,7 +396,8 @@ CLLocationCoordinate2D randomWorldCoordinate() {
                 [NSString stringWithFormat:@"%@ reuse queue stats", (self.reuseQueueStatsEnabled ? @"Hide" :@"Show")],
                 ((self.mapView.preferredFramesPerSecond != MGLMapViewPreferredFramesPerSecondLowPower)?
                  [NSString stringWithFormat:@"Set preferred FPS to: %ld", (long)MGLMapViewPreferredFramesPerSecondLowPower ] :
-                 @"Set preferred FPS to: Maximum")
+                 @"Set preferred FPS to: Maximum"),
+                [NSString stringWithFormat:@"%@ signpost", (self.mapView.experimental_enableSignpost ? @"Disable" :@"Enable")]
             ]];
             break;
         case MBXSettingsAnnotations:
@@ -530,6 +532,12 @@ CLLocationCoordinate2D randomWorldCoordinate() {
                     }
                     break;
                 }
+                case MBXSettingsDebugToolsSetSignpostEnabled:
+                {
+                    self.mapView.experimental_enableSignpost = !self.mapView.experimental_enableSignpost;
+                    break;
+                }
+
                 default:
                     NSAssert(NO, @"All debug tools setting rows should be implemented");
                     break;

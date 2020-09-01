@@ -1,8 +1,10 @@
 #import "MGLMapView.h"
 #import "MGLUserLocationAnnotationView.h"
 #import "MGLAnnotationContainerView.h"
+#import <os/signpost.h>
 
 #include <mbgl/util/size.hpp>
+
 
 namespace mbgl {
     class Map;
@@ -71,6 +73,9 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 @property (nonatomic, nonnull) MGLUserLocationAnnotationView *userLocationAnnotationView;
 @property (nonatomic, nonnull) MGLAnnotationContainerView *annotationContainerView;
 @property (nonatomic, readonly) BOOL enablePresentsWithTransaction;
+
+@property (nonatomic, readonly, nonnull) os_log_t log;
+@property (nonatomic, readonly) os_signpost_id_t signpost;
 
 - (BOOL) _opaque;
 
