@@ -469,6 +469,7 @@ jobs:
   ios-release-tag:
     macos:
       xcode: "12.0.0"
+      beta: true
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
