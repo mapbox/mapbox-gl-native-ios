@@ -146,12 +146,12 @@ CLLocationCoordinate2D randomWorldCoordinate() {
         CLLocationDistance radius;
     } landmasses[] = {
         // Rough land masses
-//        {{ 38.328531,   94.778736 },    4100000 },  // Asia
-//        {{ 1.477244,    18.138111 },    4100000 },  // Africa
-//        {{ 52.310059,   22.295425 },    2000000 },  // Europe
-//        {{ 42.344216,   -96.532700 },   3000000 },  // N America
-//        {{ -11.537273,  -57.035181 },   2220000 },  // S America
-//        {{ -20.997030,  134.660541 },   2220000 },  // Australia
+        {{ 38.328531,   94.778736 },    4100000 },  // Asia
+        {{ 1.477244,    18.138111 },    4100000 },  // Africa
+        {{ 52.310059,   22.295425 },    2000000 },  // Europe
+        {{ 42.344216,   -96.532700 },   3000000 },  // N America
+        {{ -11.537273,  -57.035181 },   2220000 },  // S America
+        {{ -20.997030,  134.660541 },   2220000 },  // Australia
 
         // A few cities
         {{ 51.504787,   -0.106977 },    33000 },     // London
@@ -219,7 +219,6 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 @property (nonatomic) BOOL frameTimeGraphEnabled;
 @property (nonatomic) BOOL shouldLimitCameraChanges;
 @property (nonatomic) BOOL randomWalk;
-@property (nonatomic) NSInteger randomWalkNumberOfLegs;
 @property (nonatomic) BOOL zoomLevelOrnamentEnabled;
 @property (nonatomic) NSMutableArray<UIWindow *> *helperWindows;
 @property (nonatomic) NSMutableArray<UIView *> *contentInsetsOverlays;
@@ -1779,10 +1778,6 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     [self.mapView setCenterCoordinate:CLLocationCoordinate2DMake(31, -100) zoomLevel:3 animated:NO];
 
     [self randomWorldTourInternal];
-
-    self.randomWalkNumberOfLegs = 6;
-    self.mapView.experimental_enableSignpost = YES;
-    [self.mapView experimental_beginSignpostRegionNamed:@"randomwalk"];
 }
 
 - (void)randomWorldTourInternal {
@@ -1790,7 +1785,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     self.randomWalk = YES;
 
     // Remove all annotations
-    NSTimeInterval duration = 8;//16.0;
+    NSTimeInterval duration = 16.0;
     __weak MBXViewController *weakSelf = self;
 
     // Remove old annotations, half-way through the flight.
@@ -1817,17 +1812,8 @@ CLLocationCoordinate2D randomWorldCoordinate() {
                 // for that, and set self.randomWalk. But since we want a delay
                 // anyway, we can just check later. Not ideal though..
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-
                     MBXViewController *strongSelf = weakSelf;
-
-                    --strongSelf.randomWalkNumberOfLegs;
-
-                    if (strongSelf.randomWalkNumberOfLegs == 0) {
-                        [self.mapView experimental_endSignpostRegionNamed:@"randomwalk"];
-                        self.mapView.experimental_enableSignpost = NO;
-                        strongSelf.randomWalk = NO;
-                    }
-                    else if (strongSelf.randomWalk) {
+                    if (strongSelf.randomWalk) {
                         [strongSelf randomWorldTourInternal];
                     }
                 });
