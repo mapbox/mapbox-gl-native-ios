@@ -32,4 +32,8 @@
  */
 @property (nonatomic, readonly) CFTimeInterval averageFrameTime;
 
+
+- (void)experimental_beginSignpostRegionNamed:(NSString*)region;
+- (void)experimental_endSignpostRegionNamed:(NSString*)region;
+
 @end

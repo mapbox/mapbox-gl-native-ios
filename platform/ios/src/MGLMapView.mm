@@ -1015,7 +1015,9 @@ public:
 {
     if ( ! self.dormant && _rendererFrontend)
     {
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync");
         _rendererFrontend->render();
+        MGL_SIGNPOST_END(_log, _signpost, "renderSync");
     }
 }
 
@@ -1228,11 +1230,14 @@ public:
     {
         return;
     }
-    
+
+
+
     if (_needsDisplayRefresh || (self.pendingCompletionBlocks.count > 0))
     {
         _needsDisplayRefresh = NO;
 
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "displaylink", "update");
         // Update UIKit elements, prior to rendering
         [self updateUserLocationAnnotationView];
         [self updateAnnotationViews];
@@ -1244,10 +1249,15 @@ public:
         //
         // TODO: Consider using this same mechanism for delegate callbacks.
         [self processPendingBlocks];
-        
+        MGL_SIGNPOST_END(_log, _signpost, "displaylink", "update");
+
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "displaylink", "display");
         _mbglView->display();
+        MGL_SIGNPOST_END(_log, _signpost, "displaylink", "display");
     }
 
+
+    // TODO: Fix
     if (self.experimental_enableFrameRateMeasurement)
     {
         CFTimeInterval now = CACurrentMediaTime();
@@ -6585,6 +6595,7 @@ public:
         return;
     }
 
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "visibleAnnotationsInRect");
     // If the map is pitched consider the viewport to be exactly the same as the bounds.
     // Otherwise, add a small buffer.
     CGFloat largestWidth = MAX(_largestAnnotationViewSize.width, CGRectGetWidth(self.frame));
@@ -6594,9 +6605,15 @@ public:
     CGRect viewPort = CGRectInset(self.bounds, widthAdjustment, heightAdjustment);
 
     NSArray *visibleAnnotations = [self visibleAnnotationsInRect:viewPort];
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "visibleAnnotationsInRect");
+
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "removeObjectsInArray");
     NSMutableArray *offscreenAnnotations = [self.annotations mutableCopy];
     [offscreenAnnotations removeObjectsInArray:visibleAnnotations];
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "removeObjectsInArray");
 
+
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "visibleAnnotations");
     // Update the center of visible annotation views
     for (id<MGLAnnotation> annotation in visibleAnnotations)
     {
@@ -6635,9 +6652,11 @@ public:
             annotationView.center = MGLPointRounded([self convertCoordinate:annotationContext.annotation.coordinate toPointToView:self]);
         }
     }
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "visibleAnnotations");
 
     MGLCoordinateBounds coordinateBounds = [self convertRect:viewPort toCoordinateBoundsFromView:self];
 
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "offscreenAnnotations");
     // Enqueue (and move if required) offscreen annotation views
     for (id<MGLAnnotation> annotation in offscreenAnnotations)
     {
@@ -6679,6 +6698,7 @@ public:
             }
         }
     }
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "offscreenAnnotations");
 }
 
 - (BOOL)hasAnAnchoredAnnotationCalloutView
@@ -7046,6 +7066,11 @@ static std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfS
 
 - (void)setExperimental_enableSignpost:(BOOL)enable
 {
+    BOOL enabled = self.experimental_enableSignpost;
+
+    if (enabled == enable)
+        return;
+
     if (enable) {
         self.signpost = MGL_CREATE_SIGNPOST(self.log);
         MGL_SIGNPOST_EVENT(self.log, self.signpost, "enableSignpost", "Signpost:YES");
@@ -7060,6 +7085,15 @@ static std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfS
     return ((self.signpost != OS_SIGNPOST_ID_INVALID) &&
             (self.signpost != OS_SIGNPOST_ID_NULL));
 }
+
+- (void)experimental_beginSignpostRegionNamed:(NSString*)region {
+    MGL_SIGNPOST_BEGIN(self.log, self.signpost, "region", "%s", region.UTF8String);
+}
+
+- (void)experimental_endSignpostRegionNamed:(NSString*)region {
+    MGL_SIGNPOST_END(self.log, self.signpost, "region", "%s", region.UTF8String);
+}
+
 
 @end
 
