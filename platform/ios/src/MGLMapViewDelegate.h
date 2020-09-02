@@ -315,13 +315,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)mapViewDidStopLocatingUser:(MGLMapView *)mapView;
 
 /**
- Asks the delegate styling options for the default user location annotation
- views for each `MGLMapView.userTrackingMode`.
- 
- When using this delegate set the following constants to a default value:
- `MGLUserLocationAnnotationViewStyle.puckShadowOpacity` = `0.25`
- `MGLUserLocationAnnotationViewStyle.approximateHaloOpacity` = `0.25`
- `MGLUserLocationAnnotationViewStyle.approximateHaloBorderWidth` = `2.0`
+ Asks the delegate styling options for each default user location annotation view.
  
  This method is called many times during gesturing, so you should avoid performing
  complex or performance-intensive tasks in your implementation.
