@@ -294,6 +294,8 @@ public:
 
 @property (nonatomic, readwrite, nonnull) os_log_t log;
 @property (nonatomic, readwrite) os_signpost_id_t signpost;
+@property (nonatomic, assign) NSInteger numberOfRenderCalls;
+@property (nonatomic, assign) NSInteger numberOfRenderCallsMoreThanOneSecond;
 
 - (mbgl::Map &)mbglMap;
 
@@ -1031,7 +1033,18 @@ public:
     {
         MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "render");
         if (_rendererFrontend) {
+            _numberOfRenderCalls++;
+
+            CFTimeInterval before = CACurrentMediaTime();
             _rendererFrontend->render();
+            CFTimeInterval after = CACurrentMediaTime();
+
+            if (after - before >= 1.0) {
+                // See https://github.com/mapbox/mapbox-gl-native/issues/14232
+                // and https://github.com/mapbox/mapbox-gl-native-ios/issues/350
+                // This will be reported later
+                _numberOfRenderCallsMoreThanOneSecond++;
+            }
         }
         MGL_SIGNPOST_END(_log, _signpost, "renderSync", "render");
 
@@ -1043,36 +1056,6 @@ public:
         MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "update");
         [self updateViewsPostMapRendering];
         MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
-
-/*
-        // See https://github.com/mapbox/mapbox-gl-native/issues/14232
-        // glClear can be blocked for 1 second. This code is an "escape hatch",
-        // an attempt to detect this situation and rebuild the GL views.
-        if (mapView.enablePresentsWithTransaction && resource.atLeastiOS_12_2_0) {
-            CFTimeInterval before = CACurrentMediaTime();
-            [resource.glView display];
-            CFTimeInterval after = CACurrentMediaTime();
-
-            if (after - before >= 1.0) {
-    #ifdef MGL_RECREATE_GL_IN_AN_EMERGENCY
-                dispatch_async(dispatch_get_main_queue(), ^{
-                  emergencyRecreateGL();
-                });
-    #else
-                static dispatch_once_t onceToken;
-                dispatch_once(&onceToken, ^{
-                    NSError *error = [NSError errorWithDomain:MGLErrorDomain
-                                                         code:MGLErrorCodeRenderingError
-                                                     userInfo:@{ NSLocalizedFailureReasonErrorKey :
-                                                                     @"https://github.com/mapbox/mapbox-gl-native/issues/14232" }];
-                    [[MMEEventsManager sharedManager] reportError:error];
-                });
-    #endif
-            }
-        } else {
-            [resource.glView display];
-        }
-*/
     }
 }
 
@@ -1723,6 +1706,19 @@ public:
 
         [MGLMapboxEvents pushTurnstileEvent];
         [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
+
+        // Report previous rendering errors
+        if (self.numberOfRenderCallsMoreThanOneSecond > 0) {
+            NSError *error = [NSError errorWithDomain:MGLErrorDomain
+                                                 code:MGLErrorCodeRenderingError
+                                             userInfo:@{
+                                                 NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%ld/%ld", self.numberOfRenderCallsMoreThanOneSecond, self.numberOfRenderCalls],
+                                                 NSLocalizedFailureReasonErrorKey : @"https://github.com/mapbox/mapbox-gl-native-ios/issues/350"
+                                             }];
+            [[MMEEventsManager sharedManager] reportError:error];
+        }
+        self.numberOfRenderCalls = 0;
+        self.numberOfRenderCallsMoreThanOneSecond = 0;
     }
 }
 

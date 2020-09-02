@@ -148,6 +148,7 @@ void MGLMapViewOpenGLImpl::deleteView() {
 }
 
 #ifdef MGL_RECREATE_GL_IN_AN_EMERGENCY
+// TODO: Fix or remove
 // See https://github.com/mapbox/mapbox-gl-native/issues/14232
 void MGLMapViewOpenGLImpl::emergencyRecreateGL() {
     auto& resource = getResource<MGLMapViewOpenGLRenderableResource>();
