@@ -2368,25 +2368,6 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }
 }
 
-- (MGLUserLocationAnnotationViewStyle *)mapViewStyleForDefaultUserLocationAnnotationView:(MGLMapView *)mapView {
-    MGLUserLocationAnnotationViewStyle *style = [[MGLUserLocationAnnotationViewStyle alloc] init];
-    
-    style.approximateHaloFillColor = UIColor.redColor;
-    style.approximateHaloOpacity = 0.15;
-    style.approximateHaloBorderColor = UIColor.blueColor;
-    style.approximateHaloBorderWidth = 4.0;
-    
-    style.puckShadowColor = UIColor.grayColor;
-    style.puckFillColor = UIColor.cyanColor;
-    style.puckArrowFillColor = UIColor.cyanColor;
-    style.puckShadowOpacity = 0.25;
-    
-    style.haloFillColor = UIColor.cyanColor;
-    
-    
-    return style;
-}
-
 - (void)alertAccuracyChanges {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Mapbox GL works best with your precise location."
                                    message:@"You'll get turn-by-turn directions."

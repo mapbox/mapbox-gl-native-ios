@@ -104,7 +104,9 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         
         puckArrowFillColor = style.puckArrowFillColor ? style.puckArrowFillColor : puckArrowFillColor;
         
-        approximateFillColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : approximateFillColor;
+        if (@available(iOS 14, *)) {
+            approximateFillColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : approximateFillColor;
+        } 
         
         haloFillColor = style.haloFillColor ? style.haloFillColor : haloFillColor;
         dotFillColor = style.puckFillColor ? style.puckFillColor : dotFillColor;
@@ -545,10 +547,12 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
         MGLUserLocationAnnotationViewStyle *style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
-        backgroundColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : backgroundColor;
-        strokeColor = style.approximateHaloBorderColor ? style.approximateHaloBorderColor : strokeColor;
-        opacity = style.approximateHaloOpacity;
-        borderSize = style.approximateHaloBorderWidth;
+        if (@available(iOS 14, *)) {
+            backgroundColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : backgroundColor;
+            strokeColor = style.approximateHaloBorderColor ? style.approximateHaloBorderColor : strokeColor;
+            opacity = style.approximateHaloOpacity;
+            borderSize = style.approximateHaloBorderWidth;
+        }
     }
 
     // update approximate ring (if zoom or horizontal accuracy have changed)
