@@ -2368,8 +2368,8 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }
 }
 
-- (MGLUserLocationAnnotationViewStyle)mapViewStyleForDefaultUserLocationAnnotationView:(MGLMapView *)mapView {
-    MGLUserLocationAnnotationViewStyle style;
+- (MGLUserLocationAnnotationViewStyle *)mapViewStyleForDefaultUserLocationAnnotationView:(MGLMapView *)mapView {
+    MGLUserLocationAnnotationViewStyle *style = [[MGLUserLocationAnnotationViewStyle alloc] init];
     
     style.approximateHaloFillColor = UIColor.redColor;
     style.approximateHaloOpacity = 0.15;

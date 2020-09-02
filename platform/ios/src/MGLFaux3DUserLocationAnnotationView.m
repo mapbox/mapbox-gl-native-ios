@@ -7,6 +7,7 @@
 #import "MGLUserLocationHeadingArrowLayer.h"
 #import "MGLUserLocationHeadingBeamLayer.h"
 #import "MGLLocationManager_Private.h"
+#import "MGLUserLocationAnnotationViewStyle.h"
 
 const CGFloat MGLUserLocationAnnotationDotSize = 22.0;
 const CGFloat MGLUserLocationAnnotationHaloSize = 115.0;
@@ -88,25 +89,43 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
 
 - (void)setTintColor:(UIColor *)tintColor
 {
-    CGColorRef newTintColor = [tintColor CGColor];
+    UIColor *puckArrowFillColor = tintColor;
+    UIColor *puckArrowStrokeColor = tintColor;
     
-    if (![self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
-        if (_puckModeActivated)
-        {
-            _puckArrow.fillColor = newTintColor;
-            _puckArrow.strokeColor = newTintColor;
-        }
-        else if (_approximateModeActivated)
-        {
-            _approximateLayer.backgroundColor = newTintColor;
-        }
-        else
-        {
-            _accuracyRingLayer.backgroundColor = newTintColor;
-            _haloLayer.backgroundColor = newTintColor;
-            _dotLayer.backgroundColor = newTintColor;
-            [_headingIndicatorLayer updateTintColor:newTintColor];
-        }
+    UIColor *approximateFillColor = tintColor;
+    
+    UIColor *accuracyFillColor = tintColor;
+    UIColor *haloFillColor = tintColor;
+    UIColor *dotFillColor = tintColor;
+    UIColor *headingFillColor = tintColor;
+    
+    if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
+        MGLUserLocationAnnotationViewStyle *style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
+        
+        puckArrowFillColor = style.puckArrowFillColor ? style.puckArrowFillColor : puckArrowFillColor;
+        
+        approximateFillColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : approximateFillColor;
+        
+        haloFillColor = style.haloFillColor ? style.haloFillColor : haloFillColor;
+        dotFillColor = style.puckFillColor ? style.puckFillColor : dotFillColor;
+        headingFillColor = style.puckFillColor ? style.puckFillColor : headingFillColor;
+    }
+    
+    if (_puckModeActivated)
+    {
+        _puckArrow.fillColor = [puckArrowFillColor CGColor];
+        _puckArrow.strokeColor = [puckArrowStrokeColor CGColor];
+    }
+    else if (_approximateModeActivated)
+    {
+        _approximateLayer.backgroundColor = [approximateFillColor CGColor];
+    }
+    else
+    {
+        _accuracyRingLayer.backgroundColor = [accuracyFillColor CGColor];
+        _haloLayer.backgroundColor = [haloFillColor CGColor];
+        _dotLayer.backgroundColor = [dotFillColor CGColor];
+        [_headingIndicatorLayer updateTintColor:[headingFillColor CGColor]];
     }
     
 }
@@ -189,7 +208,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
 
     
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
-        MGLUserLocationAnnotationViewStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
+        MGLUserLocationAnnotationViewStyle *style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         arrowColor = style.puckArrowFillColor ? style.puckArrowFillColor : arrowColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
         shadowOpacity = style.puckShadowOpacity;
@@ -284,7 +303,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
 
     
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
-        MGLUserLocationAnnotationViewStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
+        MGLUserLocationAnnotationViewStyle *style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         haloColor = style.haloFillColor ? style.haloFillColor : haloColor;
         puckBackgroundColor = style.puckFillColor ? style.puckFillColor : puckBackgroundColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
@@ -525,7 +544,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     CGFloat opacity = 0.25;
     
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
-        MGLUserLocationAnnotationViewStyle style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
+        MGLUserLocationAnnotationViewStyle *style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         backgroundColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : backgroundColor;
         strokeColor = style.approximateHaloBorderColor ? style.approximateHaloBorderColor : strokeColor;
         opacity = style.approximateHaloOpacity;

@@ -6,6 +6,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class MGLMapView;
+@class MGLUserLocationAnnotationViewStyle;
 
 /**
  The `MGLMapViewDelegate` protocol defines a set of optional methods that you
@@ -327,7 +328,8 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param mapView The map view that is tracking the user’s location.
  */
-- (MGLUserLocationAnnotationViewStyle)mapViewStyleForDefaultUserLocationAnnotationView:(MGLMapView *)mapView;
+- (MGLUserLocationAnnotationViewStyle *)mapViewStyleForDefaultUserLocationAnnotationView:(MGLMapView *)mapView NS_SWIFT_NAME(mapView(styleForDefaultUserLocationAnnotationView:));
+
 
 /**
  Tells the delegate that the location of the user was updated.
