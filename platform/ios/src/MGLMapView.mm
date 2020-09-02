@@ -1011,13 +1011,68 @@ public:
     }
 }
 
+- (void)updateViewsPostMapRendering {
+    // Update UIKit elements, prior to rendering
+    [self updateUserLocationAnnotationView];
+    [self updateAnnotationViews];
+    [self updateCalloutView];
+
+    // Call any pending completion blocks. This is primarily to ensure
+    // that annotations are in the expected position after core rendering
+    // and map update.
+    //
+    // TODO: Consider using this same mechanism for delegate callbacks.
+    [self processPendingBlocks];
+}
+
 - (void)renderSync
 {
-    if ( ! self.dormant && _rendererFrontend)
+    if (!self.dormant)
     {
-        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync");
-        _rendererFrontend->render();
-        MGL_SIGNPOST_END(_log, _signpost, "renderSync");
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "render");
+        if (_rendererFrontend) {
+            _rendererFrontend->render();
+        }
+        MGL_SIGNPOST_END(_log, _signpost, "renderSync", "render");
+
+        // - - - - -
+
+        // TODO: This should be moved from what's essentially the UIView rendering
+        // To do this, add view models that can be updated separately, before the
+        // UIViews can be updated to match
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "update");
+        [self updateViewsPostMapRendering];
+        MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
+
+/*
+        // See https://github.com/mapbox/mapbox-gl-native/issues/14232
+        // glClear can be blocked for 1 second. This code is an "escape hatch",
+        // an attempt to detect this situation and rebuild the GL views.
+        if (mapView.enablePresentsWithTransaction && resource.atLeastiOS_12_2_0) {
+            CFTimeInterval before = CACurrentMediaTime();
+            [resource.glView display];
+            CFTimeInterval after = CACurrentMediaTime();
+
+            if (after - before >= 1.0) {
+    #ifdef MGL_RECREATE_GL_IN_AN_EMERGENCY
+                dispatch_async(dispatch_get_main_queue(), ^{
+                  emergencyRecreateGL();
+                });
+    #else
+                static dispatch_once_t onceToken;
+                dispatch_once(&onceToken, ^{
+                    NSError *error = [NSError errorWithDomain:MGLErrorDomain
+                                                         code:MGLErrorCodeRenderingError
+                                                     userInfo:@{ NSLocalizedFailureReasonErrorKey :
+                                                                     @"https://github.com/mapbox/mapbox-gl-native/issues/14232" }];
+                    [[MMEEventsManager sharedManager] reportError:error];
+                });
+    #endif
+            }
+        } else {
+            [resource.glView display];
+        }
+*/
     }
 }
 
@@ -1211,6 +1266,37 @@ public:
 
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink
 {
+    // CADisplayLink's call interval closely matches the that defined by,
+    // preferredFramesPerSecond, however it is NOT called on the vsync and
+    // can fire some time after the vsync, and the duration can often exceed
+    // the expected period.
+    //
+    // The `timestamp` property should represent (or be very close to) the vsync,
+    // so for any kind of frame rate measurement, it can be important to record
+    // the time upon entry to this method.
+    //
+    // This start time, coupled with the `targetTimestamp` gives you a measure
+    // of how long you have to do work before the next vsync.
+    //
+    // Note that CADisplayLink's duration property is interval between vsyncs at
+    // the device's natural frequency (60, 120). Instead, for the duration of a
+    // frame, use the two timestamps instead. This is especially important if
+    // you have set preferredFramesPerSecond to something other than the default.
+    //
+    //                 │   remaining duration  ┃
+    //                 │◀ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ▶┃
+    //     ┌ ─ ─ ─ ─ ─ ┼───────────────────────╋───────────────────────────────────┳───────
+    //                 │                       ┃                                   ┃
+    //     │           │                       ┃                                   ┃
+    //                 │                       ┃                                   ┃
+    //     ▼           │                       ▼                                   ▼
+    // timestamp       │                    target
+    // (vsync?)        │                   timestamp
+    //                 │
+    //                 ▼
+    //           display link
+    //            start time
+
     MGLAssertIsMainThread();
 
     // Not "visible" - this isn't a full definition of visibility, but if
@@ -1231,31 +1317,17 @@ public:
         return;
     }
 
-
+    MGL_SIGNPOST_EVENT(_log, _signpost, "updateFromDisplayLink");
 
     if (_needsDisplayRefresh || (self.pendingCompletionBlocks.count > 0))
     {
         _needsDisplayRefresh = NO;
 
-        MGL_SIGNPOST_BEGIN(_log, _signpost, "displaylink", "update");
-        // Update UIKit elements, prior to rendering
-        [self updateUserLocationAnnotationView];
-        [self updateAnnotationViews];
-        [self updateCalloutView];
-
-        // Call any pending completion blocks. This is primarily to ensure
-        // that annotations are in the expected position after core rendering
-        // and map update.
-        //
-        // TODO: Consider using this same mechanism for delegate callbacks.
-        [self processPendingBlocks];
-        MGL_SIGNPOST_END(_log, _signpost, "displaylink", "update");
-
-        MGL_SIGNPOST_BEGIN(_log, _signpost, "displaylink", "display");
+        // UIView update logic has moved into `renderSync` above, which now gets
+        // triggered by a call to setNeedsDisplay.
+        // See MGLMapViewOpenGLImpl::display() for more details
         _mbglView->display();
-        MGL_SIGNPOST_END(_log, _signpost, "displaylink", "display");
     }
-
 
     // TODO: Fix
     if (self.experimental_enableFrameRateMeasurement)
