@@ -25,6 +25,7 @@ workflows:
           name: ios-release
       # This should depend on sanitize jobs
       - ios-release-tag:
+          beta: true
         # Commenting out to test for release.
           # requires:
           #   - ios-build
