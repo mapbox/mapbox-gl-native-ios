@@ -24,7 +24,8 @@ buildPackageStyle() {
     FORMAT=${style} make ${package} 
     step "Publishing ${package} with ${style}"
     local file_name=""
-    ./platform/ios/scripts/publish.sh "${PUBLISH_VERSION}" ${style}
+
+#    ./platform/ios/scripts/publish.sh "${PUBLISH_VERSION}" ${style}
 
 #    file_name=mapbox-ios-sdk-${PUBLISH_VERSION}-${style}.zip
 #    if [[ "${GITHUB_RELEASE}" == true ]]; then

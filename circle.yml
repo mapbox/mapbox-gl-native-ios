@@ -19,7 +19,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.5.0"]
+              xcode: ["11.1.0", "11.6.0"]
               buildtype: ["Debug", "Release"]
       - ios-release-template:
           name: ios-release
@@ -30,11 +30,11 @@ workflows:
           # requires: 
           #   - ios-build
           #   - ios-release
-          filters:
-            tags:
-              only: /ios-.*/
-            branches:
-              ignore: /.*/
+          # filters:
+          #   tags:
+          #     only: /ios-.*/
+          #   branches:
+          #     ignore: /.*/
       - ios-trigger-metrics:
           requires: 
             - ios-build
@@ -60,7 +60,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.4.1", "11.5.0", "11.6.0"]
+              xcode: ["11.3.1", "11.4.1", "11.5.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -488,12 +488,12 @@ jobs:
       - install-macos-dependencies
       - install-dependencies
       - install-ios-packaging-dependencies
-      - run:
-          name: Trigger external deploy steps
-          command: |
-            export VERSION_TAG=${CIRCLE_TAG}
-            export DOCS_REPO="ios-sdk"
-            scripts/trigger-maps-documentation-deploy-steps.sh
+      # - run:
+      #     name: Trigger external deploy steps
+      #     command: |
+      #       export VERSION_TAG=${CIRCLE_TAG}
+      #       export DOCS_REPO="ios-sdk"
+      #       scripts/trigger-maps-documentation-deploy-steps.sh
       - run:
           name: Build, package, and upload iOS release
           command: |
