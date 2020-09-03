@@ -100,18 +100,19 @@ fi
 npm install --ignore-scripts
 mkdir -p ${BINARY_DIRECTORY}
 
-if [[ "${GITHUB_RELEASE}" == true ]]; then
-    step "Create GitHub release…"
-    if [[ $( echo ${PUBLISH_VERSION} | awk '/[0-9]-/' ) ]]; then
-        PUBLISH_PRE_FLAG='--pre-release'
-    fi
-    RELEASE_NOTES=$( ./platform/ios/scripts/release-notes.js github )
-    github-release release \
-        --tag "ios-v${PUBLISH_VERSION}" \
-        --name "ios-v${PUBLISH_VERSION}" \
-        --draft ${PUBLISH_PRE_FLAG} \
-        --description "${RELEASE_NOTES}"
-fi
+#temp removed
+# if [[ "${GITHUB_RELEASE}" == true ]]; then
+#     step "Create GitHub release…"
+#     if [[ $( echo ${PUBLISH_VERSION} | awk '/[0-9]-/' ) ]]; then
+#         PUBLISH_PRE_FLAG='--pre-release'
+#     fi
+#     RELEASE_NOTES=$( ./platform/ios/scripts/release-notes.js github )
+#     github-release release \
+#         --tag "ios-v${PUBLISH_VERSION}" \
+#         --name "ios-v${PUBLISH_VERSION}" \
+#         --draft ${PUBLISH_PRE_FLAG} \
+#         --description "${RELEASE_NOTES}"
+# fi
 
 # Build bundle
 buildPackageStyle "iframework" "dynamic-with-events"

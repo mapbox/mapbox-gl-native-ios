@@ -60,7 +60,9 @@ fi
 step "Recording library version…"
 VERSION="${OUTPUT}"/version.txt
 echo -n "https://github.com/mapbox/mapbox-gl-native-ios/commit/" > ${VERSION}
-HASH=`git log | head -1 | awk '{ print $2 }' | cut -c 1-10` && true
+HASH=${CIRCLE_SHA1}
+# Temp removal
+#HASH=`git log | head -1 | awk '{ print $2 }' | cut -c 1-10` && true
 echo -n "mapbox-gl-native-ios "
 echo ${HASH}
 echo ${HASH} >> ${VERSION}
@@ -86,10 +88,10 @@ fi
 mkdir -p build/ios
 
 step "Building ${FORMAT} framework for iOS Simulator using ${SCHEME} scheme"
+# Excluded architectures is handled by the inclusion of the CI_XCCONFIG file
 xcodebuild \
     CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
     CURRENT_COMMIT_HASH=${HASH} \
-    EXCLUDED_ARCHS="armv7 arm64" \
     ${CI_XCCONFIG} \
     -derivedDataPath ${DERIVED_DATA} \
     -workspace ./platform/ios/ios.xcworkspace \
@@ -100,10 +102,10 @@ xcodebuild \
 
 if [[ ${BUILD_FOR_DEVICE} == true ]]; then
     step "Building ${FORMAT} framework for iOS devices using ${SCHEME} scheme"
+    # Excluded architectures is handled by the inclusion of the CI_XCCONFIG file
     xcodebuild \
         CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
         CURRENT_COMMIT_HASH=${HASH} \
-        EXCLUDED_ARCHS="x86_64" \
         ${CI_XCCONFIG} \
         -derivedDataPath ${DERIVED_DATA} \
         -workspace ./platform/ios/ios.xcworkspace \
