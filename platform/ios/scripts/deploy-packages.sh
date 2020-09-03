@@ -90,12 +90,13 @@ fi
 
 PUBLISH_VERSION=$( echo ${VERSION_TAG} | sed 's/^ios-v//' )
 
-if [[ "${GITHUB_RELEASE}" == true ]]; then
-    git checkout ${VERSION_TAG}
-    step "Deploying version ${PUBLISH_VERSION}…"
-else
-    step "Building packages for version ${PUBLISH_VERSION} (Not deploying to Github)"
-fi
+# OK disable that for starters :D
+# if [[ "${GITHUB_RELEASE}" == true ]]; then
+#     git checkout ${VERSION_TAG}
+#     step "Deploying version ${PUBLISH_VERSION}…"
+# else
+#     step "Building packages for version ${PUBLISH_VERSION} (Not deploying to Github)"
+# fi
 
 npm install --ignore-scripts
 mkdir -p ${BINARY_DIRECTORY}
