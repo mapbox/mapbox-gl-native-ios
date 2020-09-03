@@ -40,4 +40,14 @@
     
     [self waitForExpectations:@[expectation] timeout:10.0];
 }
+
+- (void)testConnected {
+    MGLNetworkConfiguration *manager = [MGLNetworkConfiguration sharedManager];
+    
+    XCTAssertTrue(manager.connected);
+    manager.connected = NO;
+    XCTAssertFalse(manager.connected);
+    manager.connected = YES;
+    XCTAssertTrue(manager.connected);
+}
 @end

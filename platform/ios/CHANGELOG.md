@@ -13,6 +13,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Added an approximate user location halo when `MGLLocationManager.accuracyAuthorization` is set to `CLAccuracyAuthorizationReducedAccuracy`. ([#381](https://github.com/mapbox/mapbox-gl-native-ios/pull/381))
 * The `MGLAccuracyAuthorizationDescription` as element of `NSLocationTemporaryUsageDescriptionDictionary` Info.plist key can now be set to describe why you request accuracy authorization. ([#392](https://github.com/mapbox/mapbox-gl-native-ios/pull/392))
 * Added `[MGLMapViewDelegate mapViewStyleForDefaultUserLocationAnnotationView:]` and `MGLUserLocationAnnotationViewStyle` class to allow developers customize the default user location annotation view UI style. ([#403](https://github.com/mapbox/mapbox-gl-native-ios/pull/403))
+* Added `MGLNetworkConfiguration.connected` property to enforce `MGLMapView` to use catched tiles. ([#416](https://github.com/mapbox/mapbox-gl-native-ios/pull/416))
 
 ## 6.1.0 - August 26, 2020
 
