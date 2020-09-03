@@ -18,6 +18,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 ### 🐞 Bug fixes
 
 * Fixed an issue where the map would hang periodically (on iOS 14 beta). ([#411](https://github.com/mapbox/mapbox-gl-native-ios/pull/411))
+* Fixed a sporadic crash when resigning active. ([#412](https://github.com/mapbox/mapbox-gl-native-ios/pull/412))
 
 ## 6.1.0 - August 26, 2020
 
