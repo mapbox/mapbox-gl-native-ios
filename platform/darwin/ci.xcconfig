@@ -1,1 +1,2 @@
+#include  "../../xcode-beta-3-build-fix.xcconfig"
 COMPILER_INDEX_STORE_ENABLE = NO
