@@ -7,12 +7,20 @@
 #define SIGNPOST_CONCAT2(x,y)   x##y
 #define SIGNPOST_CONCAT(x,y)    SIGNPOST_CONCAT2(x,y)
 #define SIGNPOST_NAME(x)        SIGNPOST_CONCAT(signpost,x)
+
+// Use MGL_SIGNPOST_BEGIN & MGL_SIGNPOST_END around sections of code that you
+// wish to profile.
+// MGL_SIGNPOST_EVENT can be used for single one-off events
 //
-//#define MGL_EXPORT __attribute__((visibility ("default")))
+// For example:
 //
-//MGL_EXPORT extern os_log_t MGLDefaultSignpostLog;
-//MGL_EXPORT extern os_signpost_id_t MGLDefaultSignpost;
+//  os_signpost_id_t signpost = MGL_CREATE_SIGNPOST(log);
+//  MGL_SIGNPOST_BEGIN(log, signpost, "example");
+//  [self performAComputationallyExpensiveOperation];
+//  MGL_SIGNPOST_END(log, signpost, "example", "%d", numberOfWidgets);
 //
+//  MGL_SIGNPOST_EVENT(log, signpost, "error", "%d", errorCode);
+
 /**
  Create an os_log_t (for use with os_signposts) with the "com.mapbox.mapbox" subsystem.
  
@@ -25,14 +33,6 @@
  @param name Name for the log category.
  @return log object.
  */
-//MGL_EXPORT extern os_log_t MGLSignpostLogCreate(const char* name);
-
-
-
-//os_log_t log = os_log_create("com.mapbox.mapbox", name);
-//
-//OS_LOG_DISABLED
-
 
 #define MGL_CREATE_SIGNPOST(log) \
     ({ \
@@ -69,24 +69,5 @@
             } \
         } \
     })
-
-// Use MGL_SIGNPOST_BEGIN & MGL_SIGNPOST_END around sections of code that you
-// wish to profile.
-// MGL_SIGNPOST_EVENT can be used for single one-off events
-//
-// For example:
-//
-//  os_signpost_id_t signpost = MGL_CREATE_SIGNPOST();
-//  MGL_SIGNPOST_BEGIN(signpost, "example");
-//  [self performAComputationallyExpensiveOperation];
-//  MGL_SIGNPOST_END(signpost, "example", "%d", numberOfWidgets);
-//
-//  MGL_SIGNPOST_EVENT("error", "%d", errorCode);
-//
-//#define MGL_CREATE_SIGNPOST()                     MGL_NAMED_CREATE_SIGNPOST(MGLDefaultSignpostLog)
-//
-//#define MGL_SIGNPOST_BEGIN(signpost, name, ...)   MGL_NAMED_SIGNPOST_BEGIN(MGLDefaultSignpostLog, signpost, name, ##__VA_ARGS__)
-//#define MGL_SIGNPOST_END(signpost, name, ...)     MGL_NAMED_SIGNPOST_END(MGLDefaultSignpostLog, signpost, name, ##__VA_ARGS__)
-//#define MGL_SIGNPOST_EVENT(signpost, name, ...)   MGL_NAMED_SIGNPOST_EVENT(MGLDefaultSignpostLog, signpost, name, ##__VA_ARGS__)
 
 #endif /* MGLSignpost_h */

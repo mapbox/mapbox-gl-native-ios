@@ -292,7 +292,10 @@ public:
 
 @property (nonatomic) NSMutableSet<MGLObserver *> *observerCache;
 
-@property (nonatomic) os_log_t log;
+@property (nonatomic, readwrite, nonnull) os_log_t log;
+@property (nonatomic, readwrite) os_signpost_id_t signpost;
+@property (nonatomic, assign) NSInteger numberOfRenderCalls;
+@property (nonatomic, assign) NSInteger numberOfRenderCallsMoreThanOneSecond;
 
 - (mbgl::Map &)mbglMap;
 
@@ -466,6 +469,7 @@ public:
     _opaque = NO;
 
     _log = os_log_create("com.mapbox.signposts", "MGLMapView");
+    _signpost = OS_SIGNPOST_ID_INVALID;
 
     // setup accessibility
 //  self.isAccessibilityElement = YES;
@@ -1009,11 +1013,49 @@ public:
     }
 }
 
+- (void)updateViewsPostMapRendering {
+    // Update UIKit elements, prior to rendering
+    [self updateUserLocationAnnotationView];
+    [self updateAnnotationViews];
+    [self updateCalloutView];
+
+    // Call any pending completion blocks. This is primarily to ensure
+    // that annotations are in the expected position after core rendering
+    // and map update.
+    //
+    // TODO: Consider using this same mechanism for delegate callbacks.
+    [self processPendingBlocks];
+}
+
 - (void)renderSync
 {
-    if ( ! self.dormant && _rendererFrontend)
+    if (!self.dormant)
     {
-        _rendererFrontend->render();
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "render");
+        if (_rendererFrontend) {
+            _numberOfRenderCalls++;
+
+            CFTimeInterval before = CACurrentMediaTime();
+            _rendererFrontend->render();
+            CFTimeInterval after = CACurrentMediaTime();
+
+            if (after - before >= 1.0) {
+                // See https://github.com/mapbox/mapbox-gl-native/issues/14232
+                // and https://github.com/mapbox/mapbox-gl-native-ios/issues/350
+                // This will be reported later
+                _numberOfRenderCallsMoreThanOneSecond++;
+            }
+        }
+        MGL_SIGNPOST_END(_log, _signpost, "renderSync", "render");
+
+        // - - - - -
+
+        // TODO: This should be moved from what's essentially the UIView rendering
+        // To do this, add view models that can be updated separately, before the
+        // UIViews can be updated to match
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "update");
+        [self updateViewsPostMapRendering];
+        MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
     }
 }
 
@@ -1207,6 +1249,37 @@ public:
 
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink
 {
+    // CADisplayLink's call interval closely matches the that defined by,
+    // preferredFramesPerSecond, however it is NOT called on the vsync and
+    // can fire some time after the vsync, and the duration can often exceed
+    // the expected period.
+    //
+    // The `timestamp` property should represent (or be very close to) the vsync,
+    // so for any kind of frame rate measurement, it can be important to record
+    // the time upon entry to this method.
+    //
+    // This start time, coupled with the `targetTimestamp` gives you a measure
+    // of how long you have to do work before the next vsync.
+    //
+    // Note that CADisplayLink's duration property is interval between vsyncs at
+    // the device's natural frequency (60, 120). Instead, for the duration of a
+    // frame, use the two timestamps instead. This is especially important if
+    // you have set preferredFramesPerSecond to something other than the default.
+    //
+    //                 │   remaining duration  ┃
+    //                 │◀ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ▶┃
+    //     ┌ ─ ─ ─ ─ ─ ┼───────────────────────╋───────────────────────────────────┳───────
+    //                 │                       ┃                                   ┃
+    //     │           │                       ┃                                   ┃
+    //                 │                       ┃                                   ┃
+    //     ▼           │                       ▼                                   ▼
+    // timestamp       │                    target
+    // (vsync?)        │                   timestamp
+    //                 │
+    //                 ▼
+    //           display link
+    //            start time
+
     MGLAssertIsMainThread();
 
     // Not "visible" - this isn't a full definition of visibility, but if
@@ -1226,26 +1299,20 @@ public:
     {
         return;
     }
-    
+
+    MGL_SIGNPOST_EVENT(_log, _signpost, "updateFromDisplayLink");
+
     if (_needsDisplayRefresh || (self.pendingCompletionBlocks.count > 0))
     {
         _needsDisplayRefresh = NO;
 
-        // Update UIKit elements, prior to rendering
-        [self updateUserLocationAnnotationView];
-        [self updateAnnotationViews];
-        [self updateCalloutView];
-
-        // Call any pending completion blocks. This is primarily to ensure
-        // that annotations are in the expected position after core rendering
-        // and map update.
-        //
-        // TODO: Consider using this same mechanism for delegate callbacks.
-        [self processPendingBlocks];
-        
+        // UIView update logic has moved into `renderSync` above, which now gets
+        // triggered by a call to setNeedsDisplay.
+        // See MGLMapViewOpenGLImpl::display() for more details
         _mbglView->display();
     }
 
+    // TODO: Fix
     if (self.experimental_enableFrameRateMeasurement)
     {
         CFTimeInterval now = CACurrentMediaTime();
@@ -1639,6 +1706,19 @@ public:
 
         [MGLMapboxEvents pushTurnstileEvent];
         [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
+
+        // Report previous rendering errors
+        if (self.numberOfRenderCallsMoreThanOneSecond > 0) {
+            NSError *error = [NSError errorWithDomain:MGLErrorDomain
+                                                 code:MGLErrorCodeRenderingError
+                                             userInfo:@{
+                                                 NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%ld/%ld", (long)self.numberOfRenderCallsMoreThanOneSecond, (long)self.numberOfRenderCalls],
+                                                 NSLocalizedFailureReasonErrorKey : @"https://github.com/mapbox/mapbox-gl-native-ios/issues/350"
+                                             }];
+            [[MMEEventsManager sharedManager] reportError:error];
+        }
+        self.numberOfRenderCalls = 0;
+        self.numberOfRenderCallsMoreThanOneSecond = 0;
     }
 }
 
@@ -6583,6 +6663,7 @@ public:
         return;
     }
 
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "visibleAnnotationsInRect");
     // If the map is pitched consider the viewport to be exactly the same as the bounds.
     // Otherwise, add a small buffer.
     CGFloat largestWidth = MAX(_largestAnnotationViewSize.width, CGRectGetWidth(self.frame));
@@ -6592,9 +6673,15 @@ public:
     CGRect viewPort = CGRectInset(self.bounds, widthAdjustment, heightAdjustment);
 
     NSArray *visibleAnnotations = [self visibleAnnotationsInRect:viewPort];
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "visibleAnnotationsInRect");
+
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "removeObjectsInArray");
     NSMutableArray *offscreenAnnotations = [self.annotations mutableCopy];
     [offscreenAnnotations removeObjectsInArray:visibleAnnotations];
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "removeObjectsInArray");
 
+
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "visibleAnnotations");
     // Update the center of visible annotation views
     for (id<MGLAnnotation> annotation in visibleAnnotations)
     {
@@ -6633,9 +6720,11 @@ public:
             annotationView.center = MGLPointRounded([self convertCoordinate:annotationContext.annotation.coordinate toPointToView:self]);
         }
     }
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "visibleAnnotations");
 
     MGLCoordinateBounds coordinateBounds = [self convertRect:viewPort toCoordinateBoundsFromView:self];
 
+    MGL_SIGNPOST_BEGIN(_log, _signpost, "updateAnnotationViews", "offscreenAnnotations");
     // Enqueue (and move if required) offscreen annotation views
     for (id<MGLAnnotation> annotation in offscreenAnnotations)
     {
@@ -6677,6 +6766,7 @@ public:
             }
         }
     }
+    MGL_SIGNPOST_END(_log, _signpost, "updateAnnotationViews", "offscreenAnnotations");
 }
 
 - (BOOL)hasAnAnchoredAnnotationCalloutView
@@ -7039,6 +7129,39 @@ static std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfS
     [self.observerCache removeObject:observer];
     observer.observing = NO;
 }
+
+#pragma mark - Signposts -
+
+- (void)setExperimental_enableSignpost:(BOOL)enable
+{
+    BOOL enabled = self.experimental_enableSignpost;
+
+    if (enabled == enable)
+        return;
+
+    if (enable) {
+        self.signpost = MGL_CREATE_SIGNPOST(self.log);
+        MGL_SIGNPOST_EVENT(self.log, self.signpost, "enableSignpost", "Signpost:YES");
+    }
+    else {
+        MGL_SIGNPOST_EVENT(self.log, self.signpost, "enableSignpost", "Signpost:NO");
+        self.signpost = OS_SIGNPOST_ID_INVALID;
+    }
+}
+
+- (BOOL)experimental_enableSignpost {
+    return ((self.signpost != OS_SIGNPOST_ID_INVALID) &&
+            (self.signpost != OS_SIGNPOST_ID_NULL));
+}
+
+- (void)experimental_beginSignpostRegionNamed:(NSString*)region {
+    MGL_SIGNPOST_BEGIN(self.log, self.signpost, "region", "%s", region.UTF8String);
+}
+
+- (void)experimental_endSignpostRegionNamed:(NSString*)region {
+    MGL_SIGNPOST_END(self.log, self.signpost, "region", "%s", region.UTF8String);
+}
+
 
 @end
 

@@ -15,6 +15,10 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Added `[MGLMapViewDelegate mapViewStyleForDefaultUserLocationAnnotationView:]` and `MGLUserLocationAnnotationViewStyle` class to allow developers customize the default user location annotation view UI style. ([#403](https://github.com/mapbox/mapbox-gl-native-ios/pull/403))
 * Added `MGLNetworkConfiguration.connected` property to enforce `MGLMapView` to use catched tiles. ([#416](https://github.com/mapbox/mapbox-gl-native-ios/pull/416))
 
+### 🐞 Bug fixes
+
+* Fixed an issue where the map would hang periodically (on iOS 14 beta). ([#411](https://github.com/mapbox/mapbox-gl-native-ios/pull/411))
+
 ## 6.1.0 - August 26, 2020
 
 * Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
