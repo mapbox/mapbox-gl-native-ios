@@ -1712,7 +1712,7 @@ public:
             NSError *error = [NSError errorWithDomain:MGLErrorDomain
                                                  code:MGLErrorCodeRenderingError
                                              userInfo:@{
-                                                 NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%ld/%ld", self.numberOfRenderCallsMoreThanOneSecond, self.numberOfRenderCalls],
+                                                 NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%ld/%ld", (long)self.numberOfRenderCallsMoreThanOneSecond, (long)self.numberOfRenderCalls],
                                                  NSLocalizedFailureReasonErrorKey : @"https://github.com/mapbox/mapbox-gl-native-ios/issues/350"
                                              }];
             [[MMEEventsManager sharedManager] reportError:error];
