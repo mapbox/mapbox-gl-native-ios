@@ -148,6 +148,7 @@ ifeq ($(BETA),true)
 else	
 	IOS_XCODEBUILD_SIM += -xcconfig platform/darwin/ci.xcconfig
 endif
+endif
 
 $(IOS_OUTPUT_PATH):
 	mkdir -p $@
