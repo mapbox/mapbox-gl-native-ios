@@ -78,9 +78,15 @@ fi
 
 CI_XCCONFIG=''
 if [[ ! -z "${CI:=}" ]]; then
-    xcconfig='platform/darwin/ci.xcconfig'
-    echo "CI environment, using ${xcconfig}"
-    CI_XCCONFIG="-xcconfig ./${xcconfig}"
+    if [[ ! -z "${BETA:=}" ]]; then
+        xcconfig='xcode-beta-3-build-fix.xcconfig'
+        echo "CI environment, using ${xcconfig}"
+        CI_XCCONFIG="-xcconfig ./${xcconfig}"
+    else
+        xcconfig='platform/darwin/ci.xcconfig'
+        echo "CI environment, using ${xcconfig}"
+        CI_XCCONFIG="-xcconfig ./${xcconfig}"
+    fi
 fi
 
 mkdir -p build/ios
