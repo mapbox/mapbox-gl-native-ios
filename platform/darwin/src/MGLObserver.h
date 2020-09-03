@@ -6,7 +6,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /**
- Base class for observers used to receive notifications from an `MGLObservable`.
+ Base class for observers used to receive notifications from a type conforming to
+ the `MGLObservable` protocol.
  Subclasses should only override `-[MGLObserver notifyWithEvent:]`.
  */
 MGL_EXPORT
@@ -26,8 +27,9 @@ MGL_EXPORT
 #pragma mark -
 
 /**
- Protocol that types that wish to support subscriptions for events should conform
- to.
+ The `MGLObservable` protocol declares methods that conforming classes should
+ implement should they want to observe low-level events of type `MGLEvent`.
+ Currently only `MGLMapView` implements `MGLObservable`.
  */
 MGL_EXPORT
 @protocol MGLObservable
