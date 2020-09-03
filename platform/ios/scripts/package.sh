@@ -76,16 +76,16 @@ if [[ ${BUILD_STATIC} == true ]]; then
     SCHEME='static'
 fi
 
-CI_XCCONFIG=''
-if [[ ! -z "${CI:=}" ]]; then
-    if [[ ! -z "${BETA:=}" ]]; then
-        xcconfig='xcode-beta-3-build-fix.xcconfig'
-        echo "CI environment, using ${xcconfig}"
-        CI_XCCONFIG="-xcconfig ./${xcconfig}"
-    else
+XCCONFIG=''
+if [[ ! -z "${BETA:=}" ]]; then
+    xcconfig='xcode-beta-3-build-fix.xcconfig'
+    echo "CI environment, using ${xcconfig}"
+    XCCONFIG="-xcconfig ./${xcconfig}"
+else 
+    if [[ ! -z "${CI:=}" ]]; then
         xcconfig='platform/darwin/ci.xcconfig'
         echo "CI environment, using ${xcconfig}"
-        CI_XCCONFIG="-xcconfig ./${xcconfig}"
+        XCCONFIG="-xcconfig ./${xcconfig}"
     fi
 fi
 
@@ -96,7 +96,7 @@ xcodebuild \
     CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
     CURRENT_COMMIT_HASH=${HASH} \
     ONLY_ACTIVE_ARCH=NO \
-    ${CI_XCCONFIG} \
+    ${XCCONFIG} \
     -derivedDataPath ${DERIVED_DATA} \
     -workspace ./platform/ios/ios.xcworkspace \
     -scheme ${SCHEME} \
@@ -110,7 +110,7 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
         CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
         CURRENT_COMMIT_HASH=${HASH} \
         ONLY_ACTIVE_ARCH=NO \
-        ${CI_XCCONFIG} \
+        ${XCCONFIG} \
         -derivedDataPath ${DERIVED_DATA} \
         -workspace ./platform/ios/ios.xcworkspace \
         -scheme ${SCHEME} \
