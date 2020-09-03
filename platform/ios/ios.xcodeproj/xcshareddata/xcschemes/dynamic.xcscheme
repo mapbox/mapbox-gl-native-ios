@@ -43,15 +43,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       language = "en"
       region = "US">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DA8847D11CBAF91600AB86E3"
-            BuildableName = "Mapbox.framework"
-            BlueprintName = "dynamic"
-            ReferencedContainer = "container:ios.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO"
