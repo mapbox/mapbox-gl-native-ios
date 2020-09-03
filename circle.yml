@@ -19,7 +19,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.1.0", "11.6.0"]
+              xcode: ["11.1.0", "11.7.0"]
               buildtype: ["Debug", "Release"]
       - ios-release-template:
           xcode: "12.0.0"
@@ -63,7 +63,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.5.0"]
+              xcode: ["11.3.1", "11.5.0", "11.6.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -446,17 +446,8 @@ jobs:
       - check-if-this-job-can-be-skipped
       - install-ios-packaging-dependencies
       - run:
-          name: Build dynamic framework for device
-          # Defaults:
-          # FORMAT = dynamic
-          # BUILD_DEVICE = true
-          # SYMBOLS = YES
-          # BUILD_DOCS = true  
-          command: make iframework
-          no_output_timeout: 20m
-      - run:
-          name: Build dynamic framework for simulator
-          command: make iframework BUILD_DEVICE=false BUILD_DOCS=false
+          name: Build dynamic framework for device and simulator
+          command: make iframework FORMAT=dynamic BUILD_DEVICE=true BUILD_DOCS=false
           no_output_timeout: 20m
       - deploy:
           name: Upload snapshot build to s3
