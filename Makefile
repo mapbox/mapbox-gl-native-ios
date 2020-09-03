@@ -142,8 +142,12 @@ ifneq ($(SKIP_TESTING),)
 	IOS_XCODEBUILD_SIM += -skip-testing:$(SKIP_TESTING)
 endif
 
+ifeq ($(BETA),true)
+	IOS_XCODEBUILD_SIM += -xcconfig xcode-beta-3-build-fix.xcconfig
+else	
 ifneq ($(CI),)
 	IOS_XCODEBUILD_SIM += -xcconfig platform/darwin/ci.xcconfig
+endif
 endif
 
 $(IOS_OUTPUT_PATH):

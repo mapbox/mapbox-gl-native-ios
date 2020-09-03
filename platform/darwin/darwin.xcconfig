@@ -73,6 +73,9 @@ OTHER_CFLAGS = $(inherited) -fvisibility=hidden
 OTHER_CPLUSPLUSFLAGS = $(inherited) -fvisibility=hidden -fcxx-modules
 OTHER_SWIFT_FLAGS = -warnings-as-errors
 
+SUPPORTS_MACCATALYST = NO
+TARGETED_DEVICE_FAMILY = 1,2
+
 // User defined
 BITCODE_GENERATION_MODE = bitcode 
 CURRENT_COMMIT_HASH = deadbeef
