@@ -75,13 +75,9 @@ workflows:
       - ios-static-analyzer-nightly:
           requires:
             - ios-build
-      - ios-release-template:
-          requires:
-            - ios-build
-          name: ios-release-nightly
       - metrics-nightly:      
           requires:
-            - ios-release-nightly
+            - ios-build
 
 commands:
   npm-install:
