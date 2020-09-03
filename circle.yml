@@ -19,7 +19,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.7.0"]
+              xcode: ["11.1.0", "11.7.0"]
               buildtype: ["Debug", "Release"]
       - ios-release-template:
           xcode: "12.0.0"
@@ -63,7 +63,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.1.0", "11.5.0", "11.6.0"]
+              xcode: ["11.3.1", "11.5.0", "11.6.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
