@@ -89,7 +89,7 @@ step "Building ${FORMAT} framework for iOS Simulator using ${SCHEME} scheme"
 xcodebuild \
     CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
     CURRENT_COMMIT_HASH=${HASH} \
-    ARCH="armv7 arm64" \
+    ARCHS="armv7 arm64" \
     ONLY_ACTIVE_ARCH=YES \
     ${CI_XCCONFIG} \
     -derivedDataPath ${DERIVED_DATA} \
@@ -104,7 +104,7 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
     xcodebuild \
         CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
         CURRENT_COMMIT_HASH=${HASH} \
-        ARCH="x86_64" \
+        ARCHS="x86_64" \
         ONLY_ACTIVE_ARCH=YES \
         ${CI_XCCONFIG} \
         -derivedDataPath ${DERIVED_DATA} \
