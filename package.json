@@ -19,6 +19,7 @@
     "npm-run-all": "^4.0.2"
   },
   "devDependencies": {
+    "@mapbox/docs-release-helpers": "^0.1.1",
     "@mapbox/flow-remove-types": "^1.3.0-await.upstream.2",
     "@mapbox/mvt-fixtures": "3.5.1",
     "@octokit/plugin-retry": "^2.2.0",
