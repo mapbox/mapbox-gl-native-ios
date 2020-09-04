@@ -40,9 +40,9 @@ static const CGFloat MGLRasterTileSourceRetinaTileSize = 512;
 }
 
 - (std::unique_ptr<mbgl::style::RasterSource>)pendingSourceWithIdentifier:(NSString *)identifier urlOrTileset:(mbgl::variant<std::string, mbgl::Tileset>)urlOrTileset tileSize:(uint16_t)tileSize {
-    auto source = std::make_unique<mbgl::style::RasterSource>(identifier.UTF8String,
-                                                              urlOrTileset,
-                                                              tileSize);
+    auto ident = std::string(identifier.UTF8String);
+    auto tileSourceData = mbgl::TilesetSourceData(urlOrTileset, tileSize, mbgl::nullopt, mbgl::nullopt);
+    auto source = std::make_unique<mbgl::style::RasterSource>(ident, tileSourceData);
     return source;
 }
 

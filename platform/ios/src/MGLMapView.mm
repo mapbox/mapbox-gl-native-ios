@@ -5589,13 +5589,21 @@ public:
     if (shouldEnableLocationServices)
     {
         if (self.locationManager.authorizationStatus == kCLAuthorizationStatusNotDetermined) {
+
+            // Before SDK 12.2 (bundled with Xcode 10.2): There’s no main bundle
+            // identifier when running in a unit test bundle.
+            // 12.2 and after: the above bundle identifier is: com.apple.dt.xctest.tool
+            NSString *bundleIdentifier = [NSBundle mainBundle].bundleIdentifier;
+            BOOL raiseException = (bundleIdentifier && (![bundleIdentifier isEqualToString:@"com.apple.dt.xctest.tool"]));
+
+            // This will be NO during XCTests
             BOOL hasWhenInUseUsageDescription = !![[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"];
 
             if (@available(iOS 11.0, *)) {
                 // A WhenInUse string is required in iOS 11+ and the map never has any need for Always, so it's enough to just ask for WhenInUse.
                 if (hasWhenInUseUsageDescription) {
                     [self.locationManager requestWhenInUseAuthorization];
-                } else {
+                } else if (raiseException) {
                     [NSException raise:MGLMissingLocationServicesUsageDescriptionException
                                 format:@"To use location services this app must have a NSLocationWhenInUseUsageDescription string in its Info.plist."];
                 }
@@ -5607,7 +5615,7 @@ public:
                     [self.locationManager requestWhenInUseAuthorization];
                 } else if (hasAlwaysUsageDescription) {
                     [self.locationManager requestAlwaysAuthorization];
-                } else {
+                } else if (raiseException) {
                     [NSException raise:MGLMissingLocationServicesUsageDescriptionException
                                 format:@"To use location services this app must have a NSLocationWhenInUseUsageDescription and/or NSLocationAlwaysUsageDescription string in its Info.plist."];
                 }
