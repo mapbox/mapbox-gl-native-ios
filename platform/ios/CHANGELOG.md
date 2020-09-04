@@ -4,7 +4,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ## 6.2.0
 
-** This release supports beta versions of iOS 14. **
+**This release supports beta versions of iOS 14.**
 
 ### ✨ New features
 
@@ -17,7 +17,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Added `[MGLMapViewDelegate mapViewStyleForDefaultUserLocationAnnotationView:]` and `MGLUserLocationAnnotationViewStyle` class to allow developers customize the default user location annotation view UI style. ([#403](https://github.com/mapbox/mapbox-gl-native-ios/pull/403))
 * Added `MGLNetworkConfiguration.connected` property to enforce `MGLMapView` to use cached tiles. ([#416](https://github.com/mapbox/mapbox-gl-native-ios/pull/416))
 * Enabled local glyph rasterization for all writing systems. The new feature uses real glyph metrics and improves rendering quality for mixed (Latin / CJKV) labels. (#561)
-* Minimum and Maximum allowed values are now considered for style layer properties, as defined by the specification. Tf a style property is assigned with a value outside the allowed range, the property gets assigned with its default value instead. (#647)
+* Minimum and Maximum allowed values are now considered for style layer properties, as defined by the specification. If a style property is assigned with a value outside the allowed range, the property gets assigned with its default value instead. (#647)
 
 ### 🐞 Bug fixes
 
