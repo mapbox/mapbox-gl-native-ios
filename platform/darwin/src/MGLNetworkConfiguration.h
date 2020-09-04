@@ -63,6 +63,17 @@ MGL_EXPORT
  */
 @property (atomic, strong, null_resettable) NSURLSessionConfiguration *sessionConfiguration;
 
+/**
+ A Boolean value indicating whether the current `NSURLSessionConfiguration` stops
+ making network requests.
+ 
+ When this property is set to `NO` `MGLMapView` will rely solely on pre-cached
+ tiles.
+  
+ The default value of this property is `YES`.
+ */
+@property (atomic, assign) BOOL connected;
+
 @end
 
 NS_ASSUME_NONNULL_END

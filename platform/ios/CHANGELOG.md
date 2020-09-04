@@ -4,6 +4,8 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ## 6.2.0
 
+** This release supports beta versions of iOS 14. **
+
 ### ✨ New features
 
 * Added `MGLLocationManager.accuracyAuthorization` to check the level of accuracy the app is allowed to support. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
@@ -12,12 +14,36 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Added `[MGLMapViewDelegate mapView:didChangeLocationManagerAuthorization:]` to allow developers adjust their apps to privacy settings changes. ([#376](https://github.com/mapbox/mapbox-gl-native-ios/pull/376))
 * Added an approximate user location halo when `MGLLocationManager.accuracyAuthorization` is set to `CLAccuracyAuthorizationReducedAccuracy`. ([#381](https://github.com/mapbox/mapbox-gl-native-ios/pull/381))
 * The `MGLAccuracyAuthorizationDescription` as element of `NSLocationTemporaryUsageDescriptionDictionary` Info.plist key can now be set to describe why you request accuracy authorization. ([#392](https://github.com/mapbox/mapbox-gl-native-ios/pull/392))
+* Added `[MGLMapViewDelegate mapViewStyleForDefaultUserLocationAnnotationView:]` and `MGLUserLocationAnnotationViewStyle` class to allow developers customize the default user location annotation view UI style. ([#403](https://github.com/mapbox/mapbox-gl-native-ios/pull/403))
+* Added `MGLNetworkConfiguration.connected` property to enforce `MGLMapView` to use cached tiles. ([#416](https://github.com/mapbox/mapbox-gl-native-ios/pull/416))
+* Enabled local glyph rasterization for all writing systems. The new feature uses real glyph metrics and improves rendering quality for mixed (Latin / CJKV) labels. (#561)
+* Minimum and Maximum allowed values are now considered for style layer properties, as defined by the specification. Tf a style property is assigned with a value outside the allowed range, the property gets assigned with its default value instead. (#647)
+
+### 🐞 Bug fixes
+
+* Fixed an issue where the map would hang periodically (on iOS 14 beta). ([#411](https://github.com/mapbox/mapbox-gl-native-ios/pull/411))
+* Fixed a sporadic crash when the application "resigns active", for example, when showing Control Center. ([#412](https://github.com/mapbox/mapbox-gl-native-ios/pull/412))
+
+### 🔧 Dependencies
+
+* Core library updated to `4.0.0`. ([#417](https://github.com/mapbox/mapbox-gl-native-ios/pull/417))
+* `mapbox-events-ios` updated to version 0.10.2 to avoid a [compilation issue](https://github.com/mapbox/mapbox-events-ios/issues/236) in earlier versions of Xcode.
 
 ## 6.1.0 - August 26, 2020
 
-* Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
+### ✨ New features
 
+* Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
 * Added `MGLObserver`, `MGLObservable` and `MGLEvent` to monitor events from the map view. ([#358](https://github.com/mapbox/mapbox-gl-native-ios/pull/358))
+
+### 🐞 Bug fixes
+
+* Fixed symbol flickering on updating symbols in the existing tiles (#630)
+* Fixed icons jittering during immediate camera transitions (#260)
+
+### 🔧 Dependencies
+
+* Core library updated to `3.1.0`.
 
 ## 6.0.0 - July 16, 2020
  
@@ -43,6 +69,10 @@ If you have any questions about how this change may impact your use of the Maps 
 * Fixed an issue where symbols flickered when zooming out. ([mapbox/mapbox-gl-native#16471](https://github.com/mapbox/mapbox-gl-native/issues/16471), [#273](https://github.com/mapbox/mapbox-gl-native-ios/issues/273))
 * Fixed a potential crash when switching from a style with many layers to an empty style. ([mapbox/mapbox-gl-native#16480](https://github.com/mapbox/mapbox-gl-native/issues/16480))
 * Fixed a potential memory leak when using VoiceOver. ([mapbox/mapbox-gl-native-ios#318](https://github.com/mapbox/mapbox-gl-native-ios/pull/318))
+
+### 🔧 Dependencies
+
+* Core library updated to `1.8.1`.
 
 ## 5.9.0 - May 7, 2020
 

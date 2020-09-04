@@ -19,12 +19,15 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.5.0"]
+              xcode: ["11.1.0", "11.7.0"]
               buildtype: ["Debug", "Release"]
       - ios-release-template:
+          xcode: "12.0.0"
+          beta: true
           name: ios-release
       # This should depend on sanitize jobs              
       - ios-release-tag:
+          xcode: "12.0.0"
           beta: true
         # Commenting out to test for release.
           # requires: 
@@ -60,7 +63,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.4.1", "11.5.0", "11.6.0"]
+              xcode: ["11.3.1", "11.5.0", "11.6.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -72,13 +75,9 @@ workflows:
       - ios-static-analyzer-nightly:
           requires:
             - ios-build
-      - ios-release-template:
-          requires:
-            - ios-build
-          name: ios-release-nightly
       - metrics-nightly:      
           requires:
-            - ios-release-nightly
+            - ios-build
 
 commands:
   npm-install:
@@ -427,10 +426,17 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-template:
+    parameters:
+      xcode:
+        type: string
+      beta:
+        type: boolean
+        default: false
     macos:
-      xcode: "11.4.1"
+      xcode: << parameters.xcode >>
     shell: /bin/bash --login -eo pipefail
     environment:
+      BETA: << parameters.beta >>
       BUILDTYPE: Release
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
@@ -441,7 +447,7 @@ jobs:
       - install-ios-packaging-dependencies
       - run:
           name: Build dynamic framework for device and simulator
-          command: make iframework
+          command: make iframework FORMAT=dynamic BUILD_DEVICE=true BUILD_DOCS=false
           no_output_timeout: 20m
       - deploy:
           name: Upload snapshot build to s3
@@ -469,11 +475,13 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-release-tag:
     parameters:
+      xcode:
+        type: string
       beta:
         type: boolean
         default: false
     macos:
-      xcode: "12.0.0"
+      xcode: << parameters.xcode >>
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
@@ -481,7 +489,6 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - checkout
       - slack/notify:
           message: '<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` started.>'
           include_visit_job_action: true
@@ -503,6 +510,8 @@ jobs:
       - run:
           name: Build, package, and upload iOS release
           command: |
+            echo CIRCLE_TAG=${CIRCLE_TAG}
+            echo CIRCLE_SHA1=${CIRCLE_SHA1}
             export VERSION_TAG=${CIRCLE_TAG}
             platform/ios/scripts/deploy-packages.sh
           no_output_timeout: 20m

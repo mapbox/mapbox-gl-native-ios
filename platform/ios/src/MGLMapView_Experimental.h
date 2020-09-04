@@ -7,6 +7,9 @@
 /** Enable rendering performance measurement. */
 @property (nonatomic) BOOL experimental_enableFrameRateMeasurement;
 
+/** Enable MGLMapView measurement via os_signpost. */
+@property (nonatomic) BOOL experimental_enableSignpost;
+
 /**
  Average frames per second over the previous second, updated once per second.
 
@@ -28,5 +31,9 @@
  Requires `experimental_enableFrameRateMeasurement`.
  */
 @property (nonatomic, readonly) CFTimeInterval averageFrameTime;
+
+
+- (void)experimental_beginSignpostRegionNamed:(NSString*)region;
+- (void)experimental_endSignpostRegionNamed:(NSString*)region;
 
 @end
