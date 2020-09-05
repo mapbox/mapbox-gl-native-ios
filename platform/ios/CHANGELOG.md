@@ -6,6 +6,8 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 **This release supports beta versions of iOS 14.**
 
+You should not submit apps built with `6.2.0-beta.1` to the App Store. If you need to submit a build to TestFlight you should use Xcode 12 beta 6 (or newer). [Read more](https://github.com/mapbox/mapbox-gl-native-ios/issues/418).
+
 ### ✨ New features
 
 * Added `MGLLocationManager.accuracyAuthorization` to check the level of accuracy the app is allowed to support. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
