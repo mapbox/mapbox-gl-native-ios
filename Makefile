@@ -4,6 +4,9 @@ export TARGET_BRANCH ?= master
 
 CMAKE ?= cmake
 
+XCODE_VERSION := $(shell xcrun xcodebuild -version | head -1 | awk '{print $2}')
+BETA := $(if $(filter $(XCODE_VERSION),12.0),true,false)
+
 
 ifeq ($(BUILDTYPE), Release)
 else ifeq ($(BUILDTYPE), RelWithDebInfo)
@@ -143,7 +146,7 @@ ifneq ($(SKIP_TESTING),)
 endif
 
 ifeq ($(BETA),true)
-	IOS_XCODEBUILD_SIM += -xcconfig xcode-beta-3-build-fix.xcconfig
+	IOS_XCODEBUILD_SIM += -xcconfig xcode-12-beta-fix.xcconfig
 else	
 ifneq ($(CI),)
 	IOS_XCODEBUILD_SIM += -xcconfig platform/darwin/ci.xcconfig
@@ -159,7 +162,7 @@ $(NETRC_FILE):
 $(CARTHAGE_DEPS): $(NETRC_FILE) | $(IOS_OUTPUT_PATH)
 ifeq ($(BETA),true)
 	@echo "Beta Xcode - applying Carthage workaround"
-	XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-beta-3-build-fix.xcconfig carthage bootstrap --platform iOS --use-netrc
+	XCODE_XCCONFIG_FILE=$(CURDIR)/xcode-12-beta-fix.xcconfig carthage bootstrap --platform iOS --use-netrc
 else	
 	carthage bootstrap --platform iOS --use-netrc
 endif	
@@ -333,5 +336,8 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	-rm -rf ./mason_packages
+	-rm Cartfile.resolved
+	-rm -rf Carthage \
+			~/Library/Caches/carthage \
+			~/Library/Caches/org.carthage.kit
 	-rm -rf ./node_modules
