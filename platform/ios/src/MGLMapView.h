@@ -1,7 +1,6 @@
 #import <UIKit/UIKit.h>
 
 #import "MGLCompassButton.h"
-#import "MGLScaleBar.h"
 #import "MGLFoundation.h"
 #import "MGLGeometry.h"
 #import "MGLMapCamera.h"
@@ -16,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class MGLUserLocation;
 @class MGLPolyline;
 @class MGLPolygon;
+@class MGLScaleBar;
 @class MGLShape;
 
 @protocol MGLMapViewDelegate;

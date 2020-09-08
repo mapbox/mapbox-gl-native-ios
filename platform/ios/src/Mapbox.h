@@ -56,6 +56,7 @@ FOUNDATION_EXPORT MGL_EXPORT const unsigned char MapboxVersionString[];
 #import "MGLRasterDEMSource.h"
 #import "MGLRasterStyleLayer.h"
 #import "MGLRasterTileSource.h"
+#import "MGLScaleBar.h"
 #import "MGLSDKMetricsManager.h"
 #import "MGLShape.h"
 #import "MGLShapeCollection.h"

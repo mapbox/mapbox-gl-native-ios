@@ -4,7 +4,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
-A  view that displays a scale depending of the current zoom level and cunit of length.
+A  view that displays a scale depending of the current zoom level and unit of length.
 */
 MGL_EXPORT
 @interface MGLScaleBar : UIView
