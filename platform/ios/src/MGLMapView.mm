@@ -57,7 +57,7 @@
 #import "MGLAnnotationImage_Private.h"
 #import "MGLAnnotationView_Private.h"
 #import "MGLCompassButton_Private.h"
-#import "MGLScaleBar.h"
+#import "MGLScaleBar_Private.h"
 #import "MGLStyle_Private.h"
 #import "MGLStyleLayer_Private.h"
 #import "MGLMapboxEvents.h"

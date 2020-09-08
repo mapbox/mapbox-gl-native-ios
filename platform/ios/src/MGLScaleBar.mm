@@ -1,5 +1,5 @@
 #import "Mapbox.h"
-#import "MGLScaleBar.h"
+#import "MGLScaleBar_Private.h"
 
 static const CGFloat MGLFeetPerMile = 5280;
 
@@ -75,13 +75,12 @@ static const MGLRow MGLImperialTable[] ={
 @class MGLScaleBarLabel;
 
 @interface MGLScaleBar()
+@property (nonatomic, assign) CLLocationDistance metersPerPoint;
 @property (nonatomic) NSArray<UIView *> *labelViews;
 @property (nonatomic) NSArray<UIView *> *bars;
 @property (nonatomic) UIView *containerView;
 @property (nonatomic) MGLDistanceFormatter *formatter;
 @property (nonatomic, assign) MGLRow row;
-@property (nonatomic) UIColor *primaryColor;
-@property (nonatomic) UIColor *secondaryColor;
 @property (nonatomic, assign) CGFloat borderWidth;
 @property (nonatomic) NSMutableDictionary* labelImageCache;
 @property (nonatomic) MGLScaleBarLabel* prototypeLabel;
@@ -105,6 +104,7 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 
 - (void)drawTextInRect:(CGRect)rect {
     CGSize shadowOffset = self.shadowOffset;
+    UIColor *primaryTextColor = self.textColor;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 2);
@@ -115,7 +115,7 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     [super drawTextInRect:rect];
     
     CGContextSetTextDrawingMode(context, kCGTextFill);
-    self.textColor = [UIColor blackColor];
+    self.textColor = primaryTextColor;
     self.shadowOffset = CGSizeMake(0, 0);
     [super drawTextInRect:rect];
     
@@ -145,6 +145,7 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     
     _primaryColor = [UIColor colorWithRed:18.0/255.0 green:45.0/255.0 blue:17.0/255.0 alpha:1];
     _secondaryColor = [UIColor colorWithRed:247.0/255.0 green:247.0/255.0 blue:247.0/255.0 alpha:1];
+    _labelColor = [UIColor blackColor];
     _borderWidth = 1.0f;
     
     self.clipsToBounds = NO;
@@ -167,6 +168,7 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     _labelImageCache              = [[NSMutableDictionary alloc] init];
     _prototypeLabel               = [[MGLScaleBarLabel alloc] init];
     _prototypeLabel.font          = [UIFont systemFontOfSize:8 weight:UIFontWeightMedium];
+    _prototypeLabel.textColor     = self.labelColor;
     _prototypeLabel.clipsToBounds = NO;
 
     NSUInteger numberOfLabels = 4;
@@ -295,6 +297,17 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     
     self.recalculateSize = YES;
     [self invalidateIntrinsicContentSize];
+}
+
+-(void)setLabelColor:(UIColor *)labelColor {
+    if (_labelColor == labelColor) {
+        return;
+    }
+    
+    _labelColor = labelColor;
+    
+    self.prototypeLabel.textColor = labelColor;
+    [self resetLabelImageCache];
 }
 
 - (CGSize)intrinsicContentSize {

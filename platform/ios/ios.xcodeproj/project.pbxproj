@@ -182,8 +182,8 @@
 		35D13AC41D3D19DD00AFB4E0 /* MGLFillStyleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 35D13AC11D3D19DD00AFB4E0 /* MGLFillStyleLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		35D13AC51D3D19DD00AFB4E0 /* MGLFillStyleLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 35D13AC21D3D19DD00AFB4E0 /* MGLFillStyleLayer.mm */; };
 		35D13AC61D3D19DD00AFB4E0 /* MGLFillStyleLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 35D13AC21D3D19DD00AFB4E0 /* MGLFillStyleLayer.mm */; };
-		35D3A1E61E9BE7EB002B38EE /* MGLScaleBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 355ADFFB1E9281DA00F3939D /* MGLScaleBar.h */; };
-		35D3A1E71E9BE7EC002B38EE /* MGLScaleBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 355ADFFB1E9281DA00F3939D /* MGLScaleBar.h */; };
+		35D3A1E61E9BE7EB002B38EE /* MGLScaleBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 355ADFFB1E9281DA00F3939D /* MGLScaleBar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		35D3A1E71E9BE7EC002B38EE /* MGLScaleBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 355ADFFB1E9281DA00F3939D /* MGLScaleBar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		35D9DDE21DA25EEC00DAAD69 /* MGLCodingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 35D9DDE11DA25EEC00DAAD69 /* MGLCodingTests.mm */; };
 		35E0CFE61D3E501500188327 /* MGLStyle_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 35E0CFE51D3E501500188327 /* MGLStyle_Private.h */; };
 		35E0CFE71D3E501500188327 /* MGLStyle_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 35E0CFE51D3E501500188327 /* MGLStyle_Private.h */; };
@@ -249,6 +249,8 @@
 		55E2AD131E5B125400E8C587 /* MGLOfflineStorageTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 55E2AD121E5B125400E8C587 /* MGLOfflineStorageTests.mm */; };
 		632281DF1E6F855900D75A5D /* MBXEmbeddedMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 632281DE1E6F855900D75A5D /* MBXEmbeddedMapViewController.m */; };
 		6407D6701E0085FD00F6A9C3 /* MGLDocumentationExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6407D66F1E0085FD00F6A9C3 /* MGLDocumentationExampleTests.swift */; };
+		6E9D49DE240EA582000536A7 /* MGLScaleBar_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E9D49DD240EA582000536A7 /* MGLScaleBar_Private.h */; };
+		6E9D49DF240EA582000536A7 /* MGLScaleBar_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E9D49DD240EA582000536A7 /* MGLScaleBar_Private.h */; };
 		6F018BAE220031B8003E7269 /* UIView+MGLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FAFA29B220023840088709E /* UIView+MGLAdditions.m */; };
 		6F018BAF220031BF003E7269 /* UIView+MGLAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FAFA29A220023840088709E /* UIView+MGLAdditions.h */; };
 		6F018BB0220031BF003E7269 /* UIView+MGLAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FAFA29A220023840088709E /* UIView+MGLAdditions.h */; };
@@ -971,6 +973,7 @@
 		632281DD1E6F855900D75A5D /* MBXEmbeddedMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXEmbeddedMapViewController.h; sourceTree = "<group>"; };
 		632281DE1E6F855900D75A5D /* MBXEmbeddedMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXEmbeddedMapViewController.m; sourceTree = "<group>"; };
 		6407D66F1E0085FD00F6A9C3 /* MGLDocumentationExampleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGLDocumentationExampleTests.swift; path = ../../darwin/test/MGLDocumentationExampleTests.swift; sourceTree = "<group>"; };
+		6E9D49DD240EA582000536A7 /* MGLScaleBar_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLScaleBar_Private.h; sourceTree = "<group>"; };
 		6FA9341521EF372100AA9CA8 /* MBXOrnamentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXOrnamentsViewController.m; sourceTree = "<group>"; };
 		6FA9341621EF372100AA9CA8 /* MBXOrnamentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBXOrnamentsViewController.h; sourceTree = "<group>"; };
 		6FAFA29A220023840088709E /* UIView+MGLAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+MGLAdditions.h"; sourceTree = "<group>"; };
@@ -1590,6 +1593,7 @@
 				96E6145822CC169000109F14 /* MGLCompassButton.mm */,
 				355ADFFB1E9281DA00F3939D /* MGLScaleBar.h */,
 				355ADFFC1E9281DA00F3939D /* MGLScaleBar.mm */,
+				6E9D49DD240EA582000536A7 /* MGLScaleBar_Private.h */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -2358,6 +2362,7 @@
 				35D13AB71D3D15E300AFB4E0 /* MGLStyleLayer.h in Headers */,
 				07D947531F67488E00E37934 /* MGLComputedShapeSource_Private.h in Headers */,
 				9654C1261FFC1AB900DB6A19 /* MGLPolyline_Private.h in Headers */,
+				6E9D49DE240EA582000536A7 /* MGLScaleBar_Private.h in Headers */,
 				40F887701D7A1E58008ECB67 /* MGLShapeSource_Private.h in Headers */,
 				350098DC1D484E60004B2AF0 /* NSValue+MGLStyleAttributeAdditions.h in Headers */,
 				74CB5ECA219B285000102936 /* MGLLineStyleLayer_Private.h in Headers */,
@@ -2529,6 +2534,7 @@
 				DA35A29F1CC9E94C00E826B2 /* MGLCoordinateFormatter.h in Headers */,
 				967C864C210A9D3C004DF794 /* UIDevice+MGLAdditions.h in Headers */,
 				404C26E31D89B877000AA13D /* MGLTileSource.h in Headers */,
+				6E9D49DF240EA582000536A7 /* MGLScaleBar_Private.h in Headers */,
 				96E516F6200059EC00A02306 /* MGLRendererFrontend.h in Headers */,
 				071BBB041EE76147001FB02A /* MGLImageSource.h in Headers */,
 				74CB5EC0219B280400102936 /* MGLHeatmapStyleLayer_Private.h in Headers */,

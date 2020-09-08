@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 
 #import "MGLCompassButton.h"
+#import "MGLScaleBar.h"
 #import "MGLFoundation.h"
 #import "MGLGeometry.h"
 #import "MGLMapCamera.h"
@@ -327,7 +328,7 @@ MGL_EXPORT
  A control indicating the scale of the map. The scale bar is positioned in the
  upper-left corner. Enable the scale bar via `showsScale`.
  */
-@property (nonatomic, readonly) UIView *scaleBar;
+@property (nonatomic, readonly) MGLScaleBar *scaleBar;
 
 /**
  The position of the scale bar. The default value is `MGLOrnamentPositionTopLeft`.
