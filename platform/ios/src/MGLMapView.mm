@@ -50,6 +50,7 @@
 #import "UIViewController+MGLAdditions.h"
 #import "UIView+MGLAdditions.h"
 
+#import "MGLApplication_Private.h"
 #import "MGLFaux3DUserLocationAnnotationView.h"
 #import "MGLUserLocationAnnotationView.h"
 #import "MGLUserLocationAnnotationView_Private.h"
@@ -303,6 +304,13 @@ public:
 @property (nonatomic, assign) NSInteger numberOfRenderCalls;
 @property (nonatomic, assign) NSInteger numberOfRenderCallsMoreThanOneSecond;
 
+// Application properties
+@property (nonatomic, weak) id<MGLApplication> application;
+@property (nonatomic, weak) UIScreen *displayLinkScreen;
+@property (nonatomic) CADisplayLink *displayLink;
+
+
+
 - (mbgl::Map &)mbglMap;
 
 @end
@@ -335,7 +343,6 @@ public:
     CLLocationDegrees _pendingLatitude;
     CLLocationDegrees _pendingLongitude;
 
-    CADisplayLink *_displayLink;
     BOOL _needsDisplayRefresh;
 
     NSInteger _changeDelimiterSuppressionDepth;
@@ -470,8 +477,39 @@ public:
     return _rendererFrontend->getRenderer();
 }
 
+- (void)setApplication:(id<MGLApplication>)application
+ {
+     if (application != _application)
+     {
+         NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+         if (_application) {
+             [center removeObserver:self name:UIApplicationWillResignActiveNotification object:_application];
+             [center removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:_application];
+             [center removeObserver:self name:UIApplicationWillEnterForegroundNotification object:_application];
+             [center removeObserver:self name:UIApplicationDidBecomeActiveNotification object:_application];
+             [center removeObserver:self name:UIApplicationWillTerminateNotification object:_application];
+             [center removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:_application];
+         }
+
+         _application = application;
+
+         if (application) {
+             [center addObserver:self selector:@selector(willResignActive:) name:UIApplicationWillResignActiveNotification object:application];
+             [center addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:application];
+             [center addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:application];
+             [center addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:application];
+             [center addObserver:self selector:@selector(willTerminate) name:UIApplicationWillTerminateNotification object:application];
+             [center addObserver:self selector:@selector(didReceiveMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:application];
+         }
+     }
+ }
+
+
 - (void)commonInit
 {
+    // TODO:
+    [self setApplication:[UIApplication sharedApplication]];
+
     _opaque = NO;
 
     _log = os_log_create("com.mapbox.signposts", "MGLMapView");
@@ -496,7 +534,7 @@ public:
     // setup mbgl view
     _mbglView = MGLMapViewImpl::Create(self);
     
-    BOOL background = [UIApplication sharedApplication].applicationState == UIApplicationStateBackground;
+    BOOL background = _application.applicationState == UIApplicationStateBackground;
     if (!background)
     {
         _mbglView->createView();
@@ -529,7 +567,7 @@ public:
     NSAssert(!_mbglMap, @"_mbglMap should be NULL");
     _mbglMap = std::make_unique<mbgl::Map>(*_rendererFrontend, *_mbglView, mapOptions, resourceOptions);
 
-    // start paused if in IB
+    // start paused if launch into the background
     if (background) {
         self.dormant = YES;
     }
@@ -673,23 +711,22 @@ public:
     [_singleTapGestureRecognizer requireGestureRecognizerToFail:_quickZoom];
     [self addGestureRecognizer:_singleTapGestureRecognizer];
 
-    // observe app activity
-    //
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminate) name:UIApplicationWillTerminateNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-
     // Pending completion blocks are called *after* annotation views have been updated
     // in updateFromDisplayLink.
     _pendingCompletionBlocks = [NSMutableArray array];
-    
-    
-    // As of 3.7.5, we intentionally do not listen for `UIApplicationWillResignActiveNotification` or call `pauseRendering:` in response to it, as doing
-    // so causes a loop when asking for location permission. See: https://github.com/mapbox/mapbox-gl-native/issues/11225
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    // observe app activity
+    //
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminate) name:UIApplicationWillTerminateNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+
+//    // As of 3.7.5, we intentionally do not listen for `UIApplicationWillResignActiveNotification` or call `pauseRendering:` in response to it, as doing
+//    // so causes a loop when asking for location permission. See: https://github.com/mapbox/mapbox-gl-native/issues/11225
+//
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 
     // Device orientation management
     self.currentOrientation = UIInterfaceOrientationUnknown;
@@ -711,7 +748,7 @@ public:
     _pendingLongitude = NAN;
     _targetCoordinate = kCLLocationCoordinate2DInvalid;
 
-    if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+    if (self.application.applicationState != UIApplicationStateBackground) {
         [MGLMapboxEvents pushTurnstileEvent];
         [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
     }
@@ -799,6 +836,15 @@ public:
     if (_delegate == delegate) return;
 
     _delegate = delegate;
+
+    id dataSource = MGL_OBJC_DYNAMIC_CAST_AS_PROTOCOL(delegate, MGLMapViewApplicationDataSource);
+
+    if (dataSource) {
+        self.application = [dataSource applicationForMapView:self];
+    }
+    else {
+        self.application = [UIApplication sharedApplication];
+    }
 
     _delegateHasAlphasForShapeAnnotations = [_delegate respondsToSelector:@selector(mapView:alphaForShapeAnnotation:)];
     _delegateHasStrokeColorsForShapeAnnotations = [_delegate respondsToSelector:@selector(mapView:strokeColorForShapeAnnotation:)];
@@ -1347,7 +1393,7 @@ public:
     }
 
     // Check to ensure rendering doesn't occur in the background
-    if (([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) &&
+    if ((self.application.applicationState == UIApplicationStateBackground) &&
         ![self supportsBackgroundRendering])
     {
         return;
@@ -1541,10 +1587,10 @@ public:
     // the app delegate's application:supportedInterfaceOrientationsForWindow:
     // method) and the device's supported orientations to determine whether to rotate.
     
-    UIApplication *application = [UIApplication sharedApplication];
+    id<MGLApplication> application = self.application;
     
     if (window && [application.delegate respondsToSelector:@selector(application:supportedInterfaceOrientationsForWindow:)]) {
-        self.applicationSupportedInterfaceOrientations = [application.delegate application:application supportedInterfaceOrientationsForWindow:window];
+        self.applicationSupportedInterfaceOrientations = [application.delegate application:(UIApplication*)application supportedInterfaceOrientationsForWindow:window];
         return;
     }
     
@@ -1744,7 +1790,7 @@ public:
     MGLLogInfo(@"Entering foreground.");
     MGLAssertIsMainThread();
 
-    if (self.dormant && [UIApplication sharedApplication].applicationState != UIApplicationStateBackground)
+    if (self.dormant && self.application.applicationState != UIApplicationStateBackground)
     {
         self.dormant = NO;
 
@@ -2689,7 +2735,7 @@ public:
                                              direction:camera.heading
                                                  pitch:camera.pitch];
                 }
-                [[UIApplication sharedApplication] openURL:url];
+                [self.application openURL:url];
             }
         }];
         [attributionController addAction:action];
@@ -2744,7 +2790,7 @@ public:
     UIAlertAction *moreAction = [UIAlertAction actionWithTitle:moreTitle
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * _Nonnull action) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.mapbox.com/telemetry/"]];
+        [self.application openURL:[NSURL URLWithString:@"https://www.mapbox.com/telemetry/"]];
     }];
     [alertController addAction:moreAction];
     
@@ -5975,7 +6021,7 @@ public:
 
     if (self.userTrackingMode == MGLUserTrackingModeNone &&
         self.userLocationAnnotationView.accessibilityElementIsFocused &&
-        [UIApplication sharedApplication].applicationState == UIApplicationStateActive)
+        self.application.applicationState == UIApplicationStateActive)
     {
         [self accessibilityPostNotification:UIAccessibilityLayoutChangedNotification argument:self.userLocationAnnotationView];
     }
@@ -6294,7 +6340,7 @@ public:
         // note that right/left device and interface orientations are opposites (see UIApplication.h)
         //
         CLDeviceOrientation orientation;
-        switch ([[UIApplication sharedApplication] statusBarOrientation])
+        switch ([self.application statusBarOrientation])
         {
             case (UIInterfaceOrientationLandscapeLeft):
             {
@@ -6541,7 +6587,7 @@ public:
         BOOL respondsToSelectorWithReason = [self.delegate respondsToSelector:@selector(mapView:regionDidChangeWithReason:animated:)];
 
         if ((respondsToSelector || respondsToSelectorWithReason) &&
-            ([UIApplication sharedApplication].applicationState == UIApplicationStateActive))
+            (self.application.applicationState == UIApplicationStateActive))
         {
             _featureAccessibilityElements = nil;
             _sortedVisibleRoadElements = nil;
@@ -7177,7 +7223,7 @@ public:
 - (void)attemptBackgroundSnapshot {
     static NSTimeInterval lastSnapshotTime = 0.0;
 
-    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+    if (self.application.applicationState != UIApplicationStateActive) {
         return;
     }
 
@@ -7195,7 +7241,7 @@ public:
 }
 
 - (void)queueBackgroundSnapshot {
-    if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
+    if (self.application.applicationState != UIApplicationStateActive) {
         return;
     }
 

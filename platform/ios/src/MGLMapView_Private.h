@@ -1,6 +1,7 @@
 #import "MGLMapView.h"
 #import "MGLUserLocationAnnotationView.h"
 #import "MGLAnnotationContainerView.h"
+#import "MGLApplication_Private.h"
 #import <os/signpost.h>
 
 #include <mbgl/util/size.hpp>

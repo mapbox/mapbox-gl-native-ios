@@ -1,6 +1,7 @@
 #import "MGLMapViewIntegrationTest.h"
 
 @interface MGLMapView (MGLMapViewIntegrationTest)
+@property (nonatomic, weak) CADisplayLink *displayLink;
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink;
 - (void)setNeedsRerender;
 @end
@@ -117,6 +118,11 @@
 
 - (void)waitForMapViewToFinishLoadingStyleWithTimeout:(NSTimeInterval)timeout {
     XCTAssertNil(self.styleLoadingExpectation);
+    XCTAssertNotNil(self.mapView.displayLink);
+    XCTAssert(!self.mapView.displayLink.paused);
+
+    [self.mapView setNeedsRerender];
+
     self.styleLoadingExpectation = [self expectationWithDescription:@"Map view should finish loading style."];
     [self waitForExpectations:@[self.styleLoadingExpectation] timeout:timeout];
     self.styleLoadingExpectation = nil;
