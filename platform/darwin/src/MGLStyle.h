@@ -279,7 +279,7 @@ This set does not include Mapbox Streets source identifiers, which are included 
     style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids source identifer name changes that will occur in the default
+    approach also avoids source identifier name changes that will occur in the default
     style’s sources over time.
 
  @return An instance of a concrete subclass of `MGLSource` associated with the
@@ -312,7 +312,7 @@ This set does not include Mapbox Streets source identifiers, which are included 
     style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids source identifer name changes that will occur in the default
+    approach also avoids source identifier name changes that will occur in the default
     style’s sources over time.
 
  @param source The source to remove from the current style.
@@ -327,7 +327,7 @@ This set does not include Mapbox Streets source identifiers, which are included 
  style URL to an explicitly versioned style using a convenience method like
  `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
  inspectable in Interface Builder, or a manually constructed `NSURL`. This
- approach also avoids source identifer name changes that will occur in the default
+ approach also avoids source identifier name changes that will occur in the default
  style’s sources over time.
 
  @param source The source to remove from the current style.
@@ -355,7 +355,7 @@ This set does not include Mapbox Streets source identifiers, which are included 
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
  @return An instance of a concrete subclass of `MGLStyleLayer` associated with
@@ -368,7 +368,7 @@ This set does not include Mapbox Streets source identifiers, which are included 
  Adds a new layer on top of existing layers.
 
  @note Adding the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @note Layers should be added in
@@ -385,7 +385,7 @@ This set does not include Mapbox Streets source identifiers, which are included 
  Inserts a new layer into the style at the given index.
 
  @note Adding the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @note Layers should be added in
@@ -408,11 +408,11 @@ This set does not include Mapbox Streets source identifiers, which are included 
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
     Inserting the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @param layer The layer to insert.
@@ -433,11 +433,11 @@ This set does not include Mapbox Streets source identifiers, which are included 
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
     Inserting the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @param layer The layer to insert.
@@ -458,7 +458,7 @@ This set does not include Mapbox Streets source identifiers, which are included 
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
  @param layer The layer object to remove from the map view. This object

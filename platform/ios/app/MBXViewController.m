@@ -31,7 +31,7 @@ static const MGLCoordinateBounds colorado = {
     .ne = { .latitude = 40.989329, .longitude = -102.062592},
 };
 
-static NSString * const MBXViewControllerAnnotationViewReuseIdentifer = @"MBXViewControllerAnnotationViewReuseIdentifer";
+static NSString * const MBXViewControllerAnnotationViewReuseIdentifier = @"MBXViewControllerAnnotationViewReuseIdentifier";
 
 typedef NS_ENUM(NSInteger, MBXSettingsSections) {
     MBXSettingsDebugTools = 0,
@@ -2063,10 +2063,10 @@ CLLocationCoordinate2D randomWorldCoordinate() {
         return nil;
     }
 
-    MBXAnnotationView *annotationView = (MBXAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:MBXViewControllerAnnotationViewReuseIdentifer];
+    MBXAnnotationView *annotationView = (MBXAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:MBXViewControllerAnnotationViewReuseIdentifier];
     if (!annotationView)
     {
-        annotationView = [[MBXAnnotationView alloc] initWithReuseIdentifier:MBXViewControllerAnnotationViewReuseIdentifer];
+        annotationView = [[MBXAnnotationView alloc] initWithReuseIdentifier:MBXViewControllerAnnotationViewReuseIdentifier];
         annotationView.frame = CGRectMake(0, 0, 10, 10);
         annotationView.backgroundColor = [UIColor whiteColor];
 
