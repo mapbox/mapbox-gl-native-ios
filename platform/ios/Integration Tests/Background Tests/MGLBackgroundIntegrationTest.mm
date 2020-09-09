@@ -1,8 +1,9 @@
 #import "MGLMapViewIntegrationTest.h"
 #import "MGLMockApplication.h"
+#import "MGLMapView_Private.h"
 
 @interface MGLMapView (BackgroundTests)
-@property (nonatomic, readonly) id<MGLApplication> application;
+@property (nonatomic, weak) id<MGLApplication> application;
 @property (nonatomic, getter=isDormant) BOOL dormant;
 @property (nonatomic) CADisplayLink *displayLink;
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink;
@@ -30,7 +31,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 
 #pragma mark - MGLBackgroundIntegrationTest
 
-@interface MGLBackgroundIntegrationTest : MGLMapViewIntegrationTest <MGLMapViewApplicationDataSource>
+@interface MGLBackgroundIntegrationTest : MGLMapViewIntegrationTest
 
 @property (nonatomic) MGLMockApplication *mockApplication;
 @property (nonatomic, copy) MGLNotificationBlock willEnterForeground;
@@ -41,14 +42,16 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 @implementation MGLBackgroundIntegrationTest
 
 - (void)setUp {
-
     self.mockApplication = [[MGLMockApplication alloc] init];
 
-    // Register notifications
+    // Register notifications *BEFORE* MGLMapView does.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:self.mockApplication];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:self.mockApplication];
-    
+
     [super setUp];
+
+    // Now override
+    self.mapView.application = self.mockApplication;
 }
 
 - (void)tearDown {
@@ -75,8 +78,8 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     }
 }
 
-- (MGLMapView*)testMapViewWithFrame:(CGRect)frame styleURL:(NSURL *)styleURL {
-    MGLBackgroundIntegrationTestMapView *mapView = [[MGLBackgroundIntegrationTestMapView alloc] initWithFrame:frame styleURL:styleURL];
+- (MGLMapView *)mapViewForTestWithFrame:(CGRect)rect styleURL:(NSURL *)styleURL {
+    MGLBackgroundIntegrationTestMapView *mapView = [[MGLBackgroundIntegrationTestMapView alloc] initWithFrame:rect styleURL:styleURL];
     
     mapView.displayLinkDidUpdate = ^{
         if (self.displayLinkDidUpdate) {
@@ -85,13 +88,6 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     };
     
     return mapView;
-}
-
-#pragma mark - MGLMapViewApplicationDataSource
-
-- (id<MGLApplication>)applicationForMapView:(MGLMapView *)mapView
-{
-    return self.mockApplication;
 }
 
 #pragma mark - Tests

@@ -306,6 +306,8 @@ public:
 
 // Application properties
 @property (nonatomic, weak) id<MGLApplication> application;
+@property (nonatomic, readonly) UIApplicationState applicationState; //Convenience
+
 @property (nonatomic, weak) UIScreen *displayLinkScreen;
 @property (nonatomic) CADisplayLink *displayLink;
 
@@ -508,7 +510,7 @@ public:
 - (void)commonInit
 {
     // TODO:
-    [self setApplication:[UIApplication sharedApplication]];
+    _application = [UIApplication sharedApplication];
 
     _opaque = NO;
 
@@ -533,8 +535,8 @@ public:
 
     // setup mbgl view
     _mbglView = MGLMapViewImpl::Create(self);
-    
-    BOOL background = _application.applicationState == UIApplicationStateBackground;
+
+    BOOL background = (self.applicationState == UIApplicationStateBackground);
     if (!background)
     {
         _mbglView->createView();
@@ -748,7 +750,7 @@ public:
     _pendingLongitude = NAN;
     _targetCoordinate = kCLLocationCoordinate2DInvalid;
 
-    if (self.application.applicationState != UIApplicationStateBackground) {
+    if (self.applicationState != UIApplicationStateBackground) {
         [MGLMapboxEvents pushTurnstileEvent];
         [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
     }
@@ -836,15 +838,6 @@ public:
     if (_delegate == delegate) return;
 
     _delegate = delegate;
-
-    id dataSource = MGL_OBJC_DYNAMIC_CAST_AS_PROTOCOL(delegate, MGLMapViewApplicationDataSource);
-
-    if (dataSource) {
-        self.application = [dataSource applicationForMapView:self];
-    }
-    else {
-        self.application = [UIApplication sharedApplication];
-    }
 
     _delegateHasAlphasForShapeAnnotations = [_delegate respondsToSelector:@selector(mapView:alphaForShapeAnnotation:)];
     _delegateHasStrokeColorsForShapeAnnotations = [_delegate respondsToSelector:@selector(mapView:strokeColorForShapeAnnotation:)];
@@ -1393,7 +1386,9 @@ public:
     }
 
     // Check to ensure rendering doesn't occur in the background
-    if ((self.application.applicationState == UIApplicationStateBackground) &&
+    UIApplicationState state = self.applicationState;
+
+    if ((state == UIApplicationStateBackground) &&
         ![self supportsBackgroundRendering])
     {
         return;
@@ -1581,47 +1576,7 @@ public:
 }
 
 - (void)refreshSupportedInterfaceOrientationsWithWindow:(UIWindow *)window {
-    
-    // "The system intersects the view controller's supported orientations with
-    // the app's supported orientations (as determined by the Info.plist file or
-    // the app delegate's application:supportedInterfaceOrientationsForWindow:
-    // method) and the device's supported orientations to determine whether to rotate.
-    
-    id<MGLApplication> application = self.application;
-    
-    if (window && [application.delegate respondsToSelector:@selector(application:supportedInterfaceOrientationsForWindow:)]) {
-        self.applicationSupportedInterfaceOrientations = [application.delegate application:(UIApplication*)application supportedInterfaceOrientationsForWindow:window];
-        return;
-    }
-    
-    // If no delegate method, check the application's plist.
-    static UIInterfaceOrientationMask orientationMask = UIInterfaceOrientationMaskAll;
-
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        // No application delegate
-        NSArray *orientations = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UISupportedInterfaceOrientations"];
-        
-        // Application's info plist provided supported orientations.
-        if (orientations.count > 0) {
-            orientationMask = 0;
-            
-            NSDictionary *lookup =
-            @{
-              @"UIInterfaceOrientationPortrait" : @(UIInterfaceOrientationMaskPortrait),
-              @"UIInterfaceOrientationPortraitUpsideDown" : @(UIInterfaceOrientationMaskPortraitUpsideDown),
-              @"UIInterfaceOrientationLandscapeLeft" : @(UIInterfaceOrientationMaskLandscapeLeft),
-              @"UIInterfaceOrientationLandscapeRight" : @(UIInterfaceOrientationMaskLandscapeRight)
-              };
-            
-            for (NSString *orientation in orientations) {
-                UIInterfaceOrientationMask mask = ((NSNumber*)lookup[orientation]).unsignedIntegerValue;
-                orientationMask |= mask;
-            }
-        }
-    });
-
-    self.applicationSupportedInterfaceOrientations = orientationMask;
+    self.applicationSupportedInterfaceOrientations = [self.application mgl_supportedInterfaceOrientationsForWindow:window];
 }
 
 - (void)deviceOrientationDidChange:(__unused NSNotification *)notification
@@ -1790,7 +1745,7 @@ public:
     MGLLogInfo(@"Entering foreground.");
     MGLAssertIsMainThread();
 
-    if (self.dormant && self.application.applicationState != UIApplicationStateBackground)
+    if (self.dormant && self.applicationState != UIApplicationStateBackground)
     {
         self.dormant = NO;
 
@@ -2735,7 +2690,7 @@ public:
                                              direction:camera.heading
                                                  pitch:camera.pitch];
                 }
-                [self.application openURL:url];
+                [self.application mgl_openURL:url completionHandler:NULL];
             }
         }];
         [attributionController addAction:action];
@@ -2790,7 +2745,7 @@ public:
     UIAlertAction *moreAction = [UIAlertAction actionWithTitle:moreTitle
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * _Nonnull action) {
-        [self.application openURL:[NSURL URLWithString:@"https://www.mapbox.com/telemetry/"]];
+        [self.application mgl_openURL:[NSURL URLWithString:@"https://www.mapbox.com/telemetry/"] completionHandler:NULL];
     }];
     [alertController addAction:moreAction];
     
@@ -6021,7 +5976,7 @@ public:
 
     if (self.userTrackingMode == MGLUserTrackingModeNone &&
         self.userLocationAnnotationView.accessibilityElementIsFocused &&
-        self.application.applicationState == UIApplicationStateActive)
+        self.applicationState == UIApplicationStateActive)
     {
         [self accessibilityPostNotification:UIAccessibilityLayoutChangedNotification argument:self.userLocationAnnotationView];
     }
@@ -6587,7 +6542,7 @@ public:
         BOOL respondsToSelectorWithReason = [self.delegate respondsToSelector:@selector(mapView:regionDidChangeWithReason:animated:)];
 
         if ((respondsToSelector || respondsToSelectorWithReason) &&
-            (self.application.applicationState == UIApplicationStateActive))
+            (self.applicationState == UIApplicationStateActive))
         {
             _featureAccessibilityElements = nil;
             _sortedVisibleRoadElements = nil;
@@ -7223,7 +7178,7 @@ public:
 - (void)attemptBackgroundSnapshot {
     static NSTimeInterval lastSnapshotTime = 0.0;
 
-    if (self.application.applicationState != UIApplicationStateActive) {
+    if (self.applicationState != UIApplicationStateActive) {
         return;
     }
 
@@ -7241,7 +7196,7 @@ public:
 }
 
 - (void)queueBackgroundSnapshot {
-    if (self.application.applicationState != UIApplicationStateActive) {
+    if (self.applicationState != UIApplicationStateActive) {
         return;
     }
 
@@ -7284,6 +7239,17 @@ static std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfS
     self.mbglMap.unsubscribe(observer.peer);
     [self.observerCache removeObject:observer];
     observer.observing = NO;
+}
+
+#pragma mark - UIApplication helpers -
+
+- (UIApplicationState)applicationState {
+    if (self.application) {
+        return self.application.applicationState;
+    }
+    else {
+        return UIApplicationStateBackground;
+    }
 }
 
 #pragma mark - Signposts -
