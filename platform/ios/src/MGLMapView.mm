@@ -886,19 +886,10 @@ public:
     NSMutableArray *updatedConstraints = [NSMutableArray array];
     UIEdgeInsets inset = UIEdgeInsetsZero;
     
-    BOOL automaticallyAdjustContentInset;
-    if (_automaticallyAdjustContentInsetHolder) {
-        automaticallyAdjustContentInset = _automaticallyAdjustContentInsetHolder.boolValue;
-    } else {
-        UIViewController *viewController = [self rootViewController];
-        automaticallyAdjustContentInset = viewController.automaticallyAdjustsScrollViewInsets;
-    }
+
     
-    if (! automaticallyAdjustContentInset) {
-        inset = UIEdgeInsetsMake(self.contentInset.top - self.safeMapViewContentInsets.top,
-                                 self.contentInset.left - self.safeMapViewContentInsets.left,
-                                 self.contentInset.bottom - self.safeMapViewContentInsets.bottom,
-                                 self.contentInset.right - self.safeMapViewContentInsets.right);
+    if (! [self hasAutomaticallyAdjustContentInset]) {
+        inset = self.contentInset;
         
         // makes sure the insets don't have negative values that could hide the ornaments
         // thus violating our ToS
@@ -910,20 +901,20 @@ public:
     
     switch (position) {
         case MGLOrnamentPositionTopLeft:
-            [updatedConstraints addObject:[view.topAnchor constraintEqualToAnchor:self.mgl_safeTopAnchor constant:margins.y + inset.top]];
-            [updatedConstraints addObject:[view.leadingAnchor constraintEqualToAnchor:self.mgl_safeLeadingAnchor constant:margins.x + inset.left]];
+            [updatedConstraints addObject:[view.topAnchor constraintEqualToAnchor:self.safeTopAnchor constant:margins.y + inset.top]];
+            [updatedConstraints addObject:[view.leadingAnchor constraintEqualToAnchor:self.safeLeadingAnchor constant:margins.x + inset.left]];
             break;
         case MGLOrnamentPositionTopRight:
-            [updatedConstraints addObject:[view.topAnchor constraintEqualToAnchor:self.mgl_safeTopAnchor constant:margins.y + inset.top]];
-            [updatedConstraints addObject:[self.mgl_safeTrailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:margins.x + inset.right]];
+            [updatedConstraints addObject:[view.topAnchor constraintEqualToAnchor:self.safeTopAnchor constant:margins.y + inset.top]];
+            [updatedConstraints addObject:[self.safeTrailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:margins.x + inset.right]];
             break;
         case MGLOrnamentPositionBottomLeft:
-            [updatedConstraints addObject:[self.mgl_safeBottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:margins.y + inset.bottom]];
-            [updatedConstraints addObject:[view.leadingAnchor constraintEqualToAnchor:self.mgl_safeLeadingAnchor constant:margins.x + inset.left]];
+            [updatedConstraints addObject:[self.safeBottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:margins.y + inset.bottom]];
+            [updatedConstraints addObject:[view.leadingAnchor constraintEqualToAnchor:self.safeLeadingAnchor constant:margins.x + inset.left]];
             break;
         case MGLOrnamentPositionBottomRight:
-            [updatedConstraints addObject:[self.mgl_safeBottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:margins.y + inset.bottom]];
-            [updatedConstraints addObject: [self.mgl_safeTrailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:margins.x + inset.right]];
+            [updatedConstraints addObject:[self.safeBottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:margins.y + inset.bottom]];
+            [updatedConstraints addObject: [self.safeTrailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:margins.x + inset.right]];
             break;
     }
 
@@ -941,10 +932,54 @@ public:
     [constraints addObjectsFromArray:updatedConstraints];
 }
 
+- (BOOL)hasAutomaticallyAdjustContentInset {
+    BOOL automaticallyAdjustContentInset;
+    if (_automaticallyAdjustContentInsetHolder) {
+        automaticallyAdjustContentInset = _automaticallyAdjustContentInsetHolder.boolValue;
+    } else {
+        UIViewController *viewController = [self rootViewController];
+        automaticallyAdjustContentInset = viewController.automaticallyAdjustsScrollViewInsets;
+    }
+    
+    return automaticallyAdjustContentInset;
+}
+
+- (NSLayoutYAxisAnchor *)safeTopAnchor {
+    if ([self hasAutomaticallyAdjustContentInset]) {
+        return self.mgl_safeTopAnchor;
+    } else {
+        return self.topAnchor;
+    }
+}
+
+- (NSLayoutYAxisAnchor *)safeBottomAnchor {
+    if ([self hasAutomaticallyAdjustContentInset]) {
+        return self.mgl_safeBottomAnchor;
+    } else {
+        return self.bottomAnchor;
+    }
+}
+
+- (NSLayoutXAxisAnchor *)safeLeadingAnchor {
+    if ([self hasAutomaticallyAdjustContentInset]) {
+        return self.mgl_safeLeadingAnchor;
+    } else {
+        return self.leadingAnchor;
+    }
+}
+
+- (NSLayoutXAxisAnchor *)safeTrailingAnchor {
+    if ([self hasAutomaticallyAdjustContentInset]) {
+        return self.mgl_safeTrailingAnchor;
+    } else {
+        return self.trailingAnchor;
+    }
+}
+
 - (void)installConstraints
 {
-    [self installCompassViewConstraints];
     [self installScaleBarConstraints];
+    [self installCompassViewConstraints];
     [self installLogoViewConstraints];
     [self installAttributionButtonConstraints];
 }
