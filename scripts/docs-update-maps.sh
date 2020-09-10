@@ -9,13 +9,17 @@ function finish { >&2 echo -en "\033[0m"; }
 trap finish EXIT
 
 OUTPUT="/tmp/`uuidgen`"
-RELEASE_BRANCH=${1:-master}
+RELEASE_BRANCH="master"
 
 step "Updating mapbox-gl-native-ios repository…"
 git fetch --depth=1 --prune
 git fetch --tags
 
-VERSION=$( git describe --tags --match=ios-v*.*.* --abbrev=0 | sed 's/^ios-v//' )
+VERSION=${1}
+
+step "Checking out ios-v${VERSION}"
+
+git checkout ios-v${VERSION}
 
 step "Generating new docs for ${VERSION}…"
 make idocument OUTPUT=${OUTPUT} JAZZY_CUSTOM_HEAD="<script src='https://docs.mapbox.com/analytics.js'></script>"
