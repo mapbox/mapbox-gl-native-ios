@@ -5,6 +5,8 @@ notifications:
   email: false
 node_js:
 - 12
+before_install:
+- npm install --ignore-scripts
 
 jobs:
   include:
