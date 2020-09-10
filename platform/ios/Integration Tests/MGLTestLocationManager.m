@@ -41,4 +41,10 @@
 
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager { return NO; }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+- (CLAccuracyAuthorization)accuracyAuthorization {
+    return CLAccuracyAuthorizationFullAccuracy;
+}
+#endif
+
 @end
