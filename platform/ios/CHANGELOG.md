@@ -20,6 +20,7 @@ You should not submit apps built with `6.2.0-beta.1` to the App Store. If you ne
 * Added `MGLNetworkConfiguration.connected` property to enforce `MGLMapView` to use cached tiles. ([#416](https://github.com/mapbox/mapbox-gl-native-ios/pull/416))
 * Enabled local glyph rasterization for all writing systems. The new feature uses real glyph metrics and improves rendering quality for mixed (Latin / CJKV) labels. (#561)
 * Minimum and Maximum allowed values are now considered for style layer properties, as defined by the specification. If a style property is assigned with a value outside the allowed range, the property gets assigned with its default value instead. (#647)
+* Fixed an issue that caused ornaments to consider safe areas when `MGLMapView.automaticallyAdjustsContentInset` is set to `NO`. ([#420](https://github.com/mapbox/mapbox-gl-native-ios/pull/420))
 
 ### 🐞 Bug fixes
 
