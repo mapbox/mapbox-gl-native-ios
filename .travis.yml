@@ -1,6 +1,6 @@
 # once a new release tag is recreated, circle.yml sends a request to travis.yml
 # travis.yml builds the documentation in this repo and create a pull request
-language: node_js
+# language: node_js
 notifications:
   email: false
 node_js:
