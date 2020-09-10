@@ -1,6 +1,7 @@
 #import "MGLFaux3DUserLocationAnnotationView.h"
 
 #import "MGLMapView.h"
+#import "MGLMapView_Private.h"
 #import "MGLMapViewDelegate.h"
 #import "MGLUserLocation.h"
 #import "MGLUserLocationHeadingIndicator.h"
@@ -380,7 +381,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     //
     if (_accuracyRingLayer && (_oldZoom != self.mapView.zoomLevel || _oldHorizontalAccuracy != self.userLocation.location.horizontalAccuracy))
     {
-        CGFloat accuracyRingSize = [self calculateAccuracyRingSize];
+        CGFloat accuracyRingSize = [self calculateAccuracyRingSize: self.mapView.zoomLevel];
 
         // only show the accuracy ring if it won't be obscured by the location dot
         if (accuracyRingSize > MGLUserLocationAnnotationDotSize + 15)
@@ -422,7 +423,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     //
     if ( ! _accuracyRingLayer && self.userLocation.location.horizontalAccuracy)
     {
-        CGFloat accuracyRingSize = [self calculateAccuracyRingSize];
+        CGFloat accuracyRingSize = [self calculateAccuracyRingSize: self.mapView.zoomLevel];
         _accuracyRingLayer = [self circleLayerWithSize:accuracyRingSize];
         _accuracyRingLayer.backgroundColor = [self.mapView.tintColor CGColor];
         _accuracyRingLayer.opacity = 0.1;
@@ -555,6 +556,21 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         }
     }
 
+    // approximate ring
+    if ( ! _approximateLayer && self.userLocation.location.horizontalAccuracy)
+    {
+        CGFloat accuracyRingSize = [self calculateAccuracyRingSize: MAX(self.mapView.zoomLevel, MGLUserLocationApproximateZoomThreshold)];
+        _approximateLayer = [self circleLayerWithSize:accuracyRingSize];
+        _approximateLayer.backgroundColor = [backgroundColor CGColor];
+        _approximateLayer.opacity = opacity;
+        _approximateLayer.shouldRasterize = NO;
+        _approximateLayer.allowsGroupOpacity = NO;
+        _approximateLayer.borderWidth = borderSize;
+        _approximateLayer.borderColor = [strokeColor CGColor];
+
+        [self.layer addSublayer:_approximateLayer];
+    }
+
     // update approximate ring (if zoom or horizontal accuracy have changed)
     if (_approximateLayer && (_oldZoom != self.mapView.zoomLevel || _oldHorizontalAccuracy != self.userLocation.location.horizontalAccuracy))
     {
@@ -564,7 +580,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         _approximateLayer.borderWidth = borderSize;
         
         if (self.mapView.zoomLevel >= MGLUserLocationApproximateZoomThreshold) {
-            CGFloat accuracyRingSize = [self calculateAccuracyRingSize];
+            CGFloat accuracyRingSize = [self calculateAccuracyRingSize: self.mapView.zoomLevel];
 
             _approximateLayer.hidden = NO;
 
@@ -584,22 +600,6 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         _oldHorizontalAccuracy = self.userLocation.location.horizontalAccuracy;
         _oldZoom = self.mapView.zoomLevel;
     }
-
-    // approximate ring
-    if ( ! _approximateLayer && self.userLocation.location.horizontalAccuracy)
-    {
-        CGFloat accuracyRingSize = [self calculateAccuracyRingSize];
-        _approximateLayer = [self circleLayerWithSize:accuracyRingSize];
-        _approximateLayer.backgroundColor = [backgroundColor CGColor];
-        _approximateLayer.opacity = opacity;
-        _approximateLayer.shouldRasterize = NO;
-        _approximateLayer.allowsGroupOpacity = NO;
-        _approximateLayer.borderWidth = borderSize;
-        _approximateLayer.borderColor = [strokeColor CGColor];
-
-        [self.layer addSublayer:_approximateLayer];
-    }
- 
 }
 
 - (CALayer *)circleLayerWithSize:(CGFloat)layerSize
@@ -628,10 +628,10 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     return animationGroup;
 }
 
-- (CGFloat)calculateAccuracyRingSize
+- (CGFloat)calculateAccuracyRingSize:(double)zoomLevel
 {
     // diameter in screen points
-    return round(self.userLocation.location.horizontalAccuracy / [self.mapView metersPerPointAtLatitude:self.userLocation.coordinate.latitude] * 2.0);
+    return round(self.userLocation.location.horizontalAccuracy / [self.mapView metersPerPointAtLatitude:self.userLocation.coordinate.latitude zoomLevel:zoomLevel] * 2.0);
 }
 
 @end
