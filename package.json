@@ -55,7 +55,8 @@
     "test-memory": "node --expose-gc platform/node/test/memory.test.js",
     "test-expressions": "node -r esm platform/node/test/expression.test.js",
     "test-render": "node -r esm platform/node/test/render.test.js",
-    "test-query": "node -r esm platform/node/test/query.test.js"
+    "test-query": "node -r esm platform/node/test/query.test.js",
+    "docs-release-pull-request": "docs-release-pull-request"
   },
   "gypfile": true,
   "binary": {
