@@ -7,7 +7,9 @@ node_js:
 - 12
 before_install:
 - npm install --ignore-scripts
-
+env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
 jobs:
   include:
     - name: "Build Maps Release Docs"
