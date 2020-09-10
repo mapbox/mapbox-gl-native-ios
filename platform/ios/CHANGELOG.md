@@ -6,6 +6,8 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ** This release supports beta versions of iOS 14. **
 
+You should not submit apps built with `6.2.0-beta.1` to the App Store. If you need to submit a build to TestFlight you should use Xcode 12 beta 6 (or newer). [Read more](https://github.com/mapbox/mapbox-gl-native-ios/issues/418).
+
 ### ✨ New features
 
 * Added `MGLLocationManager.accuracyAuthorization` to check the level of accuracy the app is allowed to support. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
@@ -18,6 +20,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Added `MGLNetworkConfiguration.connected` property to enforce `MGLMapView` to use cached tiles. ([#416](https://github.com/mapbox/mapbox-gl-native-ios/pull/416))
 * Enabled local glyph rasterization for all writing systems. The new feature uses real glyph metrics and improves rendering quality for mixed (Latin / CJKV) labels. (#561)
 * Minimum and Maximum allowed values are now considered for style layer properties, as defined by the specification. Tf a style property is assigned with a value outside the allowed range, the property gets assigned with its default value instead. (#647)
+* Fixed an issue that caused ornaments to consider safe areas when `MGLMapView.automaticallyAdjustsContentInset` is set to `NO`. ([#420](https://github.com/mapbox/mapbox-gl-native-ios/pull/420))
 
 ### 🐞 Bug fixes
 
