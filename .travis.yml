@@ -15,7 +15,7 @@ jobs:
       osx_image: xcode10.2
       if: env(SDK_FLAVOR) = maps AND env(RELEASE_TAG) IS PRESENT
       script:
-        - npm link
+        - npm link --ignore-scripts
         - git config user.email "MapboxCI@users.noreply.github.com"
         - ./scripts/docs-update-maps.sh $RELEASE_TAG
         - docs-release-pull-request -s $SDK_FLAVOR -t $RELEASE_TAG -b publisher-staging -p ios -r mapbox-gl-native-ios
