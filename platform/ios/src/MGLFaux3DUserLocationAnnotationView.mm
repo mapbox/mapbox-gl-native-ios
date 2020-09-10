@@ -1,6 +1,5 @@
 #import "MGLFaux3DUserLocationAnnotationView.h"
 
-#import "MGLMapView.h"
 #import "MGLMapView_Private.h"
 #import "MGLMapViewDelegate.h"
 #import "MGLUserLocation.h"
