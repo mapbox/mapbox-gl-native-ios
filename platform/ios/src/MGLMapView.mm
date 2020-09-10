@@ -932,6 +932,10 @@ public:
     [constraints addObjectsFromArray:updatedConstraints];
 }
 
+// Convenience method to check if a user has enabled automatically adjust content
+// insets. Currently users can use MGLMapView.automaticallyAdjustContentInset or
+// UIViewController.automaticallyAdjustsScrollViewInsets
+// TODO: Remove when UIViewController.automaticallyAdjustsScrollViewInsets is removed
 - (BOOL)hasAutomaticallyAdjustContentInset {
     BOOL automaticallyAdjustContentInset;
     if (_automaticallyAdjustContentInsetHolder) {
@@ -944,6 +948,8 @@ public:
     return automaticallyAdjustContentInset;
 }
 
+// Checks if it has enabled adjust content insets. When true it will calculate the anchor using
+// safe area insets otherwise it will return the map's view anchor.
 - (NSLayoutYAxisAnchor *)safeTopAnchor {
     if ([self hasAutomaticallyAdjustContentInset]) {
         return self.mgl_safeTopAnchor;
@@ -952,6 +958,8 @@ public:
     }
 }
 
+// Checks if it has enabled adjust content insets. When true it will calculate the anchor using
+// safe area insets otherwise it will return the map's view anchor.
 - (NSLayoutYAxisAnchor *)safeBottomAnchor {
     if ([self hasAutomaticallyAdjustContentInset]) {
         return self.mgl_safeBottomAnchor;
@@ -960,6 +968,8 @@ public:
     }
 }
 
+// Checks if it has enabled adjust content insets. When true it will calculate the anchor using
+// safe area insets otherwise it will return the map's view anchor.
 - (NSLayoutXAxisAnchor *)safeLeadingAnchor {
     if ([self hasAutomaticallyAdjustContentInset]) {
         return self.mgl_safeLeadingAnchor;
@@ -968,6 +978,8 @@ public:
     }
 }
 
+// Checks if it has enabled adjust content insets. When true it will calculate the anchor using
+// safe area insets otherwise it will return the map's view anchor.
 - (NSLayoutXAxisAnchor *)safeTrailingAnchor {
     if ([self hasAutomaticallyAdjustContentInset]) {
         return self.mgl_safeTrailingAnchor;
