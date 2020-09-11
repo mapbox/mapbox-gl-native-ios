@@ -1,23 +1,31 @@
-# once a new release tag is recreated, circle.yml sends a request to travis.yml
-# travis.yml builds the documentation in this repo and create a pull request
+# once a new release tag is created, circle.yml sends a request to travis.yml
+# travis.yml builds the documentation in this repo and creates a pull request
 language: node_js
 notifications:
   email: false
 node_js:
-- 12
+  - 12
 install:
-- npm install --ignore-scripts
-- npm link @mapbox/docs-release-helpers
+  # prevents travis from running package.json > scripts > install
+  - npm install --ignore-scripts
+  # links the package to access docs-release-pull-request cli
+  - npm link @mapbox/docs-release-helpers
 env:
+  # Do not automatically update before running `brew install`, `brew upgrade` or `brew tap`.
   HOMEBREW_NO_AUTO_UPDATE: 1
+  # Do not run `brew cleanup`
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 jobs:
   include:
     - name: "Build Maps Release Docs"
       os: osx
       osx_image: xcode10.2
+      # only run this job if conditions are met (circleci will trigger it)
       if: env(SDK_FLAVOR) = maps AND env(RELEASE_TAG) IS PRESENT
       script:
         - git config user.email "MapboxCI@users.noreply.github.com"
+        # generate the documentation given the release tag and commit it
         - ./scripts/docs-update-maps.sh $RELEASE_TAG
+        # from the commit created in the previous step, push a new branch, and create a pull request in this repo
+        # run `docs-release-pull-request --help` to see all options
         - docs-release-pull-request -s $SDK_FLAVOR -t $RELEASE_TAG -b publisher-staging -p ios -r mapbox-gl-native-ios
