@@ -1425,6 +1425,8 @@ public:
     [self.displayLink invalidate];
     self.displayLink = nil;
     self.displayLinkScreen = nil;
+
+    [self processPendingBlocks];
 }
 
 - (void)startDisplayLink

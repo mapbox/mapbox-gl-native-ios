@@ -745,7 +745,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     [grandParentView.rightAnchor constraintEqualToAnchor:parentView.rightAnchor].active = YES;
     [grandParentView.bottomAnchor constraintEqualToAnchor:parentView.bottomAnchor].active = YES;
 
-    
+
     XCTAssertNotNil(self.mapView.window);
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
@@ -753,13 +753,34 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     // Hide the parent view
     parentView.hidden = YES;
 
+    // We don't detect parent view's hidden state changing
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+
+    [parentView removeFromSuperview];
+
+    // But we removed it, so should go invalid
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssertFalse(self.mapView.isDisplayLinkActive);
 
-    // Show the parent view
-    parentView.hidden = NO;
+    // Re-adding
+    [grandParentView addSubview:parentView];
+
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
+
+
+
+
+
+
+    // Show the parent view
+    parentView.hidden = NO;
+
+    // Again no change.
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+
 }
 
 // We don't currently include view hierarchy visibility in our notion of "visible"
@@ -774,11 +795,29 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     self.mapView.window.hidden = YES;
     
     XCTAssertFalse(self.mapView.isDormant);
-    XCTAssertFalse(self.mapView.isDisplayLinkActive);
+    XCTAssert(self.mapView.isDisplayLinkActive);
     
     // Show the window
     self.mapView.window.hidden = NO;
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
+
+
+    // Now remove from the window
+
+    UIView *parent = self.mapView.superview;
+    [parent removeFromSuperview];
+
+    XCTAssertNil(self.mapView.window);
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssertFalse(self.mapView.isDisplayLinkActive);
+
+    // Re-add
+    [self.window addSubview:parent];
+
+    XCTAssertNotNil(self.mapView.window);
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
 }
+
 @end
