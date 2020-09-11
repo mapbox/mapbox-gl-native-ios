@@ -27,8 +27,10 @@
     // UIInterfaceOrientationMaskAllButUpsideDown on a phone.  The return value
     // should be one of the UIInterfaceOrientationMask values which indicates the
     // orientations supported by this application."
+#if !defined(NS_BLOCK_ASSERTIONS)
     UIInterfaceOrientationMask selfMask = [self supportedInterfaceOrientationsForWindow:window];
-
+#endif
+    
     // "The system intersects the view controller's supported orientations with
     // the app's supported orientations (as determined by the Info.plist file or
     // the app delegate's application:supportedInterfaceOrientationsForWindow:

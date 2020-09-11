@@ -8,6 +8,7 @@
 @property (nonatomic, readonly, getter=isDisplayLinkActive) BOOL displayLinkActive;
 @property (nonatomic) CADisplayLink *displayLink;
 @property (nonatomic) NSMutableArray *pendingCompletionBlocks;
+- (BOOL)mapViewIsVisible;
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink;
 - (BOOL)renderSync;
 @end
@@ -60,6 +61,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 @implementation MGLBackgroundIntegrationTest
 
 - (void)setUp {
+    [MGLLoggingConfiguration sharedConfiguration].loggingLevel = MGLLoggingLevelDebug;
     self.mockApplication = [[MGLMockApplication alloc] init];
 
     // Register notifications *BEFORE* MGLMapView does.
@@ -519,12 +521,14 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
         typeof(self) strongSelf = weakSelf;
         MGLMapView *mapView = strongSelf.mapView;
 
-        MGLTestAssertNotNil(strongSelf, mapView.displayLink);
+        // WAS NOTNIL
+        MGLTestAssertNil(strongSelf, mapView.displayLink);
         // BECAUSE MAPVIEW NOT YET CALLED
         MGLTestAssert(strongSelf, !mapView.isDisplayLinkActive);
         MGLTestAssert(strongSelf, mapView.application.applicationState == UIApplicationStateActive);
 
         dispatch_async(dispatch_get_main_queue(), ^{
+            MGLTestAssertNotNil(strongSelf, mapView.displayLink);
             MGLTestAssert(strongSelf, mapView.isDisplayLinkActive);
             [willEnterForegroundExpectation fulfill];
         });
@@ -535,6 +539,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     [self waitForExpectations:@[willEnterForegroundExpectation] timeout:1.0];
     
     XCTAssertFalse(self.mapView.isDormant);
+    XCTAssertNotNil(self.mapView.displayLink);
     XCTAssert(self.mapView.isDisplayLinkActive);
     XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
 }
@@ -621,6 +626,116 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     XCTAssert(self.mapView.isDisplayLinkActive);
     XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
 }
+
+- (void)testRendererPresentVCAndEnterBackground {
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Test" bundle:[NSBundle mainBundle]];
+    UINavigationController *nc = [storyboard instantiateViewControllerWithIdentifier:@"NavigationControllerId"];
+    XCTAssertNotNil(nc);
+
+    UIViewController *root = self.window.rootViewController;
+    [root presentViewController:nc animated:NO completion:NULL];
+
+    // Currently, present a view controller over the top of the map view will
+    // NOT pause the mapview. This is really an application specific problem.
+    // In this case, use MGLMapView.hidden to stop rendering.
+
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+    XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
+    XCTAssert([self.mapView mapViewIsVisible]);
+
+    [self.mockApplication enterBackground];
+    [self.mockApplication enterForeground];
+
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+    XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
+    XCTAssert([self.mapView mapViewIsVisible]);
+}
+
+- (void)testRendererRemoveFromWindowThenBackground {
+
+    UIView *parent = self.mapView.superview;
+
+    [self.mapView removeFromSuperview];
+
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssertNil(self.mapView.displayLink);
+    XCTAssertFalse([self.mapView mapViewIsVisible]);
+
+    [self.mockApplication enterBackground];
+    XCTAssert(self.mapView.isDormant);
+    [self.mockApplication enterForeground];
+
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssertNil(self.mapView.displayLink);
+    XCTAssertFalse([self.mapView mapViewIsVisible]);
+
+    [parent addSubview:self.mapView];
+
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+    XCTAssert([self.mapView mapViewIsVisible]);
+
+
+}
+
+
+- (void)testRendererRemoveFromWindowThenBackground2 {
+
+//    UIView *parent = self.mapView.superview;
+
+//    [self.mapView removeFromSuperview];
+
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssertNotNil(self.mapView.displayLink);
+    XCTAssert([self.mapView mapViewIsVisible]);
+
+    [self.mockApplication enterBackground];
+    XCTAssert(self.mapView.isDormant);
+    [self.mockApplication enterForeground];
+
+//    [parent addSubview:self.mapView];
+
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+    XCTAssert([self.mapView mapViewIsVisible]);
+}
+
+
+//
+//
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Test" bundle:[NSBundle mainBundle]];
+//    UINavigationController *nc = [storyboard instantiateViewControllerWithIdentifier:@"NavigationControllerId"];
+//    XCTAssertNotNil(nc);
+//
+//    UIViewController *root = self.window.rootViewController;
+//    [root presentViewController:nc animated:NO completion:NULL];
+//
+//    // Currently, present a view controller over the top of the map view will
+//    // NOT pause the mapview. This is really an application specific problem.
+//    // In this case, use MGLMapView.hidden to stop rendering.
+//
+//    XCTAssertFalse(self.mapView.isDormant);
+//    XCTAssert(self.mapView.isDisplayLinkActive);
+//    XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
+//    XCTAssert([self.mapView mapViewIsVisible]);
+//
+//    [self.mockApplication enterBackground];
+//    [self.mockApplication enterForeground];
+//
+//    XCTAssertFalse(self.mapView.isDormant);
+//    XCTAssert(self.mapView.isDisplayLinkActive);
+//    XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
+//    XCTAssert([self.mapView mapViewIsVisible]);
+//}
+
+
+
+
+
+
 
 - (void)testRendererDelayingAdjustingViewsWhenInBackground {
     

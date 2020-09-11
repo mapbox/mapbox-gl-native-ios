@@ -27,8 +27,15 @@
     UIView *superView = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
     [superView addSubview:self.mapView];
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    [self.window addSubview:superView];
+
+    UIViewController *controller = [[UIViewController alloc] init];
+    self.window.rootViewController = controller;
+
+    [controller.view addSubview:superView];
+
     [self.window makeKeyAndVisible];
+
+
 
     // Wait for the application to be active. If testing with AirPlay, tests
     // can start in `UIApplicationStateInactive`

@@ -1395,14 +1395,17 @@ public:
 #pragma mark - Display Link -
 
 - (BOOL)isDisplayLinkActive {
+    MGLLogDebug(@"");
     return (self.displayLink && !self.displayLink.isPaused);
 }
 
 
 - (BOOL)displayLinkShouldExist
 {
-    BOOL active = ((self.application.applicationState == UIApplicationStateActive) ||
+    BOOL active = self.window.screen &&
+        ((self.application.applicationState == UIApplicationStateActive) ||
                    [self supportsBackgroundRendering]);
+    MGLLogDebug(@"active=%d", active);
     return active;
 }
 
@@ -1413,6 +1416,7 @@ public:
     // status.
     if (@available(iOS 13.0, *)) {
         BOOL isVisible = !self.isHidden && self.window.windowScene.screen;
+        MGLLogDebug(@"isVisible=%d", isVisible);
         return isVisible;
     } else {
         BOOL isVisible = !self.isHidden && self.window.screen;
@@ -1422,9 +1426,12 @@ public:
 
 - (void)createDisplayLink
 {
+    MGLLogDebug(@"");
+
     // Create and start the display link in a *paused* state
     MGLAssert(!self.displayLinkScreen, @"");
     MGLAssert(!self.displayLink, @"");
+    MGLAssert(self.window, @"");
     MGLAssert(self.window.screen, @"");
 
     self.displayLinkScreen  = self.window.screen;
@@ -1438,6 +1445,7 @@ public:
 
 - (void)destroyDisplayLink
 {
+    MGLLogDebug(@"");
     [self.displayLink invalidate];
     self.displayLink = nil;
     self.displayLinkScreen = nil;
@@ -1447,6 +1455,7 @@ public:
 
 - (void)startDisplayLink
 {
+    MGLLogDebug(@"");
     MGLAssert(self.displayLink, @"");
     MGLAssert([self mapViewIsVisible], @"Display link should only be started when allowed");
 
@@ -1457,6 +1466,7 @@ public:
 
 - (void)stopDisplayLink
 {
+    MGLLogDebug(@"");
     self.displayLink.paused = YES;
     _needsDisplayRefresh = NO;
 }
@@ -1464,6 +1474,8 @@ public:
 
 - (void)validateDisplayLink
 {
+    MGLLogDebug(@"");
+
     MGLAssert(!self.displayLink, @"");
 
     if ([self displayLinkShouldExist])
@@ -1677,8 +1689,9 @@ public:
 
 #pragma mark - Window Lifecycle -
 
-
 - (void)willMoveToWindow:(UIWindow *)newWindow {
+
+    MGLLogDebug(@"newWindow=%p", newWindow);
 
     [super willMoveToWindow:newWindow];
     [self refreshSupportedInterfaceOrientationsWithWindow:newWindow];
@@ -1710,7 +1723,8 @@ public:
 - (void)didMoveToWindow
 {
     [super didMoveToWindow];
-    
+    MGLLogDebug(@"window=%p", self.window);
+
     if (self.window)
     {
         // See above comment
@@ -1792,6 +1806,8 @@ public:
 #pragma mark - Application lifecycle
 - (void)willResignActive:(NSNotification *)notification
 {
+    MGLLogDebug(@"");
+
     if ([self supportsBackgroundRendering])
     {
         return;
@@ -1811,17 +1827,23 @@ public:
 
 - (void)didEnterBackground:(NSNotification *)notification
 {
+    MGLLogDebug(@"");
+
     [self pauseRendering:notification];
 }
 
 - (void)willEnterForeground:(NSNotification *)notification
 {
+    MGLLogDebug(@"");
+
     // Do nothing, currently if resumeRendering is called here it's a no-op.
     [self wakeGL:notification];
 }
 
 - (void)didBecomeActive:(NSNotification *)notification
 {
+    MGLLogDebug(@"");
+
     [self resumeRendering:notification];
 }
 
@@ -1838,11 +1860,15 @@ public:
     // gpus_ReturnNotPermittedKillClient in libGPUSupportMercury, because the
     // external connection keeps the application from truly receding to the
     // background.
-    return (self.window.screen != [UIScreen mainScreen]);
+    BOOL supportsBackgroundRendering =  (self.window.screen && (self.window.screen != [UIScreen mainScreen]));
+    MGLLogDebug(@"supportsBackgroundRendering=%d",supportsBackgroundRendering);
+    return supportsBackgroundRendering;
 }
 
 - (void)pauseRendering:(__unused NSNotification *)notification
 {
+    MGLLogDebug(@"dormant=%d", self.dormant);
+
     // If this view targets an external display, such as AirPlay or CarPlay, we
     // can safely continue to render OpenGL content without tripping
     // gpus_ReturnNotPermittedKillClient in libGPUSupportMercury, because the
@@ -1908,6 +1934,8 @@ public:
 
 - (void)wakeGL:(__unused NSNotification *)notification
 {
+    MGLLogDebug(@"dormant=%d", self.dormant);
+
     MGLLogInfo(@"Entering foreground.");
     MGLAssertIsMainThread();
 
@@ -1929,7 +1957,9 @@ public:
             [self.glSnapshotView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         }];
 
-        [self createDisplayLink];
+        if ([self displayLinkShouldExist]) {
+            [self createDisplayLink];
+        }
 
         [self validateLocationServices];
 
@@ -1953,6 +1983,8 @@ public:
 
 - (void)resumeRendering:(__unused NSNotification *)notification
 {
+    MGLLogDebug(@"DL=%p", self.displayLink);
+
     if (self.displayLink)
     {
         if ([self mapViewIsVisible])
