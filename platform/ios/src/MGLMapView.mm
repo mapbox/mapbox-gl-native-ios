@@ -260,7 +260,7 @@ public:
 @property (nonatomic) CGFloat angle;
 @property (nonatomic) CGFloat quickZoomStart;
 
-/// Dormant means there is no underlying GL view (and there is no display link)
+/// Dormant means there is no underlying GL view (typically in the background)
 @property (nonatomic, getter=isDormant) BOOL dormant;
 @property (nonatomic, readonly, getter=isDisplayLinkActive) BOOL displayLinkActive;
 
@@ -577,6 +577,7 @@ public:
     _mbglMap = std::make_unique<mbgl::Map>(*_rendererFrontend, *_mbglView, mapOptions, resourceOptions);
 
     // start paused if launch into the background
+
     if (background) {
         self.dormant = YES;
     }
@@ -1395,13 +1396,11 @@ public:
     // currently observed (e.g. looking at a parent's or the window's hidden
     // status.
     if (@available(iOS 13.0, *)) {
-        BOOL isVisible = !self.isHidden && (self.window.windowScene || self.window.screen);
+        BOOL isVisible = !self.isHidden && self.window.windowScene.screen;
         return isVisible;
     } else {
         BOOL isVisible = !self.isHidden && self.window.screen;
         return isVisible;
-
-        // Fallback on earlier versions
     }
 }
 
@@ -1682,11 +1681,13 @@ public:
 
 
     if (self.window) {
-        [self.window removeObserver:self forKeyPath:@"windowScene" context:windowScreenContext];
-        [self.window removeObserver:self forKeyPath:@"screen" context:windowScreenContext];
+        if (@available(iOS 13.0, *)) {
+            [self.window removeObserver:self forKeyPath:@"windowScene" context:windowScreenContext];
+        }
+        else {
+            [self.window removeObserver:self forKeyPath:@"screen" context:windowScreenContext];
+        }
     }
-
-//    window.screen
 }
 
 - (void)didMoveToWindow
@@ -1699,8 +1700,12 @@ public:
         [self updatePresentsWithTransaction];
         [self validateDisplayLink];
 
-        [self.window addObserver:self forKeyPath:@"windowScene" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
-        [self.window addObserver:self forKeyPath:@"screen" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
+        if (@available(iOS 13.0, *)) {
+            [self.window addObserver:self forKeyPath:@"windowScene" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
+        }
+        else {
+            [self.window addObserver:self forKeyPath:@"screen" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
+        }
     }
 }
 
@@ -1729,7 +1734,7 @@ public:
     //  window and view controller are rotated to the new orientation. This method
     //  is only called if the view controller's shouldAutorotate method returns YES.
     //
-    // We want to match similar behaviour. However, it may be preferable to look
+    // We want to match similar behavior. However, it may be preferable to look
     // at the owning view controller (in cases where the map view may be covered
     // by another view.
     
@@ -2943,88 +2948,69 @@ static void *windowScreenContext = &windowScreenContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if (context == windowScreenContext)
+    if ([keyPath isEqualToString:@"hidden"] && object == _attributionButton)
     {
-        NSLog(@"hello - screen is changing");
-        if ([keyPath isEqualToString:@"screen"]) {
-            UIScreen *oldScreen = change[NSKeyValueChangeOldKey];
-            UIScreen *newScreen = change[NSKeyValueChangeNewKey];
-            (void)newScreen;
-            if (self.window.screen != oldScreen) {
-                [self destroyDisplayLink];
-                [self validateDisplayLink];
-            }
+        NSNumber *hiddenNumber = change[NSKeyValueChangeNewKey];
+        BOOL attributionButtonWasHidden = [hiddenNumber boolValue];
+        if (attributionButtonWasHidden)
+        {
+            [MGLMapboxEvents ensureMetricsOptoutExists];
         }
-        else  if ([keyPath isEqualToString:@"windowScene"]) {
-            if (@available(iOS 13.0, *)) {
-                UIWindowScene *oldScreen = change[NSKeyValueChangeOldKey];
-                UIWindowScene *newScreen = change[NSKeyValueChangeNewKey];
-                (void)newScreen;
-                if (self.window.windowScene != oldScreen) {
-                    [self destroyDisplayLink];
-                    [self validateDisplayLink];
+    }
+    else if ([keyPath isEqualToString:@"coordinate"] && [object conformsToProtocol:@protocol(MGLAnnotation)] && ![object isKindOfClass:[MGLMultiPoint class]])
+    {
+        id <MGLAnnotation> annotation = object;
+        MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
+        // We can get here because a subclass registered itself as an observer
+        // of the coordinate key path of a non-multipoint annotation but failed
+        // to handle the change. This check deters us from treating the
+        // subclass’s context as an annotation tag. If the context happens to
+        // match a valid annotation tag, the annotation will be unnecessarily
+        // but safely updated.
+        if (annotation == [self annotationWithTag:annotationTag])
+        {
+            const mbgl::Point<double> point = MGLPointFromLocationCoordinate2D(annotation.coordinate);
+
+            if (annotationTag != MGLAnnotationTagNotFound) {
+                MGLAnnotationContext &annotationContext = _annotationContextsByAnnotationTag.at(annotationTag);
+                if (annotationContext.annotationView)
+                {
+                    // Redundantly move the associated annotation view outside the scope of the animation-less transaction block in -updateAnnotationViews.
+                    annotationContext.annotationView.center = [self convertCoordinate:annotationContext.annotation.coordinate toPointToView:self];
                 }
+
+                MGLAnnotationImage *annotationImage = [self imageOfAnnotationWithTag:annotationTag];
+                NSString *symbolName = annotationImage.styleIconIdentifier;
+
+                // Update the annotation’s backing geometry to match the annotation model object. Any associated annotation view is also moved by side effect. However, -updateAnnotationViews disables the view’s animation actions, because it can’t distinguish between moves due to the viewport changing and moves due to the annotation’s coordinate changing.
+                self.mbglMap.updateAnnotation(annotationTag, mbgl::SymbolAnnotation { point, symbolName.UTF8String });
+                [self updateCalloutView];
             }
         }
     }
-    else
+    else if ([keyPath isEqualToString:@"coordinates"] && [object isKindOfClass:[MGLMultiPoint class]])
     {
-        if ([keyPath isEqualToString:@"hidden"] && object == _attributionButton)
+        MGLMultiPoint *annotation = object;
+        MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
+        // We can get here because a subclass registered itself as an observer
+        // of the coordinates key path of a multipoint annotation but failed
+        // to handle the change. This check deters us from treating the
+        // subclass’s context as an annotation tag. If the context happens to
+        // match a valid annotation tag, the annotation will be unnecessarily
+        // but safely updated.
+        if (annotation == [self annotationWithTag:annotationTag])
         {
-            NSNumber *hiddenNumber = change[NSKeyValueChangeNewKey];
-            BOOL attributionButtonWasHidden = [hiddenNumber boolValue];
-            if (attributionButtonWasHidden)
-            {
-                [MGLMapboxEvents ensureMetricsOptoutExists];
-            }
+            // Update the annotation’s backing geometry to match the annotation model object.
+            self.mbglMap.updateAnnotation(annotationTag, [annotation annotationObjectWithDelegate:self]);
+            [self updateCalloutView];
         }
-        else if ([keyPath isEqualToString:@"coordinate"] && [object conformsToProtocol:@protocol(MGLAnnotation)] && ![object isKindOfClass:[MGLMultiPoint class]])
-        {
-            id <MGLAnnotation> annotation = object;
-            MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
-            // We can get here because a subclass registered itself as an observer
-            // of the coordinate key path of a non-multipoint annotation but failed
-            // to handle the change. This check deters us from treating the
-            // subclass’s context as an annotation tag. If the context happens to
-            // match a valid annotation tag, the annotation will be unnecessarily
-            // but safely updated.
-            if (annotation == [self annotationWithTag:annotationTag])
-            {
-                const mbgl::Point<double> point = MGLPointFromLocationCoordinate2D(annotation.coordinate);
-
-                if (annotationTag != MGLAnnotationTagNotFound) {
-                    MGLAnnotationContext &annotationContext = _annotationContextsByAnnotationTag.at(annotationTag);
-                    if (annotationContext.annotationView)
-                    {
-                        // Redundantly move the associated annotation view outside the scope of the animation-less transaction block in -updateAnnotationViews.
-                        annotationContext.annotationView.center = [self convertCoordinate:annotationContext.annotation.coordinate toPointToView:self];
-                    }
-
-                    MGLAnnotationImage *annotationImage = [self imageOfAnnotationWithTag:annotationTag];
-                    NSString *symbolName = annotationImage.styleIconIdentifier;
-
-                    // Update the annotation’s backing geometry to match the annotation model object. Any associated annotation view is also moved by side effect. However, -updateAnnotationViews disables the view’s animation actions, because it can’t distinguish between moves due to the viewport changing and moves due to the annotation’s coordinate changing.
-                    self.mbglMap.updateAnnotation(annotationTag, mbgl::SymbolAnnotation { point, symbolName.UTF8String });
-                    [self updateCalloutView];
-                }
-            }
-        }
-        else if ([keyPath isEqualToString:@"coordinates"] && [object isKindOfClass:[MGLMultiPoint class]])
-        {
-            MGLMultiPoint *annotation = object;
-            MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
-            // We can get here because a subclass registered itself as an observer
-            // of the coordinates key path of a multipoint annotation but failed
-            // to handle the change. This check deters us from treating the
-            // subclass’s context as an annotation tag. If the context happens to
-            // match a valid annotation tag, the annotation will be unnecessarily
-            // but safely updated.
-            if (annotation == [self annotationWithTag:annotationTag])
-            {
-                // Update the annotation’s backing geometry to match the annotation model object.
-                self.mbglMap.updateAnnotation(annotationTag, [annotation annotationObjectWithDelegate:self]);
-                [self updateCalloutView];
-            }
+    }
+    else if (context == windowScreenContext)
+    {
+        if ([keyPath isEqualToString:@"screen"] ||
+            [keyPath isEqualToString:@"windowScene"]) {
+            [self destroyDisplayLink];
+            [self validateDisplayLink];
         }
     }
 }

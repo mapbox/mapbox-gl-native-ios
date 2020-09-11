@@ -399,6 +399,7 @@
 		CA176AD8250805BC00D47E3D /* MGLBackgroundIntegrationTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA176AD32507F96900D47E3D /* MGLBackgroundIntegrationTest.mm */; };
 		CA1A739B24FEDBCE00703BBF /* green.json in Resources */ = {isa = PBXBuildFile; fileRef = CA1A739A24FEDBCE00703BBF /* green.json */; };
 		CA1B4A512099FB2200EDD491 /* MGLMapSnapshotterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */; };
+		CA233124250B098700BA1760 /* Test.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA233123250B098700BA1760 /* Test.storyboard */; };
 		CA3402782495E53900415EEE /* testQueryRoadsAroundDC.json in Resources */ = {isa = PBXBuildFile; fileRef = CA3402772495E53900415EEE /* testQueryRoadsAroundDC.json */; };
 		CA4C54FE2324948100A81659 /* MGLSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4C54FD2324948100A81659 /* MGLSourceTests.swift */; };
 		CA4EB8C720863487006AB465 /* MGLStyleLayerIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */; };
@@ -1077,6 +1078,7 @@
 		CA176AD62507F98900D47E3D /* MGLMockApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGLMockApplication.h; sourceTree = "<group>"; };
 		CA1A739A24FEDBCE00703BBF /* green.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = green.json; sourceTree = "<group>"; };
 		CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLMapSnapshotterTest.m; sourceTree = "<group>"; };
+		CA233123250B098700BA1760 /* Test.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Test.storyboard; sourceTree = "<group>"; };
 		CA3402772495E53900415EEE /* testQueryRoadsAroundDC.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testQueryRoadsAroundDC.json; sourceTree = "<group>"; };
 		CA4C54FD2324948100A81659 /* MGLSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MGLSourceTests.swift; sourceTree = "<group>"; };
 		CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLStyleLayerIntegrationTests.m; sourceTree = "<group>"; };
@@ -1488,6 +1490,7 @@
 				16376B3C1FFDB4B40000563E /* LaunchScreen.storyboard */,
 				16376B3F1FFDB4B40000563E /* Info.plist */,
 				16376B401FFDB4B40000563E /* main.m */,
+				CA233123250B098700BA1760 /* Test.storyboard */,
 			);
 			path = "Integration Test Harness";
 			sourceTree = "<group>";
@@ -2962,6 +2965,7 @@
 				16376B3E1FFDB4B40000563E /* LaunchScreen.storyboard in Resources */,
 				16376B3B1FFDB4B40000563E /* Assets.xcassets in Resources */,
 				CA8A310A24ACE825008CB6D8 /* sideload_sat.db in Resources */,
+				CA233124250B098700BA1760 /* Test.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

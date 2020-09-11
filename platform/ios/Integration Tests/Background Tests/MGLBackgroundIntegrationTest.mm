@@ -9,6 +9,7 @@
 @property (nonatomic, readonly, getter=isDisplayLinkActive) BOOL displayLinkActive;
 @property (nonatomic) CADisplayLink *displayLink;
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink;
+- (void)renderSync;
 @end
 
 @protocol MGLApplication;
@@ -18,7 +19,9 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 #pragma mark - MGLBackgroundIntegrationTestMapView
 
 @interface MGLBackgroundIntegrationTestMapView : MGLMapView
+@property (nonatomic, assign) BOOL rendered;
 @property (nonatomic, copy) dispatch_block_t displayLinkDidUpdate;
+@property (nonatomic, copy) dispatch_block_t renderSyncBlock;
 @end
 
 @implementation MGLBackgroundIntegrationTestMapView
@@ -29,6 +32,13 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
         self.displayLinkDidUpdate();
     }
 }
+
+- (void)renderSync {
+    [super renderSync];
+    self.rendered = YES;
+}
+
+
 @end
 
 #pragma mark - MGLBackgroundIntegrationTest
@@ -124,18 +134,74 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
             self.displayLinkDidUpdate();
         }
     };
-    
+
     return mapView;
 }
 
 #pragma mark - Tests
 
+- (void)testDisplayLinkIsActive {
+
+    MGLBackgroundIntegrationTestMapView *mapView = (MGLBackgroundIntegrationTestMapView *)self.mapView;
+    XCTAssert([mapView isKindOfClass:[MGLBackgroundIntegrationTestMapView class]]);
+
+    XCTAssertFalse(mapView.isDormant);
+    XCTAssert(mapView.isDisplayLinkActive);
+    XCTAssert(mapView.application.applicationState == UIApplicationStateActive);
+    XCTAssert(mapView.rendered);
+}
+
+- (void)testLoadingMapViewFromStoryboard {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Test" bundle:[NSBundle mainBundle]];
+    UIViewController *vc = [storyboard instantiateInitialViewController];
+
+    MGLBackgroundIntegrationTestMapView *mapView2 = (MGLBackgroundIntegrationTestMapView*)vc.view;
+    XCTAssert([mapView2 isKindOfClass:[MGLBackgroundIntegrationTestMapView class]]);
+
+    XCTAssertFalse(mapView2.isDormant); // Not in background - has rendering view
+    XCTAssertNil(mapView2.displayLink); // but no display link
+
+    // This is NOT the mock application
+    XCTAssert(mapView2.application != self.mapView.application);
+    XCTAssert(mapView2.application.applicationState == UIApplicationStateActive);
+    XCTAssertFalse(mapView2.rendered);
+
+    __block NSInteger displayLinkCount = 0;
+
+    mapView2.displayLinkDidUpdate = ^{
+        displayLinkCount++;
+    };
+
+    [self.window addSubview:mapView2];
+
+    XCTAssert(displayLinkCount == 1);
+    XCTAssertFalse(mapView2.rendered);
+    XCTAssertFalse(mapView2.isDormant);
+    XCTAssert(mapView2.isDisplayLinkActive);
+
+    // Wait
+    __weak typeof(self) weakSelf = self;
+
+    XCTestExpectation *expect = [self expectationWithDescription:@"blah"];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MGLTestAssert(weakSelf, mapView2.rendered, @"");
+        [expect fulfill];
+    });
+
+    [self waitForExpectations:@[expect] timeout:1.0];
+
+    [mapView2 removeFromSuperview];
+
+    XCTAssertFalse(mapView2.isDormant);
+    XCTAssertNil(mapView2.displayLink);
+    
+    mapView2 = nil;
+}
+
+
+
+
 - (void)testRendererWhenResigningActive {
-    XCTAssertFalse(self.mapView.isDormant);
-    XCTAssert(self.mapView.isDisplayLinkActive);
-    XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
-
-
     XCTestExpectation *willResignActiveExpectation = [self expectationWithDescription:@"willResignActive"];
     willResignActiveExpectation.expectedFulfillmentCount = 1;
     willResignActiveExpectation.assertForOverFulfill = YES;
@@ -381,7 +447,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
         NSLog(@"Re-adding MGLMapView as child");
         [parentView addSubview:mapView];
         
-        MGLTestAssert(strongSelf, displayLinkCount == 0, @"updateDisplayLink was called %ld times", displayLinkCount);
+        MGLTestAssert(strongSelf, displayLinkCount == 0, @"updateDisplayLink was called %ld times", (long)displayLinkCount);
         
         [mapView.topAnchor constraintEqualToAnchor:parentView.topAnchor].active = YES;
         [mapView.leftAnchor constraintEqualToAnchor:parentView.leftAnchor].active = YES;
@@ -414,7 +480,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     };
     
     [self.mockApplication enterForeground];
-    XCTAssert(displayLinkCount == 1, @"updateDisplayLink was called %ld times", displayLinkCount);
+    XCTAssert(displayLinkCount == 1, @"updateDisplayLink was called %ld times", (long)displayLinkCount);
     [self waitForExpectations:@[willEnterForegroundExpectation] timeout:1.0];
     
     XCTAssertFalse(self.mapView.isDormant);
@@ -486,7 +552,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
             NSLog(@"Re-adding MGLMapView as child");
             [parentView addSubview:mapView];
         
-            MGLTestAssert(strongSelf, displayLinkCount == 0, @"updateDisplayLink was called %ld times", displayLinkCount);
+            MGLTestAssert(strongSelf, displayLinkCount == 0, @"updateDisplayLink was called %ld times", (long)displayLinkCount);
         
             [mapView.topAnchor constraintEqualToAnchor:parentView.topAnchor].active = YES;
             [mapView.leftAnchor constraintEqualToAnchor:parentView.leftAnchor].active = YES;
@@ -509,7 +575,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     XCTAssert(self.mapView.application.applicationState == UIApplicationStateBackground);
     
     
-    [self waitForExpectations:@[adjustedViewsExpectation] timeout:delay];
+    [self waitForExpectations:@[adjustedViewsExpectation] timeout:delay+1.0];
     XCTAssert(self.mapView.isDormant);
     XCTAssertFalse(self.mapView.isDisplayLinkActive, @"<%p>.isPaused=%d", self.mapView.displayLink, self.mapView.displayLink.isPaused);
 
@@ -538,100 +604,125 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     XCTAssert(displayLinkCount == 1, @"displayLinkCount = %ld", (long)displayLinkCount);
 }
 
-// This test requires us to KVO the map view's window.screen, and tear down/setup
-// the display link accordingly
-- (void)testDisplayLinkWhenMovingMapViewToAnotherScreen {
-//
-//    [[NSNotificationCenter defaultCenter] addObserverForName:UIScreenDidConnectNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-//        UIScreen *helperScreen = note.object;
-//        UIWindow *helperWindow = [[UIWindow alloc] initWithFrame:helperScreen.bounds];
-//        helperWindow.screen = helperScreen;
-//        UIViewController *helperViewController = [[UIViewController alloc] init];
-//        MGLMapView *helperMapView = [[MGLMapView alloc] initWithFrame:helperWindow.bounds styleURL:MGLStyle.satelliteStreetsStyleURL];
-//        helperMapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-//        helperMapView.camera = self.mapView.camera;
-//        helperMapView.compassView.hidden = YES;
-//        helperViewController.view = helperMapView;
-//        helperWindow.rootViewController = helperViewController;
-//        helperWindow.hidden = NO;
-//        [self.helperWindows addObject:helperWindow];
-//    }];
-//    [[NSNotificationCenter defaultCenter] addObserverForName:UIScreenDidDisconnectNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-//        UIScreen *helperScreen = note.object;
-//        for (UIWindow *window in self.helperWindows) {
-//            if (window.screen == helperScreen) {
-//                [self.helperWindows removeObject:window];
-//            }
-//        }
-//    }];
-//    var matchingWindowScene: UIWindowScene? = nil
-//        let scenes = UIApplication.shared.connectedScenes
-//        for item in scenes {
-//            if let windowScene = item as? UIWindowScene {
-//                if (windowScene.screen == screen) {
-//                    matchingWindowScene = windowScene
-//                    break
-//                }
-//                }
-//
-//
-
+- (void)testDisplayLinkWhenMovingMapViewToAnExternalUIScreen {
     XCTAssertNotNil(self.mapView.window);
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
     XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
 
+    // Test iOS < 13
+    if (@available(iOS 13, *)) {
+        XCTSkip(@"This test requires an iOS version < 13");
+    }
+
     UIScreen *thisScreen = self.mapView.window.screen;
-    UIScreen * _Nonnull otherScreen = nil;
-    
+    UIScreen *otherScreen = nil;
+
     for (UIScreen *screen in [UIScreen screens]) {
         if (screen != thisScreen) {
             otherScreen = screen;
             break;
         }
     }
-    
+
     if (!otherScreen) {
-        printf("warning: no secondary screen detected - attempting nil screen\n");
+        XCTSkip(@"warning: no secondary screen detected.");
     }
-    
+
     __block NSInteger displayLinkCount = 0;
-    
+
     self.displayLinkDidUpdate = ^{
         displayLinkCount++;
     };
 
-    otherScreen = nil;//[[UIScreen alloc] init];
-//    self.mapView.window.screen = otherScreen;
-    id oldWindowScene;
-    if (@available(iOS 13.0, *)) {
-        oldWindowScene = self.mapView.window.windowScene;
-        self.mapView.window.windowScene = nil;
-    } else {
-        // Fallback on earlier versions
-        [self.mapView.window setScreen:nil];
-    }
+    self.mapView.window.screen = otherScreen;
 
-    XCTAssertNotNil(self.mapView.window);
-    XCTAssert(!self.mapView.isDormant);
-    XCTAssert(!self.mapView.isDisplayLinkActive || otherScreen);
-    XCTAssert(displayLinkCount == 0);
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+    XCTAssert(displayLinkCount == 1);
 
+    // Revert back
     displayLinkCount = 0;
-
-    if (@available(iOS 13.0, *)) {
-        self.mapView.window.windowScene = oldWindowScene;
-    } else {
-        // Fallback on earlier versions
-        self.mapView.window.screen = thisScreen;
-    }
-
-//    self.mapView.window.screen = thisScreen;
+    self.mapView.window.screen = thisScreen;
 
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
     XCTAssert(displayLinkCount == 1);
 }
+
+- (void)testDisplayLinkWhenMovingMapViewToANilWindowScene {
+    [self internalTestDisplayLinkWhenMovingMapViewToExternalWindowScene:NO];
+}
+
+- (void)testDisplayLinkWhenMovingMapViewToAnExternalWindowScene {
+    [self internalTestDisplayLinkWhenMovingMapViewToExternalWindowScene:YES];
+}
+
+- (void)internalTestDisplayLinkWhenMovingMapViewToExternalWindowScene:(BOOL)useExternalWindowScene {
+    XCTAssertNotNil(self.mapView.window);
+    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDisplayLinkActive);
+    XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
+
+    // Test iOS < 13
+    if (@available(iOS 13, *)) {
+
+        UIScreen *thisScreen = self.mapView.window.screen;
+
+        UIWindowScene *thisWindowScene;
+        UIWindowScene *otherWindowScene;
+
+        for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]]) {
+                UIWindowScene *windowScene = ((UIWindowScene*)scene);
+                UIScreen *windowSceneScreen = windowScene.screen;
+
+                if (windowSceneScreen == thisScreen) {
+                    thisWindowScene = windowScene;
+                }
+                else if (useExternalWindowScene) {
+                    otherWindowScene = windowScene;
+                }
+            }
+        }
+        XCTAssertNotNil(thisWindowScene);
+
+        if (useExternalWindowScene && !otherWindowScene) {
+            XCTSkip(@"warning: no secondary screen detected.");
+        }
+
+        __block NSInteger displayLinkCount = 0;
+
+        self.displayLinkDidUpdate = ^{
+            displayLinkCount++;
+        };
+
+        self.mapView.window.windowScene = otherWindowScene;
+
+        XCTAssertFalse(self.mapView.isDormant);
+
+        if (otherWindowScene) {
+            XCTAssert(self.mapView.isDisplayLinkActive);
+            XCTAssert(displayLinkCount == 1);
+        }
+        else {
+            XCTAssertFalse(self.mapView.isDisplayLinkActive);
+            XCTAssert(displayLinkCount == 0);
+        }
+
+        // Revert back
+        displayLinkCount = 0;
+        self.mapView.window.windowScene = thisWindowScene;
+
+        XCTAssertFalse(self.mapView.isDormant);
+        XCTAssert(self.mapView.isDisplayLinkActive);
+        XCTAssert(displayLinkCount == 1);
+    }
+    else {
+        XCTSkip(@"This test requires iOS 13+");
+    }
+}
+
 
 // We don't currently include view hierarchy visibility in our notion of "visible"
 // so this test will fail at the moment.

@@ -30,6 +30,21 @@
     [self.window addSubview:superView];
     [self.window makeKeyAndVisible];
 
+    // Wait for the application to be active. If testing with AirPlay, tests
+    // can start in `UIApplicationStateInactive`
+    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+        XCTNSNotificationExpectation *notificationExpectation = [[XCTNSNotificationExpectation alloc] initWithName:UIApplicationDidBecomeActiveNotification
+                                                                                                            object:nil
+                                                                                                notificationCenter:[NSNotificationCenter defaultCenter]];
+        notificationExpectation.handler = ^BOOL(NSNotification * _Nonnull notification) {
+            NSLog(@"Test launched in inactive state. Received active: %@", notification);
+            return YES;
+        };
+
+        [self waitForExpectations:@[notificationExpectation] timeout:30.0];
+        XCTAssert(UIApplication.sharedApplication.applicationState == UIApplicationStateActive);
+    }
+
     if (!self.mapView.style) {
         [self waitForMapViewToFinishLoadingStyleWithTimeout:10];
     }
