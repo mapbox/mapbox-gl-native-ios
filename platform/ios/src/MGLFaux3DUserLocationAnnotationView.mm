@@ -574,7 +574,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     if (_approximateLayer && (_oldZoom != self.mapView.zoomLevel || _oldHorizontalAccuracy != self.userLocation.location.horizontalAccuracy))
     {
         if (self.mapView.zoomLevel < MGLUserLocationApproximateZoomThreshold) {
-            borderSize = 3;
+            borderSize = 1.0;
         }
         _approximateLayer.borderWidth = borderSize;
         
