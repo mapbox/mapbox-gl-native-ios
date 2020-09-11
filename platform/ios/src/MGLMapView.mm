@@ -157,9 +157,11 @@ const CGFloat MGLAnnotationImagePaddingForCallout = 1;
 
 const CGSize MGLAnnotationAccessibilityElementMinimumSize = CGSizeMake(10, 10);
 
+#ifndef DISABLE_TOGGLING_PRESENTS_WITH_TRANSACTION
 /// The number of view annotations (excluding the user location view) that must
-/// be descendents of `MGLMapView` before presentsWithTransaction is enabled.
+/// be descendants of `MGLMapView` before presentsWithTransaction is enabled.
 static const NSUInteger MGLPresentsWithTransactionAnnotationCount = 0;
+#endif
 
 /// An indication that the requested annotation was not found or is nonexistent.
 enum { MGLAnnotationTagNotFound = UINT32_MAX };
@@ -257,7 +259,11 @@ public:
 @property (nonatomic) CGFloat scale;
 @property (nonatomic) CGFloat angle;
 @property (nonatomic) CGFloat quickZoomStart;
+
+/// Dormant means there is no underlying GL view (and there is no display link)
 @property (nonatomic, getter=isDormant) BOOL dormant;
+@property (nonatomic, readonly, getter=isDisplayLinkActive) BOOL displayLinkActive;
+
 @property (nonatomic, readonly, getter=isRotationAllowed) BOOL rotationAllowed;
 @property (nonatomic) CGFloat rotationThresholdWhileZooming;
 @property (nonatomic) CGFloat rotationBeforeThresholdMet;
@@ -509,8 +515,9 @@ public:
 
 - (void)commonInit
 {
-    // TODO:
-    _application = [UIApplication sharedApplication];
+    // TODO: Important, we want to go through the property rather than the ivar
+    // to ensure we register notification observers.
+    self.application = [UIApplication sharedApplication];
 
     _opaque = NO;
 
@@ -811,7 +818,7 @@ public:
         [self removeAnnotations:annotations];
     }
 
-    [self validateDisplayLink];
+    [self destroyDisplayLink];
 
     [self destroyCoreObjects];
 
@@ -1326,7 +1333,7 @@ public:
 {
     // Only add a block if the display link (that calls processPendingBlocks) is
     // running, otherwise fall back to calling immediately.
-    if (_displayLink && !_displayLink.isPaused)
+    if (self.isDisplayLinkActive)
     {
         [self willChangeValueForKey:@"pendingCompletionBlocks"];
         [self.pendingCompletionBlocks addObject:block];
@@ -1338,6 +1345,164 @@ public:
 }
 
 #pragma mark - Life Cycle -
+
+
+- (void)setNeedsRerender
+{
+    MGLAssertIsMainThread();
+
+    _needsDisplayRefresh = YES;
+}
+
+- (void)willTerminate
+{
+    MGLAssertIsMainThread();
+
+    if ( ! self.dormant)
+    {
+        [self.displayLink invalidate];
+        self.displayLink = nil;
+
+        self.dormant = YES;
+
+        if (_rendererFrontend) {
+            _rendererFrontend->reduceMemoryUse();
+        }
+
+        _mbglView->deleteView();
+    }
+
+    [self destroyCoreObjects];
+}
+
+#pragma mark - Display Link -
+
+- (BOOL)isDisplayLinkActive {
+    return (self.displayLink && !self.displayLink.isPaused);
+}
+
+
+- (BOOL)displayLinkShouldExist
+{
+    BOOL active = ((self.application.applicationState == UIApplicationStateActive) ||
+                   [self supportsBackgroundRendering]);
+    return active;
+}
+
+- (BOOL)mapViewIsVisible
+{
+    // "Visible" is not strictly true here - for example, the view hierarchy is not
+    // currently observed (e.g. looking at a parent's or the window's hidden
+    // status.
+    if (@available(iOS 13.0, *)) {
+        BOOL isVisible = !self.isHidden && (self.window.windowScene || self.window.screen);
+        return isVisible;
+    } else {
+        BOOL isVisible = !self.isHidden && self.window.screen;
+        return isVisible;
+
+        // Fallback on earlier versions
+    }
+}
+
+- (void)createDisplayLink
+{
+    // Create and start the display link in a *paused* state
+    MGLAssert(!self.displayLinkScreen, @"");
+    MGLAssert(!self.displayLink, @"");
+    MGLAssert(self.window.screen, @"");
+
+    self.displayLinkScreen  = self.window.screen;
+    self.displayLink        = [self.window.screen displayLinkWithTarget:self selector:@selector(updateFromDisplayLink:)];
+    self.displayLink.paused = YES;
+
+    [self updateDisplayLinkPreferredFramesPerSecond];
+
+    [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)destroyDisplayLink
+{
+    [self.displayLink invalidate];
+    self.displayLink = nil;
+    self.displayLinkScreen = nil;
+}
+
+- (void)startDisplayLink
+{
+    MGLAssert(self.displayLink, @"");
+    MGLAssert([self mapViewIsVisible], @"Display link should only be started when allowed");
+
+    self.displayLink.paused = NO;
+    [self setNeedsLayout];
+    [self updateFromDisplayLink:self.displayLink];
+}
+
+- (void)stopDisplayLink
+{
+    self.displayLink.paused = YES;
+}
+
+
+- (void)validateDisplayLink
+{
+    MGLAssert(!self.displayLink, @"");
+
+    if ([self displayLinkShouldExist])
+    {
+        if (!self.displayLink)
+        {
+            // TODO: Move this logic, it doesn't belong here.
+            if (_mbglMap && self.mbglMap.getMapOptions().constrainMode() == mbgl::ConstrainMode::None)
+            {
+                self.mbglMap.setConstrainMode(mbgl::ConstrainMode::HeightOnly);
+            }
+
+            [self createDisplayLink];
+
+            // Now should it be running?
+            if ([self mapViewIsVisible])
+            {
+                [self startDisplayLink];
+            }
+        }
+        else
+        {
+            if (![self mapViewIsVisible])
+            {
+                [self stopDisplayLink];
+            }
+        }
+    }
+    else
+    {
+        if (self.displayLink)
+        {
+            [self destroyDisplayLink];
+        }
+    }
+
+//    BOOL isVisible = self.superview && self.window;
+//    if (isVisible && ! _displayLink)
+//    {
+//        if (_mbglMap && self.mbglMap.getMapOptions().constrainMode() == mbgl::ConstrainMode::None)
+//        {
+//            self.mbglMap.setConstrainMode(mbgl::ConstrainMode::HeightOnly);
+//        }
+//
+//        _displayLink = [self.window.screen displayLinkWithTarget:self selector:@selector(updateFromDisplayLink:)];
+//        [self updateDisplayLinkPreferredFramesPerSecond];
+//        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+//        _needsDisplayRefresh = YES;
+//        [self updateFromDisplayLink:_displayLink];
+//    }
+//    else if ( ! isVisible && _displayLink)
+//    {
+//        [_displayLink invalidate];
+//        _displayLink = nil;
+//        [self processPendingBlocks];
+//    }
+}
 
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink
 {
@@ -1429,51 +1594,6 @@ public:
     }
 }
 
-- (void)setNeedsRerender
-{
-    MGLAssertIsMainThread();
-
-    _needsDisplayRefresh = YES;
-}
-
-- (void)willTerminate
-{
-    MGLAssertIsMainThread();
-
-    if ( ! self.dormant)
-    {
-        [self validateDisplayLink];
-        self.dormant = YES;
-        _mbglView->deleteView();
-    }
-
-    [self destroyCoreObjects];
-}
-
-- (void)validateDisplayLink
-{
-    BOOL isVisible = self.superview && self.window;
-    if (isVisible && ! _displayLink)
-    {
-        if (_mbglMap && self.mbglMap.getMapOptions().constrainMode() == mbgl::ConstrainMode::None)
-        {
-            self.mbglMap.setConstrainMode(mbgl::ConstrainMode::HeightOnly);
-        }
-
-        _displayLink = [self.window.screen displayLinkWithTarget:self selector:@selector(updateFromDisplayLink:)];
-        [self updateDisplayLinkPreferredFramesPerSecond];
-        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-        _needsDisplayRefresh = YES;
-        [self updateFromDisplayLink:_displayLink];
-    }
-    else if ( ! isVisible && _displayLink)
-    {
-        [_displayLink invalidate];
-        _displayLink = nil;
-        [self processPendingBlocks];
-    }
-}
-
 - (void)updateDisplayLinkPreferredFramesPerSecond
 {
     if (!_displayLink)
@@ -1524,18 +1644,26 @@ public:
 
 - (void)updatePresentsWithTransaction
 {
+#ifdef DISABLE_TOGGLING_PRESENTS_WITH_TRANSACTION
+    // Enable permanently.
+    _enablePresentsWithTransaction = YES;
+#else
     BOOL hasEnoughViewAnnotations = (self.annotationContainerView.annotationViews.count > MGLPresentsWithTransactionAnnotationCount);
     BOOL hasAnAnchoredCallout = [self hasAnAnchoredAnnotationCalloutView];
-    
     _enablePresentsWithTransaction = (hasEnoughViewAnnotations || hasAnAnchoredCallout);
-    
+#endif
+
     // If the map is visible, change the layer property too
     if (self.window) {
         _mbglView->setPresentsWithTransaction(_enablePresentsWithTransaction);
     }
 }
 
+#pragma mark - Window Lifecycle -
+
+
 - (void)willMoveToWindow:(UIWindow *)newWindow {
+
     [super willMoveToWindow:newWindow];
     [self refreshSupportedInterfaceOrientationsWithWindow:newWindow];
     
@@ -1546,10 +1674,19 @@ public:
         // slow down. The exact cause of this is unknown, but this work around
         // appears to lessen the effects.
         _mbglView->setPresentsWithTransaction(NO);
-
-        // Moved from didMoveToWindow
-        [self validateDisplayLink];
     }
+
+    // Changing windows regardless of whether it's a new one, or the map is being
+    // removed from the hierarchy
+    [self destroyDisplayLink];
+
+
+    if (self.window) {
+        [self.window removeObserver:self forKeyPath:@"windowScene" context:windowScreenContext];
+        [self.window removeObserver:self forKeyPath:@"screen" context:windowScreenContext];
+    }
+
+//    window.screen
 }
 
 - (void)didMoveToWindow
@@ -1559,15 +1696,16 @@ public:
     if (self.window)
     {
         // See above comment
-        _mbglView->setPresentsWithTransaction(self.enablePresentsWithTransaction);
-
+        [self updatePresentsWithTransaction];
         [self validateDisplayLink];
+
+        [self.window addObserver:self forKeyPath:@"windowScene" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
+        [self.window addObserver:self forKeyPath:@"screen" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
     }
 }
 
 - (void)didMoveToSuperview
 {
-    [self validateDisplayLink];
     if (self.superview)
     {
         [self installConstraints];
@@ -1636,7 +1774,7 @@ public:
     {
         return;
     }
-    
+
     // For OpenGL this calls glFinish as recommended in
     // https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ImplementingaMultitasking-awareOpenGLESApplication/ImplementingaMultitasking-awareOpenGLESApplication.html#//apple_ref/doc/uid/TP40008793-CH5-SW1
     // reduceMemoryUse(), calls performCleanup(), which calls glFinish
@@ -1644,6 +1782,9 @@ public:
     {
         _rendererFrontend->reduceMemoryUse();
     }
+
+    // Pausing on resign active is a change in behavior.
+//    [self stopDisplayLink];
 }
 
 - (void)didEnterBackground:(NSNotification *)notification
@@ -1654,6 +1795,7 @@ public:
 - (void)willEnterForeground:(NSNotification *)notification
 {
     // Do nothing, currently if resumeRendering is called here it's a no-op.
+    [self wakeGL:notification];
 }
 
 - (void)didBecomeActive:(NSNotification *)notification
@@ -1702,6 +1844,8 @@ public:
         _rendererFrontend->reduceMemoryUse();
     }
 
+    [self destroyDisplayLink];
+
     if ( ! self.dormant)
     {
         self.dormant = YES;
@@ -1710,7 +1854,6 @@ public:
 
         [MGLMapboxEvents flush];
 
-        _displayLink.paused = YES;
         [self processPendingBlocks];
 
         if (self.lastSnapshotImage)
@@ -1740,12 +1883,15 @@ public:
     }
 }
 
-- (void)resumeRendering:(__unused NSNotification *)notification
+
+- (void)wakeGL:(__unused NSNotification *)notification
 {
     MGLLogInfo(@"Entering foreground.");
     MGLAssertIsMainThread();
 
-    if (self.dormant && self.applicationState != UIApplicationStateBackground)
+    NSAssert(self.application.applicationState != UIApplicationStateActive, @"Should transition from background");
+
+    if (self.dormant)
     {
         self.dormant = NO;
 
@@ -1761,7 +1907,7 @@ public:
             [self.glSnapshotView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         }];
 
-        _displayLink.paused = NO;
+        [self createDisplayLink];
 
         [self validateLocationServices];
 
@@ -1783,10 +1929,34 @@ public:
     }
 }
 
+- (void)resumeRendering:(__unused NSNotification *)notification
+{
+    if (self.displayLink)
+    {
+        if ([self mapViewIsVisible])
+        {
+            NSLog(@"used to start");
+            [self startDisplayLink];
+        }
+        else
+        {
+            [self stopDisplayLink];
+        }
+    }
+    else
+    {
+        // This is required since at the start of the application, didMoveToWindow
+        // can be called when still in an inactive state. In this case, we haven't
+        // had an opportunity to create the display link, so create it here.
+        [self validateDisplayLink];
+    }
+}
+
+
 - (void)setHidden:(BOOL)hidden
 {
     super.hidden = hidden;
-    _displayLink.paused = hidden;
+    _displayLink.paused = ![self mapViewIsVisible];
     
     if (hidden)
     {
@@ -2769,63 +2939,92 @@ public:
 
 #pragma mark - Properties -
 
+static void *windowScreenContext = &windowScreenContext;
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"hidden"] && object == _attributionButton)
+    if (context == windowScreenContext)
     {
-        NSNumber *hiddenNumber = change[NSKeyValueChangeNewKey];
-        BOOL attributionButtonWasHidden = [hiddenNumber boolValue];
-        if (attributionButtonWasHidden)
-        {
-            [MGLMapboxEvents ensureMetricsOptoutExists];
+        NSLog(@"hello - screen is changing");
+        if ([keyPath isEqualToString:@"screen"]) {
+            UIScreen *oldScreen = change[NSKeyValueChangeOldKey];
+            UIScreen *newScreen = change[NSKeyValueChangeNewKey];
+            (void)newScreen;
+            if (self.window.screen != oldScreen) {
+                [self destroyDisplayLink];
+                [self validateDisplayLink];
+            }
         }
-    }
-    else if ([keyPath isEqualToString:@"coordinate"] && [object conformsToProtocol:@protocol(MGLAnnotation)] && ![object isKindOfClass:[MGLMultiPoint class]])
-    {
-        id <MGLAnnotation> annotation = object;
-        MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
-        // We can get here because a subclass registered itself as an observer
-        // of the coordinate key path of a non-multipoint annotation but failed
-        // to handle the change. This check deters us from treating the
-        // subclass’s context as an annotation tag. If the context happens to
-        // match a valid annotation tag, the annotation will be unnecessarily
-        // but safely updated.
-        if (annotation == [self annotationWithTag:annotationTag])
-        {
-            const mbgl::Point<double> point = MGLPointFromLocationCoordinate2D(annotation.coordinate);
-
-            if (annotationTag != MGLAnnotationTagNotFound) {
-                MGLAnnotationContext &annotationContext = _annotationContextsByAnnotationTag.at(annotationTag);
-                if (annotationContext.annotationView)
-                {
-                    // Redundantly move the associated annotation view outside the scope of the animation-less transaction block in -updateAnnotationViews.
-                    annotationContext.annotationView.center = [self convertCoordinate:annotationContext.annotation.coordinate toPointToView:self];
+        else  if ([keyPath isEqualToString:@"windowScene"]) {
+            if (@available(iOS 13.0, *)) {
+                UIWindowScene *oldScreen = change[NSKeyValueChangeOldKey];
+                UIWindowScene *newScreen = change[NSKeyValueChangeNewKey];
+                (void)newScreen;
+                if (self.window.windowScene != oldScreen) {
+                    [self destroyDisplayLink];
+                    [self validateDisplayLink];
                 }
-
-                MGLAnnotationImage *annotationImage = [self imageOfAnnotationWithTag:annotationTag];
-                NSString *symbolName = annotationImage.styleIconIdentifier;
-
-                // Update the annotation’s backing geometry to match the annotation model object. Any associated annotation view is also moved by side effect. However, -updateAnnotationViews disables the view’s animation actions, because it can’t distinguish between moves due to the viewport changing and moves due to the annotation’s coordinate changing.
-                self.mbglMap.updateAnnotation(annotationTag, mbgl::SymbolAnnotation { point, symbolName.UTF8String });
-                [self updateCalloutView];
             }
         }
     }
-    else if ([keyPath isEqualToString:@"coordinates"] && [object isKindOfClass:[MGLMultiPoint class]])
+    else
     {
-        MGLMultiPoint *annotation = object;
-        MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
-        // We can get here because a subclass registered itself as an observer
-        // of the coordinates key path of a multipoint annotation but failed
-        // to handle the change. This check deters us from treating the
-        // subclass’s context as an annotation tag. If the context happens to
-        // match a valid annotation tag, the annotation will be unnecessarily
-        // but safely updated.
-        if (annotation == [self annotationWithTag:annotationTag])
+        if ([keyPath isEqualToString:@"hidden"] && object == _attributionButton)
         {
-            // Update the annotation’s backing geometry to match the annotation model object.
-            self.mbglMap.updateAnnotation(annotationTag, [annotation annotationObjectWithDelegate:self]);
-            [self updateCalloutView];
+            NSNumber *hiddenNumber = change[NSKeyValueChangeNewKey];
+            BOOL attributionButtonWasHidden = [hiddenNumber boolValue];
+            if (attributionButtonWasHidden)
+            {
+                [MGLMapboxEvents ensureMetricsOptoutExists];
+            }
+        }
+        else if ([keyPath isEqualToString:@"coordinate"] && [object conformsToProtocol:@protocol(MGLAnnotation)] && ![object isKindOfClass:[MGLMultiPoint class]])
+        {
+            id <MGLAnnotation> annotation = object;
+            MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
+            // We can get here because a subclass registered itself as an observer
+            // of the coordinate key path of a non-multipoint annotation but failed
+            // to handle the change. This check deters us from treating the
+            // subclass’s context as an annotation tag. If the context happens to
+            // match a valid annotation tag, the annotation will be unnecessarily
+            // but safely updated.
+            if (annotation == [self annotationWithTag:annotationTag])
+            {
+                const mbgl::Point<double> point = MGLPointFromLocationCoordinate2D(annotation.coordinate);
+
+                if (annotationTag != MGLAnnotationTagNotFound) {
+                    MGLAnnotationContext &annotationContext = _annotationContextsByAnnotationTag.at(annotationTag);
+                    if (annotationContext.annotationView)
+                    {
+                        // Redundantly move the associated annotation view outside the scope of the animation-less transaction block in -updateAnnotationViews.
+                        annotationContext.annotationView.center = [self convertCoordinate:annotationContext.annotation.coordinate toPointToView:self];
+                    }
+
+                    MGLAnnotationImage *annotationImage = [self imageOfAnnotationWithTag:annotationTag];
+                    NSString *symbolName = annotationImage.styleIconIdentifier;
+
+                    // Update the annotation’s backing geometry to match the annotation model object. Any associated annotation view is also moved by side effect. However, -updateAnnotationViews disables the view’s animation actions, because it can’t distinguish between moves due to the viewport changing and moves due to the annotation’s coordinate changing.
+                    self.mbglMap.updateAnnotation(annotationTag, mbgl::SymbolAnnotation { point, symbolName.UTF8String });
+                    [self updateCalloutView];
+                }
+            }
+        }
+        else if ([keyPath isEqualToString:@"coordinates"] && [object isKindOfClass:[MGLMultiPoint class]])
+        {
+            MGLMultiPoint *annotation = object;
+            MGLAnnotationTag annotationTag = (MGLAnnotationTag)(NSUInteger)context;
+            // We can get here because a subclass registered itself as an observer
+            // of the coordinates key path of a multipoint annotation but failed
+            // to handle the change. This check deters us from treating the
+            // subclass’s context as an annotation tag. If the context happens to
+            // match a valid annotation tag, the annotation will be unnecessarily
+            // but safely updated.
+            if (annotation == [self annotationWithTag:annotationTag])
+            {
+                // Update the annotation’s backing geometry to match the annotation model object.
+                self.mbglMap.updateAnnotation(annotationTag, [annotation annotationObjectWithDelegate:self]);
+                [self updateCalloutView];
+            }
         }
     }
 }

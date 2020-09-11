@@ -8,6 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)enterBackground;
 - (void)enterForeground;
+- (void)resignActive;
+- (void)becomeActive;
 
 @property(nonatomic, readwrite) UIApplicationState applicationState;
 

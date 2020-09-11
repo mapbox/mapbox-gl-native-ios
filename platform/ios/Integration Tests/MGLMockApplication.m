@@ -5,9 +5,11 @@
 @implementation MGLMockApplication
 
 - (void)dealloc {
-    if (_applicationState != UIApplicationStateActive) {
-        [self enterForeground];
-    }
+    TRACE();
+}
+
+- (UIApplicationState)applicationState {
+    return _applicationState;
 }
 
 - (instancetype)init {
@@ -17,20 +19,32 @@
     return self;
 }
 
+- (void)resignActive {
+    TRACE();
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationWillResignActiveNotification object:self];
+    self.applicationState = UIApplicationStateInactive;
+}
+
 - (void)enterBackground {
     TRACE();
-    self.applicationState = UIApplicationStateInactive;
-    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationWillResignActiveNotification object:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidEnterBackgroundNotification object:self];
+    [self resignActive];
+
     self.applicationState = UIApplicationStateBackground;
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidEnterBackgroundNotification object:self];
 }
 
 - (void)enterForeground {
     TRACE();
-    self.applicationState = UIApplicationStateInactive;
     [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationWillEnterForegroundNotification object:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidBecomeActiveNotification object:self];
+    self.applicationState = UIApplicationStateInactive;
+
+    [self becomeActive];
+}
+
+- (void)becomeActive {
+    TRACE();
     self.applicationState = UIApplicationStateActive;
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidBecomeActiveNotification object:self];
 }
 
 #pragma mark - MGLApplicationProxy
