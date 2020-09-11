@@ -4296,7 +4296,12 @@ public:
 
 - (CLLocationDistance)metersPerPointAtLatitude:(CLLocationDegrees)latitude
 {
-    return mbgl::Projection::getMetersPerPixelAtLatitude(latitude, self.zoomLevel);
+    return [self metersPerPointAtLatitude:latitude zoomLevel:self.zoomLevel];
+}
+
+- (CLLocationDistance)metersPerPointAtLatitude:(CLLocationDegrees)latitude zoomLevel:(double)zoomLevel
+{
+    return mbgl::Projection::getMetersPerPixelAtLatitude(latitude, zoomLevel);
 }
 
 #pragma mark - Camera Change Reason -
