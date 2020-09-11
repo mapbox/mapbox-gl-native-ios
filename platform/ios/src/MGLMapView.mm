@@ -1127,8 +1127,14 @@ public:
     [self processPendingBlocks];
 }
 
-- (void)renderSync
+- (BOOL)renderSync
 {
+    if (!_needsDisplayRefresh) {
+        return NO;
+    }
+
+    _needsDisplayRefresh = NO;
+
     if (!self.dormant)
     {
         MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "render");
@@ -1157,6 +1163,7 @@ public:
         [self updateViewsPostMapRendering];
         MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
     }
+    return YES;
 }
 
 // This gets called when the view dimension changes, e.g. because the device is being rotated.
@@ -1178,7 +1185,12 @@ public:
     }
 
     if (_mbglMap) {
-        self.mbglMap.setSize([self size]);
+        auto existingSize = self.mbglMap.getSize();
+        auto newSize = [self size];
+
+        if (existingSize != newSize) {
+            self.mbglMap.setSize(newSize);
+        }
     }
 
     if (self.compassView.alpha)
@@ -1355,6 +1367,10 @@ public:
     _needsDisplayRefresh = YES;
 }
 
+- (BOOL)needsRerender {
+    return _needsDisplayRefresh;
+}
+
 - (void)willTerminate
 {
     MGLAssertIsMainThread();
@@ -1425,7 +1441,7 @@ public:
     [self.displayLink invalidate];
     self.displayLink = nil;
     self.displayLinkScreen = nil;
-
+    _needsDisplayRefresh = NO;
     [self processPendingBlocks];
 }
 
@@ -1435,13 +1451,14 @@ public:
     MGLAssert([self mapViewIsVisible], @"Display link should only be started when allowed");
 
     self.displayLink.paused = NO;
-    [self setNeedsLayout];
+//    [self setNeedsLayout];
     [self updateFromDisplayLink:self.displayLink];
 }
 
 - (void)stopDisplayLink
 {
     self.displayLink.paused = YES;
+    _needsDisplayRefresh = NO;
 }
 
 
@@ -1564,8 +1581,6 @@ public:
 
     if (_needsDisplayRefresh || (self.pendingCompletionBlocks.count > 0))
     {
-        _needsDisplayRefresh = NO;
-
         // UIView update logic has moved into `renderSync` above, which now gets
         // triggered by a call to setNeedsDisplay.
         // See MGLMapViewOpenGLImpl::display() for more details

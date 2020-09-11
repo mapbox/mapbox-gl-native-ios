@@ -55,7 +55,7 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 - (void)setNeedsRerender;
 
 /// Synchronously render a frame of the map.
-- (void)renderSync;
+- (BOOL)renderSync;
 
 - (nonnull mbgl::Renderer *)renderer;
 
@@ -79,7 +79,7 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 
 @property (nonatomic, readonly, nonnull) os_log_t log;
 @property (nonatomic, readonly) os_signpost_id_t signpost;
-
+@property (nonatomic, readonly) BOOL needsRerender;
 - (BOOL) _opaque;
 
 @end

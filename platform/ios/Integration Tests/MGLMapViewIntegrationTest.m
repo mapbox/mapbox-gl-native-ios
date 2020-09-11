@@ -47,6 +47,7 @@
 
     if (!self.mapView.style) {
         [self waitForMapViewToFinishLoadingStyleWithTimeout:10];
+        [self waitForMapViewToIdleWithTimeout:10];
     }
 }
 
