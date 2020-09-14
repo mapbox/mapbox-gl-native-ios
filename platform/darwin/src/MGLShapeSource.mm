@@ -245,7 +245,7 @@ mbgl::Immutable<mbgl::style::GeoJSONOptions> MGLGeoJSONOptionsFromDictionary(NSD
     std::vector<mbgl::Feature> features;
     if ([self.stylable isKindOfClass:[MGLMapView class]]) {
         MGLMapView *mapView = (MGLMapView *)self.stylable;
-        features = mapView.renderer-> (self.rawSource->getID(), { {}, optionalFilter });
+        features = mapView.renderer->querySourceFeatures(self.rawSource->getID(), { {}, optionalFilter });
     }
     return MGLFeaturesFromMBGLFeatures(features);
 }
