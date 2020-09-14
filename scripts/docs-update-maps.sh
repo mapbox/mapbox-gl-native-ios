@@ -35,7 +35,9 @@ mv -v $OUTPUT/* "./$VERSION"
 #    exit 0
 #fi
 
+step "Switching branch to publisher-production"
+git checkout publisher-staging
 step "Committing API docs for $VERSION"
 git add "./$VERSION"
-git commit -m "[maps] Add API docs for $VERSION"
+git commit -m "$VERSION"
 step "Finished updating documentation"
