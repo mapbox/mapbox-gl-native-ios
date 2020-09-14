@@ -38,11 +38,11 @@
     return newTestSuite;
 }
 
-- (void)invokeTest {
-    @autoreleasepool {
-        [super invokeTest];
-    }
-}
+//- (void)invokeTest {
+//    @autoreleasepool {
+//        [super invokeTest];
+//    }
+//}
 
 - (void)setUp {
     [super setUp];

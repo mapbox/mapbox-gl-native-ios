@@ -148,7 +148,7 @@
             return;
 
         NSArray *features = [source featuresMatchingPredicate:nil];
-        MGLTestAssert(strongSelf, features.count == 1UL, @"Should contain one Feature");
+        MGLTestAssert(strongSelf, features.count == 1UL, @"Should contain one Feature, has %ld", (long)features.count);
 
         MGLPolylineFeature *feature = [features objectAtIndex:0];
         MGLTestAssertNotNil(strongSelf, [feature.attributes objectForKey:@"mapbox_clip_start"], @"Attributes should contain mapbox_clip_start property");
