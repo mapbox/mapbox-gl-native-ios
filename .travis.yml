@@ -6,6 +6,7 @@ notifications:
 cache:
   directories:
     - node_modules
+    - $HOME/Library/Caches/Homebrew # caches brew directory
 git:
   depth: 3
 node_js:
