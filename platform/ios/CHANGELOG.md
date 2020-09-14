@@ -6,7 +6,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 **This release supports beta versions of iOS 14.**
 
-You should not submit apps built with `6.2.0-beta.1` to the App Store. If you need to submit a build to TestFlight you should use Xcode 12 beta 6 (or newer). [Read more](https://github.com/mapbox/mapbox-gl-native-ios/issues/418).
+You should not submit apps built with `6.2.0-beta.N` to the App Store. If you need to submit a build to TestFlight you should use Xcode 12 beta 6 (or newer). [Read more](https://github.com/mapbox/mapbox-gl-native-ios/issues/418).
 
 ### ✨ New features
 
@@ -29,8 +29,8 @@ You should not submit apps built with `6.2.0-beta.1` to the App Store. If you ne
 
 ### 🔧 Dependencies
 
-* Core library updated to `4.0.0`. ([#417](https://github.com/mapbox/mapbox-gl-native-ios/pull/417))
-* `mapbox-events-ios` updated to version 0.10.2 to avoid a [compilation issue](https://github.com/mapbox/mapbox-events-ios/issues/236) in earlier versions of Xcode.
+* Core library updated to `5.0.0`. ([#438](https://github.com/mapbox/mapbox-gl-native-ios/pull/438))
+* `mapbox-events-ios` versioning updated to `~> 0.10.2`. Compiling 0.10.3 with Carthage and Xcode 11.1 will fail; this is a known [compilation issue](https://github.com/mapbox/mapbox-events-ios/issues/236) with earlier versions of Xcode.
 
 ## 6.1.0 - August 26, 2020
 
