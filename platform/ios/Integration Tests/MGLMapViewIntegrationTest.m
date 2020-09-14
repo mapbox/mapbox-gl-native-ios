@@ -1,6 +1,7 @@
 #import "MGLMapViewIntegrationTest.h"
 
 @interface MGLMapView (MGLMapViewIntegrationTest)
+@property (nonatomic, weak) CADisplayLink *displayLink;
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink;
 - (void)setNeedsRerender;
 @end
@@ -26,11 +27,34 @@
     UIView *superView = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
     [superView addSubview:self.mapView];
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    [self.window addSubview:superView];
+
+    UIViewController *controller = [[UIViewController alloc] init];
+    self.window.rootViewController = controller;
+
+    [controller.view addSubview:superView];
+
     [self.window makeKeyAndVisible];
+
+
+
+    // Wait for the application to be active. If testing with AirPlay, tests
+    // can start in `UIApplicationStateInactive`
+    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+        XCTNSNotificationExpectation *notificationExpectation = [[XCTNSNotificationExpectation alloc] initWithName:UIApplicationDidBecomeActiveNotification
+                                                                                                            object:nil
+                                                                                                notificationCenter:[NSNotificationCenter defaultCenter]];
+        notificationExpectation.handler = ^BOOL(NSNotification * _Nonnull notification) {
+            NSLog(@"Test launched in inactive state. Received active: %@", notification);
+            return YES;
+        };
+
+        [self waitForExpectations:@[notificationExpectation] timeout:30.0];
+        XCTAssert(UIApplication.sharedApplication.applicationState == UIApplicationStateActive);
+    }
 
     if (!self.mapView.style) {
         [self waitForMapViewToFinishLoadingStyleWithTimeout:10];
+        [self waitForMapViewToIdleWithTimeout:10];
     }
 }
 
@@ -117,6 +141,11 @@
 
 - (void)waitForMapViewToFinishLoadingStyleWithTimeout:(NSTimeInterval)timeout {
     XCTAssertNil(self.styleLoadingExpectation);
+    XCTAssertNotNil(self.mapView.displayLink);
+    XCTAssert(!self.mapView.displayLink.paused);
+
+    [self.mapView setNeedsRerender];
+
     self.styleLoadingExpectation = [self expectationWithDescription:@"Map view should finish loading style."];
     [self waitForExpectations:@[self.styleLoadingExpectation] timeout:timeout];
     self.styleLoadingExpectation = nil;
