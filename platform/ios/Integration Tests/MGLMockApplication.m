@@ -47,7 +47,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationDidBecomeActiveNotification object:self];
 }
 
-#pragma mark - MGLApplicationProxy
+#pragma mark - MGLApplication
 
 @synthesize applicationState = _applicationState;
 @synthesize statusBarOrientation = _statusBarOrientation;

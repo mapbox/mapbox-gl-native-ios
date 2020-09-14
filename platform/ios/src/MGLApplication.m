@@ -64,12 +64,7 @@
 
     NSAssert(selfMask == orientationMask, @"Masks should match");
 #endif
-    
+
     return selfMask;
 }
 @end
-
-
-
-
-

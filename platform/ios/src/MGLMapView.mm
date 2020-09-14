@@ -316,6 +316,7 @@ public:
 
 @property (nonatomic, weak) UIScreen *displayLinkScreen;
 @property (nonatomic) CADisplayLink *displayLink;
+@property (nonatomic, assign) BOOL needsDisplayRefresh;
 
 - (mbgl::Map &)mbglMap;
 
@@ -511,14 +512,14 @@ public:
 
 - (void)commonInit
 {
-    // TODO: Important, we want to go through the property rather than the ivar
+    // Important, we want to go through the property rather than the ivar
     // to ensure we register notification observers.
     self.application = [UIApplication sharedApplication];
 
     // Default is YES, which matches < 6.2.0
     _renderingInInactiveStateEnabled = YES;
 
-    _opaque = YES;//NO;
+    _opaque = NO;
 
     _log = os_log_create("com.mapbox.signposts", "MGLMapView");
     _signpost = OS_SIGNPOST_ID_INVALID;
@@ -1344,7 +1345,6 @@ public:
 
 #pragma mark - Life Cycle -
 
-
 - (void)setNeedsRerender
 {
     MGLAssertIsMainThread();
@@ -1603,7 +1603,6 @@ public:
     // Reverse the process of going into the background
     if (self.applicationState != UIApplicationStateBackground) {
         if (self.dormant) {
-            NSLog(@"huh");
             _mbglView->createView();
             self.dormant = NO;
         }
