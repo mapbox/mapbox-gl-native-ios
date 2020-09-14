@@ -1382,7 +1382,7 @@ public:
         return self.application.applicationState;
     }
     else {
-        return UIApplicationStateBackground;
+        return UIApplicationStateActive;
     }
 }
 
