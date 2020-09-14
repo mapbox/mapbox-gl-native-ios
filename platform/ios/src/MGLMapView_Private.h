@@ -76,7 +76,7 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 
 @property (nonatomic, readonly, nonnull) os_log_t log;
 @property (nonatomic, readonly) os_signpost_id_t signpost;
-@property (nonatomic, readonly) BOOL needsRerender;
+@property (nonatomic, assign) BOOL needsDisplayRefresh;
 - (BOOL) _opaque;
 
 @end

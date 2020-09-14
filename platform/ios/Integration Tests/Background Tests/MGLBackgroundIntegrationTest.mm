@@ -8,7 +8,7 @@
 @property (nonatomic, readonly, getter=isDisplayLinkActive) BOOL displayLinkActive;
 @property (nonatomic) CADisplayLink *displayLink;
 @property (nonatomic) NSMutableArray *pendingCompletionBlocks;
-- (BOOL)mapViewIsVisible;
+- (BOOL)isVisible;
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink;
 - (BOOL)renderSync;
 @end
@@ -206,7 +206,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     mapView.rendered = NO;
     [mapView setNeedsRerender];
 
-    XCTAssert(mapView.needsRerender);
+    XCTAssert(mapView.needsDisplayRefresh);
     XCTAssert(displayLinkCount == 0);
     XCTAssertFalse(mapView.rendered);
 
@@ -214,7 +214,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     [mapView updateFromDisplayLink:nil];
 
     XCTAssert(displayLinkCount == 1);
-    XCTAssert(mapView.needsRerender); // Requested render...
+    XCTAssert(mapView.needsDisplayRefresh); // Requested render...
     XCTAssertFalse(mapView.rendered); // ...but not yet rendered
 
     XCTestExpectation *renderExpectation = [self expectationWithDescription:@"Map view should have been rendered"];
@@ -230,7 +230,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
             // `MGLRenderFrontend::update`, itself triggering
             // `-[MGLMapView setNeedsRerender]`. If this fails, that's ok, remove
             // the check.
-            MGLTestAssert(weakSelf, mapView.needsRerender);
+            MGLTestAssert(weakSelf, mapView.needsDisplayRefresh);
 
             mapView.rendered = NO;
             [renderExpectation fulfill];
@@ -493,7 +493,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     }];
 
     [mapView setNeedsRerender];
-    XCTAssert(mapView.needsRerender);
+    XCTAssert(mapView.needsDisplayRefresh);
 
     XCTAssert(displayLinkCount == 0);
     XCTAssertFalse(mapView.rendered);
@@ -505,7 +505,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     XCTAssert(displayLinkCount == 1);
     XCTAssertFalse(mapView.rendered); // Display link has ticked but no render
     XCTAssertFalse(pendingBlockCalled);
-    XCTAssert(mapView.needsRerender);
+    XCTAssert(mapView.needsDisplayRefresh);
 
     // Now kill the display link
     UIView *parent = mapView.superview;
@@ -515,7 +515,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     XCTAssertFalse(mapView.rendered); // Display link has ticked but no render
     XCTAssert(pendingBlockCalled); // BUT we have called our pending block
     XCTAssert(mapView.pendingCompletionBlocks.count == 0);
-    XCTAssertFalse(mapView.needsRerender);
+    XCTAssertFalse(mapView.needsDisplayRefresh);
 
 
     XCTestExpectation *renderExpectation = [self expectationWithDescription:@"After removing the map view, there should be no rendering"];
@@ -535,12 +535,12 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 
     XCTAssert(displayLinkCount == 1);
     XCTAssertFalse(mapView.rendered);
-    XCTAssertFalse(mapView.needsRerender);
+    XCTAssertFalse(mapView.needsDisplayRefresh);
 
     // Re-add the view
     [parent addSubview:mapView];
 
-    XCTAssert(mapView.needsRerender);
+    XCTAssert(mapView.needsDisplayRefresh);
     XCTAssert(!mapView.isDormant);
     XCTAssert(displayLinkCount == 2); // updateFromDisplayLink is called on creation
     XCTAssertFalse(mapView.rendered); // but no render yet.
@@ -657,7 +657,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
     XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
-    XCTAssert([self.mapView mapViewIsVisible]);
+    XCTAssert([self.mapView isVisible]);
 
     [self.mockApplication enterBackground];
     [self.mockApplication enterForeground];
@@ -665,7 +665,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
     XCTAssert(self.mapView.application.applicationState == UIApplicationStateActive);
-    XCTAssert([self.mapView mapViewIsVisible]);
+    XCTAssert([self.mapView isVisible]);
 }
 
 - (void)testRendererRemoveFromWindowThenBackground {
@@ -676,7 +676,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssertNil(self.mapView.displayLink);
-    XCTAssertFalse([self.mapView mapViewIsVisible]);
+    XCTAssertFalse([self.mapView isVisible]);
 
     [self.mockApplication enterBackground];
     XCTAssert(self.mapView.isDormant);
@@ -684,13 +684,13 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssertNil(self.mapView.displayLink);
-    XCTAssertFalse([self.mapView mapViewIsVisible]);
+    XCTAssertFalse([self.mapView isVisible]);
 
     [parent addSubview:self.mapView];
 
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
-    XCTAssert([self.mapView mapViewIsVisible]);
+    XCTAssert([self.mapView isVisible]);
 }
 
 - (void)testRendererBackgroundThenAddSubview {
@@ -701,28 +701,30 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssertNil(self.mapView.displayLink);
-    XCTAssertFalse([self.mapView mapViewIsVisible]);
+    XCTAssertFalse([self.mapView isVisible]);
 
     [self.mockApplication enterBackground];
     XCTAssert(self.mapView.isDormant);
 
     [parent addSubview:self.mapView];
 
-    XCTAssertFalse(self.mapView.isDormant);
+    XCTAssert(self.mapView.isDormant);
     XCTAssertNil(self.mapView.displayLink);
-    XCTAssertFalse([self.mapView mapViewIsVisible]);
+
+    // Map view is considered visible, even though the application is backgrounded.
+    XCTAssert([self.mapView isVisible]);
 
     [self.mockApplication enterForeground];
 
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
-    XCTAssert([self.mapView mapViewIsVisible]);
+    XCTAssert([self.mapView isVisible]);
 }
 
 - (void)testRendererRemoveFromWindowThenBackground2 {
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssertNotNil(self.mapView.displayLink);
-    XCTAssert([self.mapView mapViewIsVisible]);
+    XCTAssert([self.mapView isVisible]);
 
     [self.mockApplication enterBackground];
     XCTAssert(self.mapView.isDormant);
@@ -730,7 +732,7 @@ typedef void (^MGLNotificationBlock)(NSNotification*);
 
     XCTAssertFalse(self.mapView.isDormant);
     XCTAssert(self.mapView.isDisplayLinkActive);
-    XCTAssert([self.mapView mapViewIsVisible]);
+    XCTAssert([self.mapView isVisible]);
 }
 
 - (void)testRendererDelayingAdjustingViewsWhenInBackground {

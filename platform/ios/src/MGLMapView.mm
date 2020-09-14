@@ -349,8 +349,6 @@ public:
     CLLocationDegrees _pendingLatitude;
     CLLocationDegrees _pendingLongitude;
 
-    BOOL _needsDisplayRefresh;
-
     NSInteger _changeDelimiterSuppressionDepth;
 
     /// Center of the pinch gesture on the previous iteration of the gesture.
@@ -1116,11 +1114,11 @@ public:
 
 - (BOOL)renderSync
 {
-    if (!_needsDisplayRefresh) {
+    if (!self.needsDisplayRefresh) {
         return NO;
     }
 
-    _needsDisplayRefresh = NO;
+    self.needsDisplayRefresh = NO;
 
     if (!self.dormant)
     {
@@ -1350,12 +1348,7 @@ public:
 - (void)setNeedsRerender
 {
     MGLAssertIsMainThread();
-
-    _needsDisplayRefresh = YES;
-}
-
-- (BOOL)needsRerender {
-    return _needsDisplayRefresh;
+    self.needsDisplayRefresh = YES;
 }
 
 - (void)willTerminate
@@ -1412,11 +1405,12 @@ public:
     return screen;
 }
 
-- (BOOL)mapViewIsVisible
+- (BOOL)isVisible
 {
     // "Visible" is not strictly true here - for example, the view hierarchy is not
     // currently observed (e.g. looking at a parent's or the window's hidden
     // status.
+    // This does NOT take application state into account
     UIScreen *screen = [self windowScreen];
     return (!self.isHidden && screen);
 }
@@ -1556,7 +1550,7 @@ public:
         [self createDisplayLink];
 
         // If we can render during the inactive state, start the display link now
-        if (self.renderingInInactiveStateEnabled && self.mapViewIsVisible) {
+        if (self.renderingInInactiveStateEnabled && self.isVisible) {
             [self startDisplayLink];
         }
     }
@@ -1626,7 +1620,7 @@ public:
     if ((self.applicationState == UIApplicationStateActive) ||
         (self.applicationState == UIApplicationStateInactive && self.renderingInInactiveStateEnabled)) {
 
-        BOOL mapViewVisible = self.mapViewIsVisible;
+        BOOL mapViewVisible = self.isVisible;
         if (self.displayLink) {
             if (mapViewVisible && self.displayLink.isPaused) {
                 [self startDisplayLink];
@@ -1650,21 +1644,8 @@ public:
                         completion:^(BOOL finished) {
             [self.glSnapshotView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         }];
-
-//        [UIView animateWithDuration:1.0
-//                            options:0
-//                         animations:^{
-//            self.glSnapshotView.alpha = 0;
-//        } completion:^(BOOL finished) {
-//            self.glSnapshotView.alpha = 1.0;
-//            self.glSnapshotView.hidden = YES;
-//            [self.glSnapshotView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-//        }];
     }
 }
-
-//renderingDuringInactiveStateAllowed
-
 
 - (BOOL)isDisplayLinkActive {
     MGLLogDebug(@"[%p]", self);
@@ -1696,7 +1677,7 @@ public:
     [self.displayLink invalidate];
     self.displayLink = nil;
     self.displayLinkScreen = nil;
-    _needsDisplayRefresh = NO;
+    self.needsDisplayRefresh = NO;
     [self processPendingBlocks];
 }
 
@@ -1704,10 +1685,9 @@ public:
 {
     MGLLogDebug(@"[%p]", self);
     MGLAssert(self.displayLink, @"");
-    MGLAssert([self mapViewIsVisible], @"Display link should only be started when allowed");
+    MGLAssert([self isVisible], @"Display link should only be started when allowed");
 
     self.displayLink.paused = NO;
-//    [self setNeedsLayout];
     [self setNeedsRerender];
     [self updateFromDisplayLink:self.displayLink];
 }
@@ -1716,7 +1696,8 @@ public:
 {
     MGLLogDebug(@"[%p]", self);
     self.displayLink.paused = YES;
-    _needsDisplayRefresh = NO;
+    self.needsDisplayRefresh = NO;
+    [self processPendingBlocks];
 }
 
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink
@@ -1776,7 +1757,7 @@ public:
 
     MGL_SIGNPOST_EVENT(_log, _signpost, "updateFromDisplayLink");
 
-    if (_needsDisplayRefresh || (self.pendingCompletionBlocks.count > 0))
+    if (self.needsDisplayRefresh || (self.pendingCompletionBlocks.count > 0))
     {
         // UIView update logic has moved into `renderSync` above, which now gets
         // triggered by a call to setNeedsDisplay.
@@ -2004,7 +1985,7 @@ public:
 - (void)setHidden:(BOOL)hidden
 {
     super.hidden = hidden;
-    _displayLink.paused = ![self mapViewIsVisible];
+    _displayLink.paused = ![self isVisible];
     
     if (hidden)
     {
