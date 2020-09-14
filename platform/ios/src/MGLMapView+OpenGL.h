@@ -17,11 +17,6 @@ public:
 public:
     void restoreFramebufferBinding();
 
-#ifdef MGL_RECREATE_GL_IN_AN_EMERGENCY
-private:
-    void emergencyRecreateGL();
-#endif
-
     // Implementation of mbgl::gfx::RendererBackend
 public:
     mbgl::gfx::Renderable& getDefaultRenderable() override {

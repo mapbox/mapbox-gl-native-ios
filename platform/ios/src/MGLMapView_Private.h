@@ -68,9 +68,6 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 /** Returns an instance of MGLMapView implementation. Used for integration testing. */
 - (nonnull MGLMapViewImpl *) viewImpl;
 
-- (void)pauseRendering:(nonnull NSNotification *)notification;
-- (void)resumeRendering:(nonnull NSNotification *)notification;
-
 - (void)accessibilityPostNotification:(UIAccessibilityNotifications)notification argument:(__nullable id)argument;
 
 @property (nonatomic, nonnull) MGLUserLocationAnnotationView *userLocationAnnotationView;

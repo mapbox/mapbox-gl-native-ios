@@ -312,12 +312,10 @@ public:
 
 // Application properties
 @property (nonatomic, weak) id<MGLApplication> application;
-@property (nonatomic, readonly) UIApplicationState applicationState; //Convenience
+@property (nonatomic, assign) UIApplicationState applicationState; //Convenience
 
 @property (nonatomic, weak) UIScreen *displayLinkScreen;
 @property (nonatomic) CADisplayLink *displayLink;
-
-
 
 - (mbgl::Map &)mbglMap;
 
@@ -519,7 +517,10 @@ public:
     // to ensure we register notification observers.
     self.application = [UIApplication sharedApplication];
 
-    _opaque = NO;
+    // Default is YES, which matches < 6.2.0
+    _renderingInInactiveStateEnabled = YES;
+
+    _opaque = YES;//NO;
 
     _log = os_log_create("com.mapbox.signposts", "MGLMapView");
     _signpost = OS_SIGNPOST_ID_INVALID;
@@ -725,19 +726,6 @@ public:
     // in updateFromDisplayLink.
     _pendingCompletionBlocks = [NSMutableArray array];
 
-    // observe app activity
-    //
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminate) name:UIApplicationWillTerminateNotification object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-
-//    // As of 3.7.5, we intentionally do not listen for `UIApplicationWillResignActiveNotification` or call `pauseRendering:` in response to it, as doing
-//    // so causes a loop when asking for location permission. See: https://github.com/mapbox/mapbox-gl-native/issues/11225
-//
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-
     // Device orientation management
     self.currentOrientation = UIInterfaceOrientationUnknown;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -762,7 +750,6 @@ public:
         [MGLMapboxEvents pushTurnstileEvent];
         [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
     }
-
 }
 
 - (mbgl::Size)size
@@ -1147,7 +1134,7 @@ public:
 
             if (after - before >= 1.0) {
                 // See https://github.com/mapbox/mapbox-gl-native/issues/14232
-                // and https://github.com/mapbox/mapbox-gl-native-ios/issues/350
+                // and https://github.com/mapbox/xmapbox-gl-native-ios/issues/350
                 // This will be reported later
                 _numberOfRenderCallsMoreThanOneSecond++;
             }
@@ -1394,19 +1381,35 @@ public:
 
 #pragma mark - Display Link -
 
-- (BOOL)isDisplayLinkActive {
-    MGLLogDebug(@"");
-    return (self.displayLink && !self.displayLink.isPaused);
+
+#pragma mark - UIApplication helpers -
+
+- (UIApplicationState)applicationState {
+    if (self.application) {
+        return self.application.applicationState;
+    }
+    else {
+        return UIApplicationStateBackground;
+    }
 }
 
+- (UIScreen *)windowScreen {
+    UIScreen *screen;
 
-- (BOOL)displayLinkShouldExist
-{
-    BOOL active = self.window.screen &&
-        ((self.application.applicationState == UIApplicationStateActive) ||
-                   [self supportsBackgroundRendering]);
-    MGLLogDebug(@"active=%d", active);
-    return active;
+#ifdef SUPPORT_UIWINDOWSCENE
+    if (@available(iOS 13.0, *)) {
+        if (self.window.windowScene) {
+            screen = self.window.windowScene.screen;
+        }
+    }
+#endif
+
+    // Fallback if there's no windowScene
+    if (!screen) {
+        screen = self.window.screen;
+    }
+
+    return screen;
 }
 
 - (BOOL)mapViewIsVisible
@@ -1414,19 +1417,263 @@ public:
     // "Visible" is not strictly true here - for example, the view hierarchy is not
     // currently observed (e.g. looking at a parent's or the window's hidden
     // status.
-    if (@available(iOS 13.0, *)) {
-        BOOL isVisible = !self.isHidden && self.window.windowScene.screen;
-        MGLLogDebug(@"isVisible=%d", isVisible);
-        return isVisible;
-    } else {
-        BOOL isVisible = !self.isHidden && self.window.screen;
-        return isVisible;
+    UIScreen *screen = [self windowScreen];
+    return (!self.isHidden && screen);
+}
+
+- (BOOL)supportsBackgroundRendering
+{
+    // Note: The following comment may be out of date, due to OpenGL now being
+    // emulated with Metal.
+    //
+    // If this view targets an external display, such as AirPlay or CarPlay, we
+    // can safely continue to render OpenGL content without tripping
+    // gpus_ReturnNotPermittedKillClient in libGPUSupportMercury, because the
+    // external connection keeps the application from truly receding to the
+    // background.
+    UIScreen *screen = [self windowScreen];
+
+    BOOL supportsBackgroundRendering =  (screen && (screen != [UIScreen mainScreen]));
+    MGLLogDebug(@"supportsBackgroundRendering=%d",supportsBackgroundRendering);
+    return supportsBackgroundRendering;
+}
+
+- (void)willResignActive:(NSNotification *)notification
+{
+    MGLAssertIsMainThread();
+    MGLLogDebug(@"[%p]", self);
+
+    // Going from active to inactive states. This could be because a system dialog
+    // has been displayed, control center, or the app is headed into the background
+
+    if (self.renderingInInactiveStateEnabled ||
+        self.supportsBackgroundRendering) {
+        return;
     }
+
+    // We want to pause the rendering
+    [self stopDisplayLink];
+
+    // For OpenGL this calls glFinish as recommended in
+    // https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ImplementingaMultitasking-awareOpenGLESApplication/ImplementingaMultitasking-awareOpenGLESApplication.html#//apple_ref/doc/uid/TP40008793-CH5-SW1
+    // reduceMemoryUse(), calls performCleanup(), which calls glFinish
+
+    if (_rendererFrontend)
+    {
+        _rendererFrontend->reduceMemoryUse();
+    }
+}
+
+- (void)didEnterBackground:(NSNotification *)notification
+{
+    MGLAssertIsMainThread();
+    MGLAssert(!self.dormant, @"Should not be dormant heading into background");
+    MGLLogDebug(@"[%p] dormant=%d", self, self.dormant);
+
+    // See comment in `supportsBackgroundRendering` above.
+    if (self.supportsBackgroundRendering) {
+        return;
+    }
+
+    // We now want to stop rendering.
+    if (self.renderingInInactiveStateEnabled) {
+        // We want to pause the rendering
+        [self stopDisplayLink];
+
+        // For OpenGL this calls glFinish as recommended in
+        // https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ImplementingaMultitasking-awareOpenGLESApplication/ImplementingaMultitasking-awareOpenGLESApplication.html#//apple_ref/doc/uid/TP40008793-CH5-SW1
+        // reduceMemoryUse(), calls performCleanup(), which calls glFinish
+        if (_rendererFrontend)
+        {
+            _rendererFrontend->reduceMemoryUse();
+        }
+    }
+
+    // We now completely remove the display link, and the renderable resource.
+    // Although the method below is called `deleteView` this does NOT delete the
+    // GLKView, instead releasing the memory hungry resources.
+    [self destroyDisplayLink];
+    [self processPendingBlocks];
+    _mbglView->deleteView();
+
+    self.dormant = YES;
+
+    // We want to add a snapshot image over the top of the map view, so that
+    // there are no glitches when the application comes back into the foreground
+
+    [self enableSnapshotView];
+
+    // - - -
+
+    // Handle non-rendering issues.
+    [self validateLocationServices];
+    [MGLMapboxEvents flush];
+}
+
+- (void)enableSnapshotView {
+    if (self.lastSnapshotImage)
+    {
+        if ( ! self.glSnapshotView)
+        {
+            self.glSnapshotView = [[UIImageView alloc] initWithFrame: _mbglView->getView().frame];
+            self.glSnapshotView.autoresizingMask = _mbglView->getView().autoresizingMask;
+            self.glSnapshotView.contentMode = UIViewContentModeCenter;
+            [self insertSubview:self.glSnapshotView aboveSubview:_mbglView->getView()];
+        }
+
+        self.glSnapshotView.image = self.lastSnapshotImage;
+        self.glSnapshotView.hidden = NO;
+        self.glSnapshotView.opaque = NO;
+        self.glSnapshotView.alpha = 1;
+
+        if (self.debugMask && [self.glSnapshotView.subviews count] == 0)
+        {
+            UIView *snapshotTint = [[UIView alloc] initWithFrame:self.glSnapshotView.bounds];
+            snapshotTint.autoresizingMask = self.glSnapshotView.autoresizingMask;
+            snapshotTint.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.25];
+            [self.glSnapshotView addSubview:snapshotTint];
+        }
+    }
+}
+
+- (void)willEnterForeground:(NSNotification *)notification
+{
+    MGLLogDebug(@"[%p] dormant=%d", self, self.dormant);
+
+    // We're transitioning from Background to Inactive states
+
+    if (self.supportsBackgroundRendering) {
+        return;
+    }
+
+    // Reverse the process of going into the background
+    _mbglView->createView();
+
+    // A display link needs the window's screen, so create it if we can
+    UIScreen *screen = [self windowScreen];
+
+    if (screen) {
+        [self createDisplayLink];
+
+        // If we can render during the inactive state, start the display link now
+        if (self.renderingInInactiveStateEnabled && self.mapViewIsVisible) {
+            [self startDisplayLink];
+        }
+    }
+
+    self.dormant = NO;
+
+    // Note: We do not remove the snapshot view (if there is one) until we have become
+    // active.
+
+    // - - -
+
+    [self validateLocationServices];
+
+    // Report events
+    [MGLMapboxEvents pushTurnstileEvent];
+    [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
+
+    // Report previous rendering errors
+    if (self.numberOfRenderCallsMoreThanOneSecond > 0) {
+        NSError *error = [NSError errorWithDomain:MGLErrorDomain
+                                             code:MGLErrorCodeRenderingError
+                                         userInfo:@{
+                                             NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%ld/%ld", (long)self.numberOfRenderCallsMoreThanOneSecond, (long)self.numberOfRenderCalls],
+                                             NSLocalizedFailureReasonErrorKey : @"https://github.com/mapbox/mapbox-gl-native-ios/issues/350"
+                                         }];
+        [[MMEEventsManager sharedManager] reportError:error];
+    }
+    self.numberOfRenderCalls = 0;
+    self.numberOfRenderCallsMoreThanOneSecond = 0;
+}
+
+
+- (void)didBecomeActive:(NSNotification *)notification
+{
+    MGLLogDebug(@"[%p] DL.paused=<%p>.paused=%d", self, self.displayLink, self.displayLink.paused);
+
+    // Most times, we should already have a display link created at this point,
+    // which may or may not be running. However, at the start of the application,
+    // it's possible to have a situation where the display link hasn't been created.
+    [self resumeRenderingIfNecessary];
+}
+
+- (void)resumeRenderingIfNecessary {
+    MGLLogDebug(@"[%p] DL.paused=<%p>.paused=%d", self, self.displayLink, self.displayLink.paused);
+
+    // Most times, we should already have a display link created at this point,
+    // which may or may not be running. However, at the start of the application,
+    // it's possible to have a situation where the display link hasn't been created.
+
+    // Reverse the process of going into the background
+    if (self.applicationState != UIApplicationStateBackground) {
+        if (self.dormant) {
+            NSLog(@"huh");
+            _mbglView->createView();
+            self.dormant = NO;
+        }
+
+        // Check display link, if necessary
+        if (!self.displayLink) {
+            if ([self windowScreen]) {
+                [self createDisplayLink];
+            }
+        }
+    }
+
+    // Start the display link if we need to
+    if ((self.applicationState == UIApplicationStateActive) ||
+        (self.applicationState == UIApplicationStateInactive && self.renderingInInactiveStateEnabled)) {
+
+        BOOL mapViewVisible = self.mapViewIsVisible;
+        if (self.displayLink) {
+            if (mapViewVisible && self.displayLink.isPaused) {
+                [self startDisplayLink];
+            }
+            else if (!mapViewVisible && !self.displayLink.isPaused) {
+                // Unlikely scenario
+                [self stopDisplayLink];
+            }
+        }
+    }
+
+    // Reveal the snapshot view
+
+    if (self.glSnapshotView && !self.glSnapshotView.isHidden) {
+        [UIView transitionWithView:self
+                          duration:0.25
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        animations:^{
+            self.glSnapshotView.hidden = YES;
+        }
+                        completion:^(BOOL finished) {
+            [self.glSnapshotView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        }];
+
+//        [UIView animateWithDuration:1.0
+//                            options:0
+//                         animations:^{
+//            self.glSnapshotView.alpha = 0;
+//        } completion:^(BOOL finished) {
+//            self.glSnapshotView.alpha = 1.0;
+//            self.glSnapshotView.hidden = YES;
+//            [self.glSnapshotView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+//        }];
+    }
+}
+
+//renderingDuringInactiveStateAllowed
+
+
+- (BOOL)isDisplayLinkActive {
+    MGLLogDebug(@"[%p]", self);
+    return (self.displayLink && !self.displayLink.isPaused);
 }
 
 - (void)createDisplayLink
 {
-    MGLLogDebug(@"");
+    MGLLogDebug(@"[%p]", self);
 
     // Create and start the display link in a *paused* state
     MGLAssert(!self.displayLinkScreen, @"");
@@ -1445,7 +1692,7 @@ public:
 
 - (void)destroyDisplayLink
 {
-    MGLLogDebug(@"");
+    MGLLogDebug(@"[%p]", self);
     [self.displayLink invalidate];
     self.displayLink = nil;
     self.displayLinkScreen = nil;
@@ -1455,83 +1702,21 @@ public:
 
 - (void)startDisplayLink
 {
-    MGLLogDebug(@"");
+    MGLLogDebug(@"[%p]", self);
     MGLAssert(self.displayLink, @"");
     MGLAssert([self mapViewIsVisible], @"Display link should only be started when allowed");
 
     self.displayLink.paused = NO;
 //    [self setNeedsLayout];
+    [self setNeedsRerender];
     [self updateFromDisplayLink:self.displayLink];
 }
 
 - (void)stopDisplayLink
 {
-    MGLLogDebug(@"");
+    MGLLogDebug(@"[%p]", self);
     self.displayLink.paused = YES;
     _needsDisplayRefresh = NO;
-}
-
-
-- (void)validateDisplayLink
-{
-    MGLLogDebug(@"");
-
-    MGLAssert(!self.displayLink, @"");
-
-    if ([self displayLinkShouldExist])
-    {
-        if (!self.displayLink)
-        {
-            // TODO: Move this logic, it doesn't belong here.
-            if (_mbglMap && self.mbglMap.getMapOptions().constrainMode() == mbgl::ConstrainMode::None)
-            {
-                self.mbglMap.setConstrainMode(mbgl::ConstrainMode::HeightOnly);
-            }
-
-            [self createDisplayLink];
-
-            // Now should it be running?
-            if ([self mapViewIsVisible])
-            {
-                [self startDisplayLink];
-            }
-        }
-        else
-        {
-            if (![self mapViewIsVisible])
-            {
-                [self stopDisplayLink];
-            }
-        }
-    }
-    else
-    {
-        if (self.displayLink)
-        {
-            [self destroyDisplayLink];
-        }
-    }
-
-//    BOOL isVisible = self.superview && self.window;
-//    if (isVisible && ! _displayLink)
-//    {
-//        if (_mbglMap && self.mbglMap.getMapOptions().constrainMode() == mbgl::ConstrainMode::None)
-//        {
-//            self.mbglMap.setConstrainMode(mbgl::ConstrainMode::HeightOnly);
-//        }
-//
-//        _displayLink = [self.window.screen displayLinkWithTarget:self selector:@selector(updateFromDisplayLink:)];
-//        [self updateDisplayLinkPreferredFramesPerSecond];
-//        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-//        _needsDisplayRefresh = YES;
-//        [self updateFromDisplayLink:_displayLink];
-//    }
-//    else if ( ! isVisible && _displayLink)
-//    {
-//        [_displayLink invalidate];
-//        _displayLink = nil;
-//        [self processPendingBlocks];
-//    }
 }
 
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink
@@ -1691,7 +1876,7 @@ public:
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
 
-    MGLLogDebug(@"newWindow=%p", newWindow);
+    MGLLogDebug(@"[%p] newWindow=%p", self, newWindow);
 
     [super willMoveToWindow:newWindow];
     [self refreshSupportedInterfaceOrientationsWithWindow:newWindow];
@@ -1709,12 +1894,15 @@ public:
     // removed from the hierarchy
     [self destroyDisplayLink];
 
-
     if (self.window) {
-        if (@available(iOS 13.0, *)) {
+#ifdef SUPPORT_UIWINDOWSCENE
+        if (@available(iOS 13.0, *))
+        {
             [self.window removeObserver:self forKeyPath:@"windowScene" context:windowScreenContext];
         }
-        else {
+        else
+#endif
+        {
             [self.window removeObserver:self forKeyPath:@"screen" context:windowScreenContext];
         }
     }
@@ -1723,18 +1911,22 @@ public:
 - (void)didMoveToWindow
 {
     [super didMoveToWindow];
-    MGLLogDebug(@"window=%p", self.window);
+    MGLLogDebug(@"[%p] window=%p", self, self.window);
 
     if (self.window)
     {
         // See above comment
+        [self resumeRenderingIfNecessary];
         [self updatePresentsWithTransaction];
-        [self validateDisplayLink];
 
-        if (@available(iOS 13.0, *)) {
+#ifdef SUPPORT_UIWINDOWSCENE
+        if (@available(iOS 13.0, *))
+        {
             [self.window addObserver:self forKeyPath:@"windowScene" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
         }
-        else {
+        else
+#endif
+        {
             [self.window addObserver:self forKeyPath:@"screen" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:windowScreenContext];
         }
     }
@@ -1803,209 +1995,11 @@ public:
     [self setNeedsLayout];
 }
 
-#pragma mark - Application lifecycle
-- (void)willResignActive:(NSNotification *)notification
-{
-    MGLLogDebug(@"");
-
-    if ([self supportsBackgroundRendering])
-    {
-        return;
-    }
-
-    // For OpenGL this calls glFinish as recommended in
-    // https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/OpenGLES_ProgrammingGuide/ImplementingaMultitasking-awareOpenGLESApplication/ImplementingaMultitasking-awareOpenGLESApplication.html#//apple_ref/doc/uid/TP40008793-CH5-SW1
-    // reduceMemoryUse(), calls performCleanup(), which calls glFinish
-    if (_rendererFrontend)
-    {
-        _rendererFrontend->reduceMemoryUse();
-    }
-
-    // Pausing on resign active is a change in behavior.
-//    [self stopDisplayLink];
-}
-
-- (void)didEnterBackground:(NSNotification *)notification
-{
-    MGLLogDebug(@"");
-
-    [self pauseRendering:notification];
-}
-
-- (void)willEnterForeground:(NSNotification *)notification
-{
-    MGLLogDebug(@"");
-
-    // Do nothing, currently if resumeRendering is called here it's a no-op.
-    [self wakeGL:notification];
-}
-
-- (void)didBecomeActive:(NSNotification *)notification
-{
-    MGLLogDebug(@"");
-
-    [self resumeRendering:notification];
-}
-
 #pragma mark - GL / display link wake/sleep
 
 - (EAGLContext *)context {
     return _mbglView->getEAGLContext();
 }
-
-- (BOOL)supportsBackgroundRendering
-{
-    // If this view targets an external display, such as AirPlay or CarPlay, we
-    // can safely continue to render OpenGL content without tripping
-    // gpus_ReturnNotPermittedKillClient in libGPUSupportMercury, because the
-    // external connection keeps the application from truly receding to the
-    // background.
-    BOOL supportsBackgroundRendering =  (self.window.screen && (self.window.screen != [UIScreen mainScreen]));
-    MGLLogDebug(@"supportsBackgroundRendering=%d",supportsBackgroundRendering);
-    return supportsBackgroundRendering;
-}
-
-- (void)pauseRendering:(__unused NSNotification *)notification
-{
-    MGLLogDebug(@"dormant=%d", self.dormant);
-
-    // If this view targets an external display, such as AirPlay or CarPlay, we
-    // can safely continue to render OpenGL content without tripping
-    // gpus_ReturnNotPermittedKillClient in libGPUSupportMercury, because the
-    // external connection keeps the application from truly receding to the
-    // background.
-    if ([self supportsBackgroundRendering])
-    {
-        return;
-    }
-    
-    MGLLogInfo(@"Entering background.");
-    MGLAssertIsMainThread();
-    
-    // Ideally we would wait until we actually received a memory warning but the bulk of the memory
-    // we have to release is tied up in GL buffers that we can't touch once we're in the background.
-    // Compromise position: release everything but currently rendering tiles
-    // A possible improvement would be to store a copy of the GL buffers that we could use to rapidly
-    // restart, but that we could also discard in response to a memory warning.
-    if (_rendererFrontend)
-    {
-        _rendererFrontend->reduceMemoryUse();
-    }
-
-    [self destroyDisplayLink];
-
-    if ( ! self.dormant)
-    {
-        self.dormant = YES;
-
-        [self validateLocationServices];
-
-        [MGLMapboxEvents flush];
-
-        [self processPendingBlocks];
-
-        if (self.lastSnapshotImage)
-        {
-            if ( ! self.glSnapshotView)
-            {
-                self.glSnapshotView = [[UIImageView alloc] initWithFrame: _mbglView->getView().frame];
-                self.glSnapshotView.autoresizingMask = _mbglView->getView().autoresizingMask;
-                self.glSnapshotView.contentMode = UIViewContentModeCenter;
-                [self insertSubview:self.glSnapshotView aboveSubview:_mbglView->getView()];
-            }
-
-            self.glSnapshotView.image = self.lastSnapshotImage;
-            self.glSnapshotView.hidden = NO;
-            self.glSnapshotView.alpha = 1;
-
-            if (self.debugMask && [self.glSnapshotView.subviews count] == 0)
-            {
-                UIView *snapshotTint = [[UIView alloc] initWithFrame:self.glSnapshotView.bounds];
-                snapshotTint.autoresizingMask = self.glSnapshotView.autoresizingMask;
-                snapshotTint.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.25];
-                [self.glSnapshotView addSubview:snapshotTint];
-            }
-        }
-
-        _mbglView->deleteView();
-    }
-}
-
-
-- (void)wakeGL:(__unused NSNotification *)notification
-{
-    MGLLogDebug(@"dormant=%d", self.dormant);
-
-    MGLLogInfo(@"Entering foreground.");
-    MGLAssertIsMainThread();
-
-    NSAssert(self.application.applicationState != UIApplicationStateActive, @"Should transition from background");
-
-    if (self.dormant)
-    {
-        self.dormant = NO;
-
-        _mbglView->createView();
-
-        [UIView transitionWithView:self
-                          duration:0.25
-                           options:UIViewAnimationOptionTransitionCrossDissolve
-                        animations:^{
-            self.glSnapshotView.hidden = YES;
-        }
-                        completion:^(BOOL finished) {
-            [self.glSnapshotView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        }];
-
-        if ([self displayLinkShouldExist]) {
-            [self createDisplayLink];
-        }
-
-        [self validateLocationServices];
-
-        [MGLMapboxEvents pushTurnstileEvent];
-        [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
-
-        // Report previous rendering errors
-        if (self.numberOfRenderCallsMoreThanOneSecond > 0) {
-            NSError *error = [NSError errorWithDomain:MGLErrorDomain
-                                                 code:MGLErrorCodeRenderingError
-                                             userInfo:@{
-                                                 NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%ld/%ld", (long)self.numberOfRenderCallsMoreThanOneSecond, (long)self.numberOfRenderCalls],
-                                                 NSLocalizedFailureReasonErrorKey : @"https://github.com/mapbox/mapbox-gl-native-ios/issues/350"
-                                             }];
-            [[MMEEventsManager sharedManager] reportError:error];
-        }
-        self.numberOfRenderCalls = 0;
-        self.numberOfRenderCallsMoreThanOneSecond = 0;
-    }
-}
-
-- (void)resumeRendering:(__unused NSNotification *)notification
-{
-    MGLLogDebug(@"DL=%p", self.displayLink);
-
-    if (self.displayLink)
-    {
-        if ([self mapViewIsVisible])
-        {
-            NSLog(@"used to start");
-            [self startDisplayLink];
-        }
-        else
-        {
-            [self stopDisplayLink];
-        }
-    }
-    else
-    {
-        // This is required since at the start of the application, didMoveToWindow
-        // can be called when still in an inactive state. In this case, we haven't
-        // had an opportunity to create the display link, so create it here.
-        [self validateDisplayLink];
-    }
-}
-
 
 - (void)setHidden:(BOOL)hidden
 {
@@ -2028,6 +2022,7 @@ public:
     // Don't update:
     //   - annotation views
     //   - attribution button (handled automatically)
+
     if ([view isEqual:self.annotationContainerView] || [view isEqual:self.attributionButton]) return;
 
     if ([view respondsToSelector:@selector(setTintColor:)]) view.tintColor = self.tintColor;
@@ -3059,7 +3054,7 @@ static void *windowScreenContext = &windowScreenContext;
         if ([keyPath isEqualToString:@"screen"] ||
             [keyPath isEqualToString:@"windowScene"]) {
             [self destroyDisplayLink];
-            [self validateDisplayLink];
+            [self didBecomeActive:nil];
         }
     }
 }
@@ -5574,7 +5569,7 @@ static void *windowScreenContext = &windowScreenContext;
     MGLCompactCalloutView *calloutView = [MGLCompactCalloutView platformCalloutView];
     calloutView.representedObject = annotation;
     calloutView.tintColor = self.tintColor;
-
+ 
     return calloutView;
 }
 
@@ -7419,6 +7414,7 @@ static void *windowScreenContext = &windowScreenContext;
     NSTimeInterval now = CACurrentMediaTime();
 
     if (lastSnapshotTime == 0.0 || (now - lastSnapshotTime > MGLBackgroundSnapshotImageInterval)) {
+        MGLLogDebug(@"Taking snapshot");
         self.lastSnapshotImage = _mbglView->snapshot();
         lastSnapshotTime = now;
     }
@@ -7475,16 +7471,7 @@ static std::vector<std::string> vectorOfStringsFromSet(NSSet<NSString *> *setOfS
     observer.observing = NO;
 }
 
-#pragma mark - UIApplication helpers -
 
-- (UIApplicationState)applicationState {
-    if (self.application) {
-        return self.application.applicationState;
-    }
-    else {
-        return UIApplicationStateBackground;
-    }
-}
 
 #pragma mark - Signposts -
 
