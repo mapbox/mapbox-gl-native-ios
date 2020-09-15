@@ -10,7 +10,7 @@ cache:
     - /home/travis/.rvm/ # https://docs.travis-ci.com/user/caching/#cache-rvm-ruby-version-for-non-ruby-projects
     - $HOME/Library/Caches/Homebrew # caches brew directory
 git:
-  depth: 3
+  depth: false # make sure we have access to all branches, especially publisher-production
 node_js:
   - 12
 install:

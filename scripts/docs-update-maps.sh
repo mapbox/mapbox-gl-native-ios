@@ -9,10 +9,9 @@ function finish { >&2 echo -en "\033[0m"; }
 trap finish EXIT
 
 OUTPUT="/tmp/`uuidgen`"
-RELEASE_BRANCH="master"
 
 step "Updating mapbox-gl-native-ios repository…"
-git fetch # --depth=3 --prune
+git fetch --all
 git fetch --tags
 
 VERSION=${1}
@@ -36,7 +35,7 @@ mv -v $OUTPUT/* "./$VERSION"
 #fi
 
 step "Switching branch to publisher-production"
-git checkout -b publisher-staging --track origin/publisher-staging
+git checkout origin/publisher-staging
 step "Committing API docs for $VERSION"
 git add "./$VERSION"
 git commit -m "$VERSION"
