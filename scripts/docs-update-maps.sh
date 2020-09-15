@@ -36,7 +36,7 @@ mv -v $OUTPUT/* "./$VERSION"
 #fi
 
 step "Switching branch to publisher-production"
-git checkout publisher-staging
+git checkout -b publisher-staging --track origin/publisher-staging
 step "Committing API docs for $VERSION"
 git add "./$VERSION"
 git commit -m "$VERSION"
