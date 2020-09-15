@@ -38,5 +38,5 @@ step "Switching branch to publisher-production"
 git checkout origin/publisher-staging
 step "Committing API docs for $VERSION"
 git add "./$VERSION"
-git commit -m "$VERSION"
+git commit -m "$VERSION [ci skip]" 
 step "Finished updating documentation"
