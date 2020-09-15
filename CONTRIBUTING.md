@@ -32,3 +32,17 @@ We’ve color-coded our labels by facet to make them easier to use:
  * non-actionable status (grey)
  * importance / urgency (green)
  * topic / project / misc (yellow)
+
+### Generating documentation
+
+This repository automates generating documentation using CircleCI and Travis.
+
+<!-- TO DO
+- Where does documentation live?
+- Where does the archive live?
+-->
+
+When a new release tag is created, CircleCI will trigger `scripts/trigger-maps-documentation-deploy-steps.sh` twice: 
+
+1. In this repository, the script will trigger Travis to fetch the release tag, generate documentation for that release, commit the files, and create a new branch and pull request against the publisher-production branch.
+2. In https://github.com/mapbox/ios-sdk, the script will trigger Travis to update various metadata files with the latest version, commit the changes, and create a new branch and pull request against the publisher-production branch.
