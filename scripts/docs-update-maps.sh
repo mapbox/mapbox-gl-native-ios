@@ -12,8 +12,8 @@ OUTPUT="/tmp/`uuidgen`"
 RELEASE_BRANCH="master"
 
 step "Updating mapbox-gl-native-ios repository…"
-# git fetch --depth=1 --prune
-# git fetch --tags
+git fetch --depth=3 --prune
+git fetch --tags
 
 VERSION=${1}
 

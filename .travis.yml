@@ -31,7 +31,6 @@ jobs:
       script:
         - git config user.email "MapboxCI@users.noreply.github.com"
         # generate the documentation given the release tag and commit it
-        - ./scripts/docs-update-maps.sh $RELEASE_TAG
         # from the commit created in the previous step, push a new branch, and create a pull request in this repo
         # run `docs-release-pull-request --help` to see all options
-        - docs-release-pull-request -s $SDK_FLAVOR -t $RELEASE_TAG -b publisher-staging -p ios -r mapbox-gl-native-ios
+        - ./scripts/docs-update-maps.sh $RELEASE_TAG && docs-release-pull-request -s $SDK_FLAVOR -t $RELEASE_TAG -b publisher-staging -p ios -r mapbox-gl-native-ios
