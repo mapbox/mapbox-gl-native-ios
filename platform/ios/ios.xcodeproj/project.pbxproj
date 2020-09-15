@@ -395,8 +395,11 @@
 		CA0FAA07237B3BC600C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA0FAA09237B3BEA00C9F3C9 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8847D21CBAF91600AB86E3 /* Mapbox.framework */; };
 		CA17464E23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA17464D23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm */; };
+		CA176AD72507F98900D47E3D /* MGLMockApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CA176AD52507F98900D47E3D /* MGLMockApplication.m */; };
+		CA176AD8250805BC00D47E3D /* MGLBackgroundIntegrationTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA176AD32507F96900D47E3D /* MGLBackgroundIntegrationTest.mm */; };
 		CA1A739B24FEDBCE00703BBF /* green.json in Resources */ = {isa = PBXBuildFile; fileRef = CA1A739A24FEDBCE00703BBF /* green.json */; };
 		CA1B4A512099FB2200EDD491 /* MGLMapSnapshotterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */; };
+		CA233124250B098700BA1760 /* Test.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA233123250B098700BA1760 /* Test.storyboard */; };
 		CA3402782495E53900415EEE /* testQueryRoadsAroundDC.json in Resources */ = {isa = PBXBuildFile; fileRef = CA3402772495E53900415EEE /* testQueryRoadsAroundDC.json */; };
 		CA4C54FE2324948100A81659 /* MGLSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4C54FD2324948100A81659 /* MGLSourceTests.swift */; };
 		CA4EB8C720863487006AB465 /* MGLStyleLayerIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */; };
@@ -445,6 +448,8 @@
 		CAC3A3E122E75AC200BC8DEF /* MGLSignpost.h in Headers */ = {isa = PBXBuildFile; fileRef = CAC3A3DE22E75AC100BC8DEF /* MGLSignpost.h */; };
 		CAD9D0AA22A86D6F001B25EE /* MGLResourceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CAD9D0A922A86D6F001B25EE /* MGLResourceTests.mm */; };
 		CAE7AD5520F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE7AD5420F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift */; };
+		CAE9D2F72508398B00A02BFD /* MGLApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CAE9D2F62508398B00A02BFD /* MGLApplication.m */; };
+		CAE9D2F82508398B00A02BFD /* MGLApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CAE9D2F62508398B00A02BFD /* MGLApplication.m */; };
 		CAF9808124AEADA100EC3CC1 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F7839A3235E11FC00D4D606 /* libz.tbd */; };
 		CAF9808224AEADA700EC3CC1 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 358B3DB82359E491007BEB26 /* libsqlite3.tbd */; };
 		CAF9808424AEB98600EC3CC1 /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA4E4131CBB71D400178DFB /* libMapbox.a */; };
@@ -1068,8 +1073,12 @@
 		CA0C27932076CA19001CE5B7 /* MGLMapViewIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLMapViewIntegrationTest.m; sourceTree = "<group>"; wrapsLines = 0; };
 		CA0C27952076CA50001CE5B7 /* MGLMapViewIntegrationTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLMapViewIntegrationTest.h; sourceTree = "<group>"; };
 		CA17464D23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLNetworkConfigurationIntegrationTests.mm; sourceTree = "<group>"; };
+		CA176AD32507F96900D47E3D /* MGLBackgroundIntegrationTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLBackgroundIntegrationTest.mm; sourceTree = "<group>"; };
+		CA176AD52507F98900D47E3D /* MGLMockApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGLMockApplication.m; sourceTree = "<group>"; };
+		CA176AD62507F98900D47E3D /* MGLMockApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGLMockApplication.h; sourceTree = "<group>"; };
 		CA1A739A24FEDBCE00703BBF /* green.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = green.json; sourceTree = "<group>"; };
 		CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLMapSnapshotterTest.m; sourceTree = "<group>"; };
+		CA233123250B098700BA1760 /* Test.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Test.storyboard; sourceTree = "<group>"; };
 		CA3402772495E53900415EEE /* testQueryRoadsAroundDC.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testQueryRoadsAroundDC.json; sourceTree = "<group>"; };
 		CA4C54FD2324948100A81659 /* MGLSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MGLSourceTests.swift; sourceTree = "<group>"; };
 		CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLStyleLayerIntegrationTests.m; sourceTree = "<group>"; };
@@ -1105,6 +1114,7 @@
 		CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ios.xcconfig; sourceTree = "<group>"; };
 		CAE7AD5320F46EF5003B6782 /* integration-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "integration-Bridging-Header.h"; sourceTree = "<group>"; };
 		CAE7AD5420F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MGLMapSnapshotterSwiftTests.swift; sourceTree = "<group>"; };
+		CAE9D2F62508398B00A02BFD /* MGLApplication.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLApplication.m; sourceTree = "<group>"; };
 		CAFB3C13234505D500399265 /* MGLMapSnapshotter_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLMapSnapshotter_Private.h; sourceTree = "<group>"; };
 		CF75A91422D85E860058A5C4 /* MGLLoggingConfiguration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLLoggingConfiguration.mm; sourceTree = "<group>"; };
 		DA00FC8C1D5EEB0D009AABC8 /* MGLAttributionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGLAttributionInfo.h; sourceTree = "<group>"; };
@@ -1445,6 +1455,7 @@
 		16376B081FFD9DAF0000563E /* Integration Tests */ = {
 			isa = PBXGroup;
 			children = (
+				CA176AD22507F96900D47E3D /* Background Tests */,
 				CA4F3BE023107793008BAFEA /* Camera Tests */,
 				CAB92CEF22F2043F0037BE12 /* Query Tests */,
 				CA6914B320E67F07002DB0EE /* Annotations */,
@@ -1464,6 +1475,8 @@
 				CA17464D23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm */,
 				CA600148242BD8360041BBEC /* MGLIntegrationTestCase.m */,
 				CA60014A242BD8710041BBEC /* MGLIntegrationTestCase.h */,
+				CA176AD62507F98900D47E3D /* MGLMockApplication.h */,
+				CA176AD52507F98900D47E3D /* MGLMockApplication.m */,
 			);
 			path = "Integration Tests";
 			sourceTree = "<group>";
@@ -1477,6 +1490,7 @@
 				16376B3C1FFDB4B40000563E /* LaunchScreen.storyboard */,
 				16376B3F1FFDB4B40000563E /* Info.plist */,
 				16376B401FFDB4B40000563E /* main.m */,
+				CA233123250B098700BA1760 /* Test.storyboard */,
 			);
 			path = "Integration Test Harness";
 			sourceTree = "<group>";
@@ -1739,6 +1753,14 @@
 			);
 			name = Scripts;
 			path = scripts;
+			sourceTree = "<group>";
+		};
+		CA176AD22507F96900D47E3D /* Background Tests */ = {
+			isa = PBXGroup;
+			children = (
+				CA176AD32507F96900D47E3D /* MGLBackgroundIntegrationTest.mm */,
+			);
+			path = "Background Tests";
 			sourceTree = "<group>";
 		};
 		CA1B4A4F2099FA2800EDD491 /* Snapshotter Tests */ = {
@@ -2081,6 +2103,7 @@
 				DA737EE01D056A4E005BDA16 /* MGLMapViewDelegate.h */,
 				1F716F1124FFEA6500C574BD /* MGLUserLocationAnnotationViewStyle.h */,
 				1F716F1224FFEA6500C574BD /* MGLUserLocationAnnotationViewStyle.m */,
+				CAE9D2F62508398B00A02BFD /* MGLApplication.m */,
 			);
 			name = Kit;
 			path = src;
@@ -2942,6 +2965,7 @@
 				16376B3E1FFDB4B40000563E /* LaunchScreen.storyboard in Resources */,
 				16376B3B1FFDB4B40000563E /* Assets.xcassets in Resources */,
 				CA8A310A24ACE825008CB6D8 /* sideload_sat.db in Resources */,
+				CA233124250B098700BA1760 /* Test.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3089,6 +3113,7 @@
 				CA17464E23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm in Sources */,
 				CA4EB8C720863487006AB465 /* MGLStyleLayerIntegrationTests.m in Sources */,
 				CA7766842229C11A0008DE9E /* SMCalloutView.m in Sources */,
+				CA176AD72507F98900D47E3D /* MGLMockApplication.m in Sources */,
 				16376B0A1FFD9DAF0000563E /* MBGLIntegrationTests.mm in Sources */,
 				CA4F3BDE230F74C3008BAFEA /* MGLMapViewPendingBlockTests.m in Sources */,
 				CA88DC3021C85D900059ED5A /* MGLStyleURLIntegrationTest.m in Sources */,
@@ -3100,6 +3125,7 @@
 				CA0B3C022329DE9A00E4B493 /* MGLTestAssertionHandler.m in Sources */,
 				CA6914B520E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm in Sources */,
 				CA4F3BE223107793008BAFEA /* MGLCameraTransitionTests.mm in Sources */,
+				CA176AD8250805BC00D47E3D /* MGLBackgroundIntegrationTest.mm in Sources */,
 				CA4C54FE2324948100A81659 /* MGLSourceTests.swift in Sources */,
 				CA6914B520E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm in Sources */,
 				CAB92CF122F204720037BE12 /* MGLQueryFeatureTests.m in Sources */,
@@ -3221,6 +3247,7 @@
 				DA88485D1CBAFB9800AB86E3 /* MGLFaux3DUserLocationAnnotationView.mm in Sources */,
 				DAD165701CF41981001FF4B9 /* MGLFeature.mm in Sources */,
 				CA7965AA24D212D60007E0C4 /* MGLEvent.mm in Sources */,
+				CAE9D2F72508398B00A02BFD /* MGLApplication.m in Sources */,
 				30E578191DAA855E0050F07E /* UIImage+MGLAdditions.mm in Sources */,
 				550570C622958FB400228ECF /* MGLMapView+Impl.mm in Sources */,
 				40EDA1C11CFE0E0500D9EA68 /* MGLAnnotationContainerView.m in Sources */,
@@ -3324,6 +3351,7 @@
 				DAA4E4221CBB730400178DFB /* MGLPointAnnotation.mm in Sources */,
 				DAED38661D62D0FC00D7640F /* NSURL+MGLAdditions.m in Sources */,
 				CA7965AB24D212D60007E0C4 /* MGLEvent.mm in Sources */,
+				CAE9D2F82508398B00A02BFD /* MGLApplication.m in Sources */,
 				DAD165711CF41981001FF4B9 /* MGLFeature.mm in Sources */,
 				30E5781A1DAA855E0050F07E /* UIImage+MGLAdditions.mm in Sources */,
 				40EDA1C21CFE0E0500D9EA68 /* MGLAnnotationContainerView.m in Sources */,
@@ -3739,7 +3767,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15267;
+				CURRENT_PROJECT_VERSION = 15268;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
@@ -3792,7 +3820,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 15267;
+				DYLIB_CURRENT_VERSION = 15268;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
@@ -3816,7 +3844,7 @@
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
-				DYLIB_CURRENT_VERSION = 15267;
+				DYLIB_CURRENT_VERSION = 15268;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -3938,7 +3966,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15267;
+				CURRENT_PROJECT_VERSION = 15268;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -3962,7 +3990,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 15267;
+				CURRENT_PROJECT_VERSION = 15268;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
@@ -4080,7 +4108,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 15267;
+				DYLIB_CURRENT_VERSION = 15268;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = framework/Info.plist;
@@ -4108,7 +4136,7 @@
 				DEFINES_MODULE = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 15267;
+				DYLIB_CURRENT_VERSION = 15268;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
@@ -4155,7 +4183,7 @@
 			buildSettings = {
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
-				DYLIB_CURRENT_VERSION = 15267;
+				DYLIB_CURRENT_VERSION = 15268;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4180,7 +4208,7 @@
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_CURRENT_VERSION = 15267;
+				DYLIB_CURRENT_VERSION = 15268;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
