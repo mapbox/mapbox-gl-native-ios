@@ -2,7 +2,7 @@
 #import <XCTest/XCTest.h>
 #import "MGLTestUtility.h"
 
-static NSString * const MGLTestAnnotationReuseIdentifer = @"MGLTestAnnotationReuseIdentifer";
+static NSString * const MGLTestAnnotationReuseIdentifier = @"MGLTestAnnotationReuseIdentifier";
 
 
 @interface MGLMapView (Tests)
@@ -244,11 +244,11 @@ static NSString * const MGLTestAnnotationReuseIdentifer = @"MGLTestAnnotationReu
 
 - (MGLAnnotationView *)mapView:(MGLMapView *)mapView viewForAnnotation:(id<MGLAnnotation>)annotation
 {
-    MGLAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:MGLTestAnnotationReuseIdentifer];
+    MGLAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:MGLTestAnnotationReuseIdentifier];
 
     if (!annotationView)
     {
-        annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MGLTestAnnotationReuseIdentifer];
+        annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MGLTestAnnotationReuseIdentifier];
     }
 
     if (self.prepareAnnotationView) {

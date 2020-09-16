@@ -209,7 +209,7 @@
     // Add the shape source
     [self.style addSource:imageSource];
 
-    // Attempt to remove a vector tile source with the same identifer as the shape source
+    // Attempt to remove a vector tile source with the same identifier as the shape source
     MGLVectorTileSource *vectorTileSource = [[MGLVectorTileSource alloc] initWithIdentifier:@"some-identifier" tileURLTemplates:@[] options:nil];
     [self.style removeSource:vectorTileSource];
     // The image source should still be added
@@ -221,7 +221,7 @@
     // Add the vector tile source
     [self.style addSource:vectorTileSource];
 
-    // Attempt to remove the previously created raster tile source that has the same identifer as the shape source
+    // Attempt to remove the previously created raster tile source that has the same identifier as the shape source
     [self.style removeSource:rasterTileSource];
     // The vector tile source should still be added
     XCTAssertTrue([[self.style sourceWithIdentifier:imageSource.identifier] isMemberOfClass:[MGLVectorTileSource class]]);
