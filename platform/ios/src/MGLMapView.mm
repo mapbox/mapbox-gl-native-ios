@@ -1133,7 +1133,7 @@ public:
 
             if (after - before >= 1.0) {
                 // See https://github.com/mapbox/mapbox-gl-native/issues/14232
-                // and https://github.com/mapbox/xmapbox-gl-native-ios/issues/350
+                // and https://github.com/mapbox/mapbox-gl-native-ios/issues/350
                 // This will be reported later
                 _numberOfRenderCallsMoreThanOneSecond++;
             }
