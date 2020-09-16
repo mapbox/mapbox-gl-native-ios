@@ -1,4 +1,6 @@
+baseurl: /ios/maps/api
 exclude:
   - .artifacts.yml
   - .pubisher.yml
   - README.md
+  - .jekyll-cache
