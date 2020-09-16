@@ -1,0 +1,4 @@
+exclude:
+  - .artifacts.yml
+  - .pubisher.yml
+  - README.md
