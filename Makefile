@@ -4,10 +4,6 @@ export TARGET_BRANCH ?= master
 
 CMAKE ?= cmake
 
-XCODE_VERSION := $(shell xcrun xcodebuild -version | head -1 | awk '{print $2}')
-BETA := $(if $(filter $(XCODE_VERSION),12.0),true,false)
-
-
 ifeq ($(BUILDTYPE), Release)
 else ifeq ($(BUILDTYPE), RelWithDebInfo)
 else ifeq ($(BUILDTYPE), Sanitize)

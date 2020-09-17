@@ -2,7 +2,13 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 6.2.0
+## master
+
+### 🔧 Dependencies
+
+* Removed Xcode 12/Carthage `lipo` error workaround by updating `mapbox-events-ios` to `~> 0.10.4`.([#458](https://github.com/mapbox/mapbox-gl-native-ios/pull/458))
+
+## 6.2.0 - September 17, 2020
 
 **This release supports iOS 14 and Xcode 12**
 
@@ -29,7 +35,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 ### 🔧 Dependencies
 
 * Core library updated to `5.0.1`. ([#438](https://github.com/mapbox/mapbox-gl-native-ios/pull/453))
-* `mapbox-events-ios` versioning updated to `~> 0.10.2`.
+* `mapbox-events-ios` versioning updated to `~> 0.10.3`.
 
 ## 6.1.0 - August 26, 2020
 
