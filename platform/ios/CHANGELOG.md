@@ -21,7 +21,7 @@ For building with Xcode 12, please ensure that mapbox-events-ios is at version 0
 ### 🐞 Bug fixes
 
 * Fixed an issue where the map would hang periodically (on iOS 14). ([#411](https://github.com/mapbox/mapbox-gl-native-ios/pull/411))
-* Fixed a sporadic crash when the application "resigns active", for example, when showing Control Center. ([#412](https://github.com/mapbox/mapbox-gl-native-ios/pull/412))
+* Fixed a sporadic crash when the application "resigns active", for example, when showing Control Center. ([#412](https://github.com/mapbox/mapbox-gl-native-ios/pull/412)) 
 * Fixed an issue that caused ornaments to consider safe areas when `MGLMapView.automaticallyAdjustsContentInset` is set to `NO`. ([#420](https://github.com/mapbox/mapbox-gl-native-ios/pull/420))
 * Fixed an issue that caused rendering crashes when entering the background. ([#432](https://github.com/mapbox/mapbox-gl-native-ios/pull/432))
 
