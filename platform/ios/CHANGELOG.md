@@ -11,11 +11,12 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 ## 6.2.0 - September 17, 2020
 
 **This release supports iOS 14 and Xcode 12**
+For building with Xcode 12, please ensure that mapbox-events-ios is at version 0.10.4 or higher. Please see our [dependency instructions](https://docs.mapbox.com/ios/maps/overview/#add-the-dependency) for more details.
 
 ### ✨ New features
 
 * Added `MGLLocationManager.accuracyAuthorization` to check the level of accuracy the app is allowed to support. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
-* Added `[MGLLocationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKeyproperty:]` to allow developers request just-in-time full-accuracy permissions. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
+* Added `[MGLLocationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:]` to allow developers request just-in-time full-accuracy permissions. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
 * Added `[MGLLocationManagerDelegate locationManagerDidChangeAuthorization:]` to let `MGLMapView` know about privacy changes. ([#376](https://github.com/mapbox/mapbox-gl-native-ios/pull/376))
 * Added `[MGLMapViewDelegate mapView:didChangeLocationManagerAuthorization:]` to allow developers adjust their apps to privacy settings changes. ([#376](https://github.com/mapbox/mapbox-gl-native-ios/pull/376))
 * Added an approximate user location halo when `MGLLocationManager.accuracyAuthorization` is set to `CLAccuracyAuthorizationReducedAccuracy`. ([#381](https://github.com/mapbox/mapbox-gl-native-ios/pull/381))
