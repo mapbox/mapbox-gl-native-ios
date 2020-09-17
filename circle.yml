@@ -16,6 +16,7 @@ workflows:
       #     unique aspect of the build environment.
       #   - {build type} is typically "debug" or "release".
       #
+      - xcode-check
       - ios-build:
           matrix:
             parameters:
@@ -297,6 +298,13 @@ commands:
           fi
 
 jobs:
+  xcode-check:
+    macos:
+      xcode: "12.0.0"
+    steps:
+      - run:
+          name: Check xcodebuild version
+          command: xcodebuild -version
 
   ios-build:
     parameters:
