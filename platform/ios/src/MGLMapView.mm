@@ -1668,6 +1668,11 @@ public:
     [self updateDisplayLinkPreferredFramesPerSecond];
 
     [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+
+    if (_mbglMap && self.mbglMap.getMapOptions().constrainMode() == mbgl::ConstrainMode::None)
+    {
+        self.mbglMap.setConstrainMode(mbgl::ConstrainMode::HeightOnly);
+    }
 }
 
 - (void)destroyDisplayLink

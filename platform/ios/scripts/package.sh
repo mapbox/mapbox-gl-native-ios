@@ -77,16 +77,10 @@ if [[ ${BUILD_STATIC} == true ]]; then
 fi
 
 XCCONFIG=''
-if [[ ! -z "${BETA:=}" ]]; then
-    xcconfig='xcode-beta-3-build-fix.xcconfig'
+if [[ ! -z "${CI:=}" ]]; then
+    xcconfig='platform/darwin/ci.xcconfig'
     echo "CI environment, using ${xcconfig}"
     XCCONFIG="-xcconfig ./${xcconfig}"
-else 
-    if [[ ! -z "${CI:=}" ]]; then
-        xcconfig='platform/darwin/ci.xcconfig'
-        echo "CI environment, using ${xcconfig}"
-        XCCONFIG="-xcconfig ./${xcconfig}"
-    fi
 fi
 
 mkdir -p build/ios
