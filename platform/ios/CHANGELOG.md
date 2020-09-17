@@ -6,12 +6,13 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ### 🔧 Dependencies
 
-* Removed Xcode 12/Carthage `lipo` error workaround by updating `mapbox-events-ios` to `~> 0.10.4`.([#458](https://github.com/mapbox/mapbox-gl-native-ios/pull/458))
+* Supported Xcode 12 by updating `mapbox-events-ios` to `~> 0.10.4`.([#458](https://github.com/mapbox/mapbox-gl-native-ios/pull/458))
+* Core library downgraded to `4.0.0` due to font rendering issues. ([#458](https://github.com/mapbox/mapbox-gl-native-ios/pull/458))
 
 ## 6.2.0 - September 17, 2020
 
 **This release supports iOS 14 and Xcode 12**
-For building with Xcode 12, please ensure that mapbox-events-ios is at version 0.10.4 or higher. Please see our [dependency instructions](https://docs.mapbox.com/ios/maps/overview/#add-the-dependency) for more details.
+For building with Xcode 12, please ensure that mapbox-events-ios is at version 0.10.4 or higher. Please see our [dependency instructions](https://docs.mapbox.com/ios/maps/overview/#add-the-dependency) for more details. This version does not support Apple Silicon Macs (arm64).
 
 ### ✨ New features
 
