@@ -151,7 +151,7 @@ $(IOS_OUTPUT_PATH):
 $(NETRC_FILE):
 	@echo "$$NETRC" > $(NETRC_FILE)
 
-$(CARTHAGE_DEPS): $(NETRC_FILE) | $(IOS_OUTPUT_PATH)
+$(CARTHAGE_DEPS): | $(NETRC_FILE) $(IOS_OUTPUT_PATH)
 	carthage bootstrap --platform iOS --use-netrc
 	@echo "Finishing bootstrapping"
 
