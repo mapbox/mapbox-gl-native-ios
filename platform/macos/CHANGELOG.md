@@ -1,5 +1,9 @@
 # Changelog for Mapbox Maps SDK for macOS
 
+## master
+
+* `MGLMapSnapshotOptions` to respect `showsLogo`. ([#335](https://github.com/mapbox/mapbox-gl-native-ios/issues/335))
+
 ## 0.16.0
 
 ### Styles and rendering

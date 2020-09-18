@@ -498,7 +498,7 @@ MGLImage *MGLAttributedSnapshot(mbgl::MapSnapshotter::Attributions attributions,
         return nil;
     }
     
-    if (logoImage) {
+    if (logoImage && options.showsLogo) {
         [logoImage drawInRect:logoImageRect];
     }
     
