@@ -2,6 +2,17 @@
 
 @implementation MGLIntegrationTestCase
 
++ (NSString*)accessToken {
+    NSString *accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
+
+    if (!accessToken) {
+        // Check the environment
+        accessToken = [[[NSProcessInfo processInfo] environment] objectForKey:@"MAPBOX_ACCESS_TOKEN"];
+    }
+
+    return accessToken;
+}
+
 + (XCTestSuite*)defaultTestSuite {
 
     XCTestSuite *defaultTestSuite = [super defaultTestSuite];
@@ -11,7 +22,7 @@
     XCTestSuite *newTestSuite = [XCTestSuite testSuiteWithName:defaultTestSuite.name];
 
     BOOL runPendingTests = [[[NSProcessInfo processInfo] environment][@"MAPBOX_RUN_PENDING_TESTS"] boolValue];
-    NSString *accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
+    NSString *accessToken = [self accessToken];
 
     for (XCTest *test in tests) {
 
@@ -50,7 +61,7 @@
     NSString *accessToken;
 
     if ([self.name containsString:@"🔒"]) {
-        accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
+        accessToken = [[self class] accessToken];
 
         if (!accessToken) {
             printf("warning: MGLMapboxAccessToken info.plist key is required for test '%s' - trying anyway.\n", self.name.UTF8String);
