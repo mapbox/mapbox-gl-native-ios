@@ -19,8 +19,12 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.1.0", "11.7.0"]
+              xcode: ["11.7.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
+      - ios-integration-test-job:
+          matrix:
+            parameters:
+              xcode: ["11.7.0", "12.0.0"]
       - ios-release-template:
           xcode: "12.0.0"
           name: ios-release
@@ -57,7 +61,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.5.0", "11.6.0", "12.0.0"]
+              xcode: ["11.1.0", "11.3.1"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -203,7 +207,7 @@ commands:
         name: Build ios-test
         command: make ios-test
         no_output_timeout: 20m
-  build-ios-integration-test:
+  ios-integration-test:
     steps:
     - run:
         name: Build ios-integration-test
@@ -330,6 +334,24 @@ jobs:
           condition: << parameters.notify-slack >>
           steps:
             - notify-slack-failure
+
+  ios-integration-test-job:
+      parameters:
+        xcode:
+          type: string
+      macos:
+        xcode: << parameters.xcode >>
+      environment:
+        BUILDTYPE: Debug
+        HOMEBREW_NO_AUTO_UPDATE: 1
+        HOMEBREW_NO_INSTALL_CLEANUP: 1
+      steps:
+        - install-macos-dependencies
+        - install-dependencies
+        - ios-integration-test
+        - save-dependencies
+        - collect-xcode-build-logs
+        - upload-xcode-build-logs
 
 # ------------------------------------------------------------------------------
   ios-sanitize-nightly:
