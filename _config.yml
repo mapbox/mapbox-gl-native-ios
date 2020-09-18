@@ -1,4 +1,5 @@
 baseurl: /ios/maps/api
+permalink: /:title/index.html
 exclude:
   - .artifacts.yml
   - .pubisher.yml
