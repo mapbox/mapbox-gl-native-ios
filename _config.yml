@@ -1,5 +1,5 @@
 baseurl: /ios/maps/api
-permalink: /:title/index.html
+permalink: /:title/index.html # required for redirects
 exclude:
   - .artifacts.yml
   - .pubisher.yml
