@@ -15,22 +15,31 @@
 @implementation MGLMapViewPendingBlockTests
 
 - (void)testSetCenterCoordinate {
-    [self internal_testSetCenterCoordinateAnimated:NO testName:NSStringFromSelector(_cmd)];
+    [self internal_testSetCenterCoordinate:CLLocationCoordinate2DMake(10.0, 20.0)
+                                 zoomLevel:10.0
+                                  animated:NO
+                                  testName:NSStringFromSelector(_cmd)];
 }
 
 - (void)testSetCenterCoordinateAnimated {
-    [self internal_testSetCenterCoordinateAnimated:YES testName:NSStringFromSelector(_cmd)];
+    [self internal_testSetCenterCoordinate:CLLocationCoordinate2DMake(10.0, 20.0)
+                                 zoomLevel:10.0
+                                  animated:NO
+                                  testName:NSStringFromSelector(_cmd)];
 }
 
-- (void)internal_testSetCenterCoordinateAnimated:(BOOL)animated testName:(NSString*)testName {
+- (void)internal_testSetCenterCoordinate:(CLLocationCoordinate2D)coord
+                               zoomLevel:(double)zoomLevel
+                                animated:(BOOL)animated
+                                testName:(NSString*)testName {
     __typeof__(self) weakSelf = self;
     
     void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
         __typeof__(self) strongSelf = weakSelf;
         
         if (strongSelf) {
-            [strongSelf.mapView setCenterCoordinate:CLLocationCoordinate2DMake(10.0, 10.0)
-                                          zoomLevel:10.0
+            [strongSelf.mapView setCenterCoordinate:coord
+                                          zoomLevel:zoomLevel
                                           direction:0
                                            animated:animated
                                   completionHandler:completion];
@@ -72,7 +81,10 @@
     XCTAssertEqualWithAccuracy(self.mapView.centerCoordinate.latitude, coord.latitude, 0.000001);
     XCTAssertEqualWithAccuracy(self.mapView.centerCoordinate.longitude, coord.longitude, 0.000001);
 
-    [self internal_testSetCenterCoordinateAnimated:animated testName:testName];
+    [self internal_testSetCenterCoordinate:coord
+                                 zoomLevel:zoomLevel
+                                  animated:NO
+                                  testName:testName];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
