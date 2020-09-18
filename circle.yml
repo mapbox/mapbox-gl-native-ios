@@ -348,6 +348,9 @@ jobs:
       steps:
         - install-macos-dependencies
         - install-dependencies
+        - run:
+            name: Save MAPBOX_ACCESS_TOKEN
+            command: echo "$MAPBOX_ACCESS_TOKEN" > ~/mapbox
         - ios-integration-test
         - save-dependencies
         - collect-xcode-build-logs
