@@ -2,6 +2,12 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## master
+
+### 🐞 Bug fixes
+
+* Fixed an issue where completion blocks wouldn't be called until the map was rendered. ([#463](https://github.com/mapbox/mapbox-gl-native-ios/pull/463))
+
 ## 6.2.0 - September 17, 2020
 
 **This release supports iOS 14 and Xcode 12**
