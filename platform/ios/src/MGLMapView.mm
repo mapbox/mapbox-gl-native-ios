@@ -1115,7 +1115,7 @@ public:
 
 - (BOOL)renderSync
 {
-    if (!self.needsDisplayRefresh) {
+    if (!self.needsDisplayRefresh && (self.pendingCompletionBlocks.count == 0)) {
         return NO;
     }
 
