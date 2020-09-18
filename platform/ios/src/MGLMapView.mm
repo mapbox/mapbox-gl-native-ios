@@ -1104,24 +1104,21 @@ public:
     [self updateUserLocationAnnotationView];
     [self updateAnnotationViews];
     [self updateCalloutView];
-
-    // Call any pending completion blocks. This is primarily to ensure
-    // that annotations are in the expected position after core rendering
-    // and map update.
-    //
-    // TODO: Consider using this same mechanism for delegate callbacks.
-    [self processPendingBlocks];
 }
 
 - (BOOL)renderSync
 {
-    if (!self.needsDisplayRefresh && (self.pendingCompletionBlocks.count == 0)) {
+    BOOL hasPendingBlocks = (self.pendingCompletionBlocks.count > 0);
+
+    if (!self.needsDisplayRefresh && !hasPendingBlocks) {
         return NO;
     }
 
+    BOOL needsRender = self.needsDisplayRefresh;
+
     self.needsDisplayRefresh = NO;
 
-    if (!self.dormant)
+    if (!self.dormant && needsRender)
     {
         MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "render");
         if (_rendererFrontend) {
@@ -1149,6 +1146,16 @@ public:
         [self updateViewsPostMapRendering];
         MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
     }
+
+    if (hasPendingBlocks) {
+        // Call any pending completion blocks. This is primarily to ensure
+        // that annotations are in the expected position after core rendering
+        // and map update.
+        //
+        // TODO: Consider using this same mechanism for delegate callbacks.
+        [self processPendingBlocks];
+    }
+
     return YES;
 }
 
