@@ -1,6 +1,8 @@
 #import "MGLMapViewIntegrationTest.h"
 #import "../../darwin/src/MGLSignpost.h"
 
+extern NSString* getSysInfoByName(char *typeSpecifier);
+
 @interface MGLMapView (MBXViewController)
 - (UIEdgeInsets)defaultEdgeInsetsForShowAnnotations;
 @end
@@ -68,12 +70,23 @@ void writeDictionaryToFile(NSDictionary *info, NSString *filename);
         accessibilityDictionary = MGLTestAccessibilityDictionaryForElement(self.mapView);
         MGL_SIGNPOST_END(self.log, signpost, "create-dictionary");
     }];
-        
-    NSString *filename = @"testQueryRoadsAroundDC";
+
+#if TARGET_OS_SIMULATOR
+    // There's also SIMULATOR_DEVICE_NAME
+    NSString *model = [[[NSProcessInfo processInfo] environment] objectForKey:@"SIMULATOR_MODEL_IDENTIFIER"];
+#else
+    NSString *model = getSysInfoByName("hw.model");
+#endif
+
+    NSString *filename = [NSString stringWithFormat:@"testQueryRoadsAroundDC-(%@)", model];
 
     writeDictionaryToFile(accessibilityDictionary, [NSString stringWithFormat:@"%@.json", filename]);
     
     NSDictionary *expected = readAccessibilityDictionaryFromBundle(filename, [NSBundle bundleForClass:[self class]]);
+    if (!expected) {
+        XCTSkip(@"Missing query fixture for model: %@", model);
+    }
+
     XCTAssertNotNil(expected);
     [self assertAccessibilityDictionary:accessibilityDictionary isEqualToDictionary:expected];
     
@@ -208,7 +221,6 @@ void writeDictionaryToFile(NSDictionary *info, NSString *filename)
 }
 
 NSDictionary *readAccessibilityDictionaryFromBundle(NSString *filename, NSBundle *bundle)
-
 {
     
     NSString *path = [bundle pathForResource:filename ofType:@"json"];

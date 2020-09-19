@@ -400,7 +400,6 @@
 		CA1A739B24FEDBCE00703BBF /* green.json in Resources */ = {isa = PBXBuildFile; fileRef = CA1A739A24FEDBCE00703BBF /* green.json */; };
 		CA1B4A512099FB2200EDD491 /* MGLMapSnapshotterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */; };
 		CA233124250B098700BA1760 /* Test.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA233123250B098700BA1760 /* Test.storyboard */; };
-		CA3402782495E53900415EEE /* testQueryRoadsAroundDC.json in Resources */ = {isa = PBXBuildFile; fileRef = CA3402772495E53900415EEE /* testQueryRoadsAroundDC.json */; };
 		CA4C54FE2324948100A81659 /* MGLSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4C54FD2324948100A81659 /* MGLSourceTests.swift */; };
 		CA4EB8C720863487006AB465 /* MGLStyleLayerIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */; };
 		CA4F3BDE230F74C3008BAFEA /* MGLMapViewPendingBlockTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA4F3BDD230F74C3008BAFEA /* MGLMapViewPendingBlockTests.mm */; };
@@ -446,6 +445,8 @@
 		CAB92CF122F204720037BE12 /* MGLQueryFeatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB92CF022F204720037BE12 /* MGLQueryFeatureTests.m */; };
 		CAC3A3E022E75AC200BC8DEF /* MGLSignpost.h in Headers */ = {isa = PBXBuildFile; fileRef = CAC3A3DE22E75AC100BC8DEF /* MGLSignpost.h */; };
 		CAC3A3E122E75AC200BC8DEF /* MGLSignpost.h in Headers */ = {isa = PBXBuildFile; fileRef = CAC3A3DE22E75AC100BC8DEF /* MGLSignpost.h */; };
+		CACC759B25155DA1000F3DC8 /* MGLTestDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = CACC759A25155DA1000F3DC8 /* MGLTestDeviceInfo.m */; };
+		CACCCEF22515CD5D00B07368 /* testQueryRoadsAroundDC-(iPhone10,4).json in Resources */ = {isa = PBXBuildFile; fileRef = CACCCEF12515CD5D00B07368 /* testQueryRoadsAroundDC-(iPhone10,4).json */; };
 		CAD9D0AA22A86D6F001B25EE /* MGLResourceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CAD9D0A922A86D6F001B25EE /* MGLResourceTests.mm */; };
 		CAE7AD5520F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE7AD5420F46EF5003B6782 /* MGLMapSnapshotterSwiftTests.swift */; };
 		CAE9D2F72508398B00A02BFD /* MGLApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CAE9D2F62508398B00A02BFD /* MGLApplication.m */; };
@@ -1079,7 +1080,6 @@
 		CA1A739A24FEDBCE00703BBF /* green.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = green.json; sourceTree = "<group>"; };
 		CA1B4A502099FB2200EDD491 /* MGLMapSnapshotterTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLMapSnapshotterTest.m; sourceTree = "<group>"; };
 		CA233123250B098700BA1760 /* Test.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Test.storyboard; sourceTree = "<group>"; };
-		CA3402772495E53900415EEE /* testQueryRoadsAroundDC.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testQueryRoadsAroundDC.json; sourceTree = "<group>"; };
 		CA4C54FD2324948100A81659 /* MGLSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MGLSourceTests.swift; sourceTree = "<group>"; };
 		CA4EB8C620863487006AB465 /* MGLStyleLayerIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLStyleLayerIntegrationTests.m; sourceTree = "<group>"; };
 		CA4F3BDD230F74C3008BAFEA /* MGLMapViewPendingBlockTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MGLMapViewPendingBlockTests.mm; sourceTree = "<group>"; };
@@ -1110,6 +1110,8 @@
 		CAB36C3A2374D11600592F74 /* libMapboxMobileEvents.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libMapboxMobileEvents.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAB92CF022F204720037BE12 /* MGLQueryFeatureTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLQueryFeatureTests.m; sourceTree = "<group>"; };
 		CAC3A3DE22E75AC100BC8DEF /* MGLSignpost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGLSignpost.h; sourceTree = "<group>"; };
+		CACC759A25155DA1000F3DC8 /* MGLTestDeviceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MGLTestDeviceInfo.m; sourceTree = "<group>"; };
+		CACCCEF12515CD5D00B07368 /* testQueryRoadsAroundDC-(iPhone10,4).json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "testQueryRoadsAroundDC-(iPhone10,4).json"; sourceTree = "<group>"; };
 		CAD9D0A922A86D6F001B25EE /* MGLResourceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = MGLResourceTests.mm; path = ../../darwin/test/MGLResourceTests.mm; sourceTree = "<group>"; };
 		CAE5AE2B2389FBF000E4A5A1 /* ios.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ios.xcconfig; sourceTree = "<group>"; };
 		CAE7AD5320F46EF5003B6782 /* integration-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "integration-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1477,6 +1479,7 @@
 				CA60014A242BD8710041BBEC /* MGLIntegrationTestCase.h */,
 				CA176AD62507F98900D47E3D /* MGLMockApplication.h */,
 				CA176AD52507F98900D47E3D /* MGLMockApplication.m */,
+				CACC759A25155DA1000F3DC8 /* MGLTestDeviceInfo.m */,
 			);
 			path = "Integration Tests";
 			sourceTree = "<group>";
@@ -1836,7 +1839,7 @@
 		CAB92CEF22F2043F0037BE12 /* Query Tests */ = {
 			isa = PBXGroup;
 			children = (
-				CA3402772495E53900415EEE /* testQueryRoadsAroundDC.json */,
+				CACCCEF12515CD5D00B07368 /* testQueryRoadsAroundDC-(iPhone10,4).json */,
 				CAB92CF022F204720037BE12 /* MGLQueryFeatureTests.m */,
 			);
 			path = "Query Tests";
@@ -2952,8 +2955,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA3402782495E53900415EEE /* testQueryRoadsAroundDC.json in Resources */,
 				16376B471FFDB92B0000563E /* one-liner.json in Resources */,
+				CACCCEF22515CD5D00B07368 /* testQueryRoadsAroundDC-(iPhone10,4).json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3111,6 +3114,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA17464E23D8A93C008B7A43 /* MGLNetworkConfigurationIntegrationTests.mm in Sources */,
+				CACC759B25155DA1000F3DC8 /* MGLTestDeviceInfo.m in Sources */,
 				CA4EB8C720863487006AB465 /* MGLStyleLayerIntegrationTests.m in Sources */,
 				CA7766842229C11A0008DE9E /* SMCalloutView.m in Sources */,
 				CA176AD72507F98900D47E3D /* MGLMockApplication.m in Sources */,

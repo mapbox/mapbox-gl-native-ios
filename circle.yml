@@ -61,7 +61,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.1.0", "11.3.1"]
+              xcode: ["11.1.0", "11.3.1", "12.2.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
