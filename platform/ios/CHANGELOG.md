@@ -2,6 +2,19 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## 6.2.1 - September 23, 2020
+
+### 🐞 Bug fixes
+
+* Fixed an issue where completion blocks were not called until the map was rendered. ([#463](https://github.com/mapbox/mapbox-gl-native-ios/pull/463))
+* Fixed an issue that caused a crash when custom location managers did not implement `MGLLocationManager.accuracyAuthorization`. ([#474](https://github.com/mapbox/mapbox-gl-native-ios/pull/474))
+* Fixed a crash that occurred when `MGLIdeographicFontFamilyName` was set to `NO`. ([#467](https://github.com/mapbox/mapbox-gl-native-ios/pull/467), [#476](https://github.com/mapbox/mapbox-gl-native-ios/pull/476))
+* Fixed an issue with local font glyph rendering, by updating the core library to version 5.1.0. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475))
+
+### 🔧 Dependencies
+
+* Core library updated to `5.1.0`. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475)) 
+
 ## 6.2.0 - September 17, 2020
 
 **This release supports iOS 14 and Xcode 12**

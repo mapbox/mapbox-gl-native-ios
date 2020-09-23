@@ -556,7 +556,7 @@ public:
     // setup mbgl map
     MGLRendererConfiguration *config = [MGLRendererConfiguration currentConfiguration];
 
-    auto localFontFamilyName = config.localFontFamilyName ? std::string(config.localFontFamilyName.UTF8String) : nullptr;
+    mbgl::optional<std::string> localFontFamilyName = config.localFontFamilyName ? mbgl::optional<std::string>(std::string(config.localFontFamilyName.UTF8String)) : mbgl::nullopt;
     auto renderer = std::make_unique<mbgl::Renderer>(_mbglView->getRendererBackend(), config.scaleFactor, localFontFamilyName);
     BOOL enableCrossSourceCollisions = !config.perSourceCollisions;
     _rendererFrontend = std::make_unique<MGLRenderFrontend>(std::move(renderer), self, _mbglView->getRendererBackend());
@@ -1104,24 +1104,21 @@ public:
     [self updateUserLocationAnnotationView];
     [self updateAnnotationViews];
     [self updateCalloutView];
-
-    // Call any pending completion blocks. This is primarily to ensure
-    // that annotations are in the expected position after core rendering
-    // and map update.
-    //
-    // TODO: Consider using this same mechanism for delegate callbacks.
-    [self processPendingBlocks];
 }
 
 - (BOOL)renderSync
 {
-    if (!self.needsDisplayRefresh) {
+    BOOL hasPendingBlocks = (self.pendingCompletionBlocks.count > 0);
+
+    if (!self.needsDisplayRefresh && !hasPendingBlocks) {
         return NO;
     }
 
+    BOOL needsRender = self.needsDisplayRefresh;
+
     self.needsDisplayRefresh = NO;
 
-    if (!self.dormant)
+    if (!self.dormant && needsRender)
     {
         MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "render");
         if (_rendererFrontend) {
@@ -1149,6 +1146,16 @@ public:
         [self updateViewsPostMapRendering];
         MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
     }
+
+    if (hasPendingBlocks) {
+        // Call any pending completion blocks. This is primarily to ensure
+        // that annotations are in the expected position after core rendering
+        // and map update.
+        //
+        // TODO: Consider using this same mechanism for delegate callbacks.
+        [self processPendingBlocks];
+    }
+
     return YES;
 }
 
@@ -6474,9 +6481,11 @@ static void *windowScreenContext = &windowScreenContext;
         if (@available(iOS 14, *)) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
             if (self.userTrackingMode != MGLUserTrackingModeNone &&
+                [manager respondsToSelector:@selector(authorizationStatus)] &&
                 (manager.authorizationStatus != kCLAuthorizationStatusRestricted ||
                  manager.authorizationStatus != kCLAuthorizationStatusAuthorizedAlways ||
                  manager.authorizationStatus != kCLAuthorizationStatusAuthorizedWhenInUse) &&
+                [manager respondsToSelector:@selector(accuracyAuthorization)] &&
                 manager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy &&
                 [self accuracyDescriptionString] != nil ) {
                 [self.locationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:@"MGLAccuracyAuthorizationDescription"];
