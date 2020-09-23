@@ -13,7 +13,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ### 🔧 Dependencies
 
-* Core library updated to `5.1.0`. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475))
+* Core library updated to `5.1.0`. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475)) 
 
 ## 6.2.0 - September 17, 2020
 
