@@ -2,9 +2,13 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 6.2.1 - September 23, 2020
+## master
 
 ### 🐞 Bug fixes
+
+* Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
+
+## 6.2.1 - September 23, 2020
 
 * Fixed an issue where completion blocks were not called until the map was rendered. ([#463](https://github.com/mapbox/mapbox-gl-native-ios/pull/463))
 * Fixed an issue that caused a crash when custom location managers did not implement `MGLLocationManager.accuracyAuthorization`. ([#474](https://github.com/mapbox/mapbox-gl-native-ios/pull/474))
