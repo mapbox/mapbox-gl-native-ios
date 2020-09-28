@@ -1124,6 +1124,14 @@ public:
         if (_rendererFrontend) {
             _numberOfRenderCalls++;
 
+            // - - - - -
+
+            // TODO: This should be moved from what's essentially the UIView rendering
+            // To do this, add view models that can be updated separately, before the
+            // UIViews can be updated to match
+            MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "update");
+            [self updateViewsPostMapRendering];
+            MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
             CFTimeInterval before = CACurrentMediaTime();
             _rendererFrontend->render();
             CFTimeInterval after = CACurrentMediaTime();
