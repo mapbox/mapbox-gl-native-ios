@@ -2,6 +2,8 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+* Fixed an Xcode 12 issue that requires arm64 simulator architectures to be excluded. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/82))
+
 ## 6.2.1 - September 23, 2020
 
 ### 🐞 Bug fixes
@@ -10,6 +12,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Fixed an issue that caused a crash when custom location managers did not implement `MGLLocationManager.accuracyAuthorization`. ([#474](https://github.com/mapbox/mapbox-gl-native-ios/pull/474))
 * Fixed a crash that occurred when `MGLIdeographicFontFamilyName` was set to `NO`. ([#467](https://github.com/mapbox/mapbox-gl-native-ios/pull/467), [#476](https://github.com/mapbox/mapbox-gl-native-ios/pull/476))
 * Fixed an issue with local font glyph rendering, by updating the core library to version 5.1.0. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475))
+
 
 ### 🔧 Dependencies
 
