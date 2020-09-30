@@ -21,7 +21,7 @@
     
     for (NSUInteger i = 0; i < numberOfConcurrentBlocks; i++) {
         
-        NSString *event = [NSString stringWithFormat:@"test://event-%ld", i];
+        NSString *event = [NSString stringWithFormat:@"test://event-%lu", (unsigned long)i];
         NSString *resourceType = @"test";
         
         dispatch_async(queue, ^{
@@ -39,5 +39,15 @@
     }
     
     [self waitForExpectations:@[expectation] timeout:10.0];
+}
+
+- (void)testConnected {
+    MGLNetworkConfiguration *manager = [MGLNetworkConfiguration sharedManager];
+    
+    XCTAssertTrue(manager.connected);
+    manager.connected = NO;
+    XCTAssertFalse(manager.connected);
+    manager.connected = YES;
+    XCTAssertTrue(manager.connected);
 }
 @end

@@ -16,23 +16,34 @@ workflows:
       #     unique aspect of the build environment.
       #   - {build type} is typically "debug" or "release".
       #
-      - ios-debug
-      - ios-debug-xcode10
-      - ios-debug-xcode11-5
+      - ios-build:
+          matrix:
+            parameters:
+              xcode: ["11.1.0", "11.7.0"]
+              buildtype: ["Debug", "Release"]
       - ios-release-template:
+          xcode: "12.0.0"
           name: ios-release
-      - ios-trigger-metrics:
-          requires: 
-            - ios-release
-          filters:
-            branches:
-              only: master
+      # This should depend on sanitize jobs              
       - ios-release-tag:
+          xcode: "12.0.0"
+        # Commenting out to test for release.
+          # requires: 
+          #   - ios-build
+          #   - ios-release
           filters:
             tags:
               only: /ios-.*/
             branches:
               ignore: /.*/
+      - ios-trigger-metrics:
+          requires: 
+            - ios-build
+            - ios-release
+          filters:
+            branches:
+              only: main
+
       # - macos-debug
   nightly:
     triggers:
@@ -41,15 +52,26 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
     jobs:
-      - metrics-nightly
-      - ios-release-template:
-          name: ios-release-nightly
-      - ios-sanitize-nightly
-      - ios-sanitize-address-nightly
-      - ios-static-analyzer-nightly
-      - ios-static-analyzer-nightly-xcode10
+      - ios-build:
+          matrix:
+            parameters:
+              xcode: ["11.3.1", "11.5.0", "11.6.0", "12.0.0"]
+              buildtype: ["Debug", "Release"]
+      - ios-sanitize-nightly:
+          requires:
+            - ios-build
+      # TODO: Add matrix for these                  
+      - ios-sanitize-address-nightly:
+          requires:
+            - ios-build
+      - ios-static-analyzer-nightly:
+          requires:
+            - ios-build
+      - metrics-nightly:      
+          requires:
+            - ios-build
 
 commands:
   npm-install:
@@ -81,9 +103,9 @@ commands:
           echo "$CIRCLE_SHA1"
           echo "$CIRCLE_SHA1" > .circle-sha1
           echo "$CIRCLE_TARGET_BRANCH"
-          echo "${CIRCLE_TARGET_BRANCH:master}" > .circle-target-branch
+          echo "${CIRCLE_TARGET_BRANCH:main}" > .circle-target-branch
           echo "$CIRCLE_MERGE_BASE"
-          echo "${CIRCLE_MERGE_BASE:master}" > .circle-merge-base
+          echo "${CIRCLE_MERGE_BASE:main}" > .circle-merge-base
           ccache --clear
   reset-ccache-stats:
     steps:
@@ -224,7 +246,7 @@ commands:
           name: Trigger metrics
           command: |
             if [ -n "${MOBILE_METRICS_TOKEN}" ]; then
-              bash -c "curl -X POST --header \"Content-Type: application/json\" --data '{\"parameters\": {\"run_ios_maps_benchmark\": true, \"ci_ref\": $CIRCLE_BUILD_NUM }, \"branch\": \"master\" }' https://circleci.com/api/v2/project/github/mapbox/mobile-metrics/pipeline?circle-token=${MOBILE_METRICS_TOKEN}"
+              bash -c "curl -X POST --header \"Content-Type: application/json\" --data '{\"parameters\": {\"run_ios_maps_benchmark\": true, \"ci_ref\": $CIRCLE_BUILD_NUM }, \"branch\": \"main\" }' https://circleci.com/api/v2/project/github/mapbox/mobile-metrics/pipeline?circle-token=${MOBILE_METRICS_TOKEN}"
             else
               echo "MOBILE_METRICS_TOKEN not provided"
             fi
@@ -237,20 +259,20 @@ commands:
         command: |
           export XCODE_LOG_DIR=build/logs
           mkdir -p $XCODE_LOG_DIR
-          cp build/*.log $XCODE_LOG_DIR
+          cp build/*.log $XCODE_LOG_DIR || true
   upload-xcode-build-logs:
     steps:
     - store_artifacts:
         path: build/logs
 
   # Must be last step of a job
-  notify-slack-nightly-failure:
+  notify-slack-failure:
     steps:
     - slack/status:
         fail_only: true
-        only_for_branches: 'internal,master'
+        only_for_branches: 'internal,main'
         include_visit_job_action: true
-        failure_message: ':red_circle: Nightly build of \`$CIRCLE_JOB\` <$CIRCLE_BUILD_URL|failed>.'
+        failure_message: ':red_circle: Job \`$CIRCLE_JOB\` <$CIRCLE_BUILD_URL|failed>.'
 
   #
   # Add this step to all regular jobs to enable skipping of certain non-code-related changes.
@@ -270,16 +292,26 @@ commands:
     - run:
         name: Check if this job can be skipped
         command: |
-          if [[ $CIRCLE_BRANCH != master ]] && [[ $CIRCLE_BRANCH != release-* ]] && [[ -z $CIRCLE_TAG ]]; then
+          if [[ $CIRCLE_BRANCH != main ]] && [[ $CIRCLE_BRANCH != release-* ]] && [[ -z $CIRCLE_TAG ]]; then
             scripts/check-ci-job-skippability.js
           fi
 
 jobs:
-  ios-debug:
+
+  ios-build:
+    parameters:
+      xcode:
+        type: string
+      buildtype:
+        type: string
+        default: Debug
+      notify-slack:
+        type: boolean
+        default: false
     macos:
-      xcode: "11.4.1"
+      xcode: << parameters.xcode >>
     environment:
-      BUILDTYPE: Debug
+      BUILDTYPE: << parameters.buildtype >>
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
@@ -294,54 +326,15 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-
-# ------------------------------------------------------------------------------
-# TODO: Update to latest on macOS 10.14 Mojave, i.e. 11.3.1
-  ios-debug-xcode10:
-    macos:
-      xcode: "10.3.0"
-    environment:
-      BUILDTYPE: Debug
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-    steps:
-      - install-macos-dependencies
-      - install-dependencies
-      - check-public-symbols
-      - run:
-          name: Lint podspecs and plist files
-          command: make ios-lint
-      - check-if-this-job-can-be-skipped
-      - build-ios-test
-      - save-dependencies
-      - collect-xcode-build-logs
-      - upload-xcode-build-logs
-
-  ios-debug-xcode11-5:
-    macos:
-      xcode: "11.5.0"
-    environment:
-      BUILDTYPE: Debug
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-    steps:
-      - install-macos-dependencies
-      - install-dependencies
-      - check-public-symbols
-      - run:
-          name: Lint podspecs and plist files
-          command: make ios-lint
-      - check-if-this-job-can-be-skipped
-      - build-ios-test
-      - save-dependencies
-      - collect-xcode-build-logs
-      - upload-xcode-build-logs
-
+      - when:
+          condition: << parameters.notify-slack >>
+          steps:
+            - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-sanitize-nightly:
     macos:
-      xcode: "11.4.1"
+      xcode: "11.7.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -362,12 +355,12 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-sanitize-address-nightly:
     macos:
-      xcode: "11.4.1"
+      xcode: "11.7.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -381,12 +374,12 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-static-analyzer-nightly:
     macos:
-      xcode: "11.4.1"
+      xcode: "11.7.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -400,31 +393,34 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
-# ------------------------------------------------------------------------------
-  ios-static-analyzer-nightly-xcode10:
-    macos:
-      xcode: "10.3.0"
-    environment:
-      BUILDTYPE: Debug
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-    steps:
-      - install-macos-dependencies
-      - install-dependencies
-      - run:
-          name: Build and run SDK unit tests with the static analyzer
-          command: make ios-static-analyzer
-      - save-dependencies
-      - collect-xcode-build-logs
-      - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+# # ------------------------------------------------------------------------------
+#   ios-static-analyzer-nightly-xcode10:
+#     macos:
+#       xcode: "10.3.0"
+#     environment:
+#       BUILDTYPE: Debug
+#       HOMEBREW_NO_AUTO_UPDATE: 1
+#       HOMEBREW_NO_INSTALL_CLEANUP: 1
+#     steps:
+#       - install-macos-dependencies
+#       - install-dependencies
+#       - run:
+#           name: Build and run SDK unit tests with the static analyzer
+#           command: make ios-static-analyzer
+#       - save-dependencies
+#       - collect-xcode-build-logs
+#       - upload-xcode-build-logs
+#       - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-release-template:
+    parameters:
+      xcode:
+        type: string
     macos:
-      xcode: "11.4.1"
+      xcode: << parameters.xcode >>
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
@@ -437,18 +433,18 @@ jobs:
       - install-ios-packaging-dependencies
       - run:
           name: Build dynamic framework for device and simulator
-          command: make iframework
+          command: make iframework FORMAT=dynamic BUILD_DEVICE=true BUILD_DOCS=false
           no_output_timeout: 20m
       - deploy:
           name: Upload snapshot build to s3
           command: |
-            if [[ $CIRCLE_BRANCH == master ]]; then
+            if [[ $CIRCLE_BRANCH == main ]]; then
               platform/ios/scripts/deploy-snapshot.sh
             fi
 #      - deploy:
 #          name: Deploy to Mapbox CocoaPods spec repo
 #          command: |
-#            if [[ $CIRCLE_BRANCH == master ]]; then
+#            if [[ $CIRCLE_BRANCH == main ]]; then
 #              platform/ios/scripts/deploy-to-cocoapods.sh
 #            fi
       - run:
@@ -460,19 +456,21 @@ jobs:
       - save-dependencies
       - collect-xcode-build-logs
       - upload-xcode-build-logs
-      - notify-slack-nightly-failure
+      - notify-slack-failure
 
 # ------------------------------------------------------------------------------
   ios-release-tag:
+    parameters:
+      xcode:
+        type: string
     macos:
-      xcode: "11.4.1"
+      xcode: << parameters.xcode >>
     shell: /bin/bash --login -eo pipefail
     environment:
       BUILDTYPE: Release
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - checkout
       - slack/notify:
           message: '<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` started.>'
           include_visit_job_action: true
@@ -488,6 +486,8 @@ jobs:
       - run:
           name: Build, package, and upload iOS release
           command: |
+            echo CIRCLE_TAG=${CIRCLE_TAG}
+            echo CIRCLE_SHA1=${CIRCLE_SHA1}
             export VERSION_TAG=${CIRCLE_TAG}
             platform/ios/scripts/deploy-packages.sh
           no_output_timeout: 20m
@@ -508,14 +508,14 @@ jobs:
 # ------------------------------------------------------------------------------
   ios-trigger-metrics:
     macos:
-      xcode: "11.4.1"
+      xcode: "11.7.0"
     steps:
       - trigger-metrics
 
 # ------------------------------------------------------------------------------
   macos-debug:
     macos:
-      xcode: "11.4.1"
+      xcode: "11.7.0"
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1

@@ -1,9 +1,8 @@
 export BUILDTYPE ?= Debug
 export IS_LOCAL_DEVELOPMENT ?= true
-export TARGET_BRANCH ?= master
+export TARGET_BRANCH ?= main
 
 CMAKE ?= cmake
-
 
 ifeq ($(BUILDTYPE), Release)
 else ifeq ($(BUILDTYPE), RelWithDebInfo)
@@ -50,7 +49,7 @@ ifeq ($(V), 1)
   export XCPRETTY
   NINJA_ARGS ?= -v
 else
-  export XCPRETTY ?= | tee '$(shell pwd)/build/xcodebuild-$(shell date +"%Y-%m-%d_%H%M%S").log' | xcpretty
+  export XCPRETTY ?= | tee '$(CURDIR)/build/xcodebuild-$(shell date +"%Y-%m-%d_%H%M%S").log' | xcpretty
   NINJA_ARGS ?=
 endif
 
@@ -152,7 +151,7 @@ $(IOS_OUTPUT_PATH):
 $(NETRC_FILE):
 	@echo "$$NETRC" > $(NETRC_FILE)
 
-$(CARTHAGE_DEPS): $(NETRC_FILE) | $(IOS_OUTPUT_PATH)
+$(CARTHAGE_DEPS): | $(NETRC_FILE) $(IOS_OUTPUT_PATH)
 	carthage bootstrap --platform iOS --use-netrc
 	@echo "Finishing bootstrapping"
 
@@ -324,5 +323,8 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	-rm -rf ./mason_packages
+	-rm Cartfile.resolved
+	-rm -rf Carthage \
+			~/Library/Caches/carthage \
+			~/Library/Caches/org.carthage.kit
 	-rm -rf ./node_modules

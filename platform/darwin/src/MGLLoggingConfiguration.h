@@ -82,7 +82,7 @@ MGL_EXPORT
  
  The default value is `MGLLoggingLevelNone`.
  
- Setting this property includes logging levels less than or equal to the setted value.
+ Setting this property includes logging levels less than or equal to the set value.
  */
 @property (assign, nonatomic) MGLLoggingLevel loggingLevel;
 

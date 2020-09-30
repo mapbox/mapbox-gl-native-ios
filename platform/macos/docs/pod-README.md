@@ -1,4 +1,4 @@
-# [Mapbox Maps SDK for macOS](https://github.com/mapbox/mapbox-gl-native-ios/tree/master/platform/macos/)
+# [Mapbox Maps SDK for macOS](https://github.com/mapbox/mapbox-gl-native-ios/tree/main/platform/macos/)
 
 Put interactive, scalable world maps into your native Cocoa application with the open-source Mapbox Maps SDK for macOS.
 
@@ -8,7 +8,7 @@ Put interactive, scalable world maps into your native Cocoa application with the
 * A well-designed, fully documented API helps you stay productive.
 * Develop across [multiple platforms](https://www.mapbox.com/maps/), including [iOS](https://docs.mapbox.com/ios/maps/), using the same styles and similar APIs.
 
-![](https://raw.githubusercontent.com/mapbox/mapbox-gl-native-ios/master/platform/macos/docs/img/screenshot.jpg)
+![](https://raw.githubusercontent.com/mapbox/mapbox-gl-native-ios/main/platform/macos/docs/img/screenshot.jpg)
 
 The Mapbox Maps SDK for macOS is compatible with macOS 10.11.0 and above for Cocoa applications developed in Objective-C, Swift, Interface Builder, or AppleScript. For hybrid applications, consider [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/).
 
@@ -27,7 +27,7 @@ There are three ways to install the Mapbox Maps SDK for macOS:
 The Mapbox Maps SDK for macOS is a binary-only dependency, so you’ll need Carthage 0.19 or above. In your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#binary-only-frameworks), specify this dependency (plus an optional version requirement):
 
 ```
-binary "https://mapbox.github.io/mapbox-gl-native-ios/macos/Mapbox-macOS-SDK.json"
+binary "https://mapbox.github.io/mapbox-gl-native/macos/Mapbox-macOS-SDK.json"
 ```
 
 After running `carthage update`, you’ll find Mapbox.framework in the Carthage/Build/ folder. Follow [these instructions](https://github.com/Carthage/Carthage#if-youre-building-for-os-x) to integrate it into your project.

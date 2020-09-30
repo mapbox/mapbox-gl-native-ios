@@ -102,6 +102,9 @@ MGLImage *MGLImageFromCurrentContext() {
         if (snapshotOverlay) {
             XCTAssertNotEqual(snapshotOverlay.context, NULL);
             MGLImage *imageFromContext = MGLImageFromCurrentContext();
+
+            [self addAttachment:[XCTAttachment attachmentWithImage:blankImage]];
+            [self addAttachment:[XCTAttachment attachmentWithImage:imageFromContext]];
             XCTAssertTrue(MGLEqualImages(blankImage, imageFromContext), @"Base map in snapshot should be blank.");
         }
         [overlayExpectation fulfill];
@@ -197,6 +200,9 @@ MGLImage *MGLImageFromCurrentContext() {
         if (snapshotOverlay) {
             XCTAssertNotEqual(snapshotOverlay.context, NULL);
             MGLImage *actualImage = MGLImageFromCurrentContext();
+
+            [self addAttachment:[XCTAttachment attachmentWithImage:expectedImage]];
+            [self addAttachment:[XCTAttachment attachmentWithImage:actualImage]];
             XCTAssertTrue(MGLEqualImages(expectedImage, actualImage), @"Bare snapshot before ornamentation differs from expected image.");
         }
         [overlayExpectation fulfill];

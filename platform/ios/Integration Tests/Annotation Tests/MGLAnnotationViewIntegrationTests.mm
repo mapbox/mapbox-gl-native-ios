@@ -70,7 +70,7 @@ static const CGPoint kAnnotationRelativeScale = { 0.05f, 0.125f };
     
     XCTAssert(self.mapView.annotations.count == 0);
     
-    NSString * const MGLTestAnnotationReuseIdentifer = @"MGLTestAnnotationReuseIdentifer";
+    NSString * const MGLTestAnnotationReuseIdentifier = @"MGLTestAnnotationReuseIdentifier";
     CGSize size = self.mapView.bounds.size;
     CGSize annotationSize = CGSizeMake(floor(size.width*kAnnotationRelativeScale.x), floor(size.height*kAnnotationRelativeScale.y));
     
@@ -81,7 +81,7 @@ static const CGPoint kAnnotationRelativeScale = { 0.05f, 0.125f };
         }
         
         // No dequeue
-        MGLAnnotationView *annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MGLTestAnnotationReuseIdentifer];
+        MGLAnnotationView *annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MGLTestAnnotationReuseIdentifier];
         annotationView.bounds             = (CGRect){ .origin = CGPointZero, .size = annotationSize };
         annotationView.backgroundColor    = UIColor.redColor;
         annotationView.enabled            = YES;
@@ -428,7 +428,7 @@ static const CGPoint kAnnotationRelativeScale = { 0.05f, 0.125f };
 
 - (void)internalTestSelectingAnnotationWithCenterOffsetWithOffset:(CGVector)offset edgeInsets:(UIEdgeInsets)edgeInsets {
 
-    NSString * const MGLTestAnnotationReuseIdentifer = @"MGLTestAnnotationReuseIdentifer";
+    NSString * const MGLTestAnnotationReuseIdentifier = @"MGLTestAnnotationReuseIdentifier";
 
     self.mapView.contentInset = edgeInsets;
     CGSize size = self.mapView.bounds.size;
@@ -442,7 +442,7 @@ static const CGPoint kAnnotationRelativeScale = { 0.05f, 0.125f };
         }
 
         // No dequeue
-        MGLAnnotationView *annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MGLTestAnnotationReuseIdentifer];
+        MGLAnnotationView *annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:MGLTestAnnotationReuseIdentifier];
         annotationView.bounds             = (CGRect){ .origin = CGPointZero, .size = annotationSize };
         annotationView.backgroundColor    = UIColor.redColor;
         annotationView.enabled            = YES;
@@ -692,7 +692,7 @@ static const CGPoint kAnnotationRelativeScale = { 0.05f, 0.125f };
                            block:^(id<XCTActivity>  _Nonnull activity)
      {
          
-         NSString * const MGLTestAnnotationReuseIdentifer = @"MGLTestAnnotationReuseIdentifer";
+         NSString * const MGLTestAnnotationReuseIdentifier = @"MGLTestAnnotationReuseIdentifier";
          
          CGSize annotationSize = CGSizeMake(40.0, 40.0);
          
@@ -703,7 +703,7 @@ static const CGPoint kAnnotationRelativeScale = { 0.05f, 0.125f };
              }
              
              // No dequeue
-             MGLAnnotationView *annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation2 reuseIdentifier:MGLTestAnnotationReuseIdentifer];
+             MGLAnnotationView *annotationView = [[MGLAnnotationView alloc] initWithAnnotation:annotation2 reuseIdentifier:MGLTestAnnotationReuseIdentifier];
              annotationView.bounds             = (CGRect){ .origin = CGPointZero, .size = annotationSize };
              annotationView.backgroundColor    = UIColor.redColor;
              annotationView.enabled            = YES;

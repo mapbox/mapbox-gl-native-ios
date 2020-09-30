@@ -50,7 +50,6 @@ Before building, follow these steps to install prerequisites:
 2. Clone the git repository:
    ```
    git clone https://github.com/mapbox/mapbox-gl-native-ios.git
-   cd mapbox-gl-native-ios/vendor/mapbox-gl-native
    ```
    Note that this repository uses Git submodules. They'll be automatically checked out when you first run a `make` command,
    but are not updated automatically. We recommended that you run `git submodule update` after pulling down new commits to
@@ -88,10 +87,6 @@ bash "${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework/strip-fra
 ```
 
 (The last step, courtesy of [Realm](https://github.com/realm/realm-cocoa/), is required for working around an [iOS App Store bug](http://www.openradar.me/radar?id=6409498411401216) when archiving universal binaries.)
-
-##### Snapshot builds
-
-A snapshot build of the dynamic framework, based on the latest commit to the master branch, is available for download [here](https://mapbox.s3.amazonaws.com/mapbox-gl-native/ios/builds/mapbox-ios-sdk-snapshot-dynamic.zip).
 
 #### Static framework
 
@@ -197,13 +192,13 @@ Please note that a Mapbox download token is required from v5.10.0 forward and ad
 
 2. Follow instructions on [our website](https://www.mapbox.com/install/ios/carthage/).
 
-Starting with v5.10.0, you must specify `--use-netrc` when running `carthage update`:
+Starting with v6.0.0, you must specify `--use-netrc` when running `carthage update`:
 
    ```
    carthage update --platform iOS --use-netrc
    ```
 
-Starting with v5.10.0, the URL for the artifact in your Cartfile must change:
+Starting with v6.0.0, the URL for the artifact in your Cartfile must change:
 
    ```
    binary "https://api.mapbox.com/downloads/v2/carthage/mobile-maps/mapbox-ios-sdk-dynamic.json" == x.x.x-alpha.x

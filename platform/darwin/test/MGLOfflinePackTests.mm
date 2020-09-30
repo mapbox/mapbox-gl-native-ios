@@ -23,8 +23,12 @@
 - (void)testInvalidatingAnInvalidPack {
     MGLOfflinePack *invalidPack = [[MGLOfflinePack alloc] init];
 
+#if defined(NS_BLOCK_ASSERTIONS)
+    NSLog(@"NSAssertions are blocked (Release build?), skipping invalidate XCTAssert.");
+#else
     XCTAssertThrowsSpecificNamed([invalidPack invalidate], NSException, NSInternalInconsistencyException, @"Invalid offline pack should raise an exception when being invalidated.");
-
+#endif
+    
     // Now try again, without asserts
     NSAssertionHandler *oldHandler = [NSAssertionHandler currentHandler];
     MGLTestAssertionHandler *newHandler = [[MGLTestAssertionHandler alloc] initWithTestCase:self];

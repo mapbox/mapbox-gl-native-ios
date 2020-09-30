@@ -15,7 +15,7 @@
 
 #import "MBXFrameTimeGraphView.h"
 #import "../src/MGLMapView_Experimental.h"
-
+#import "../src/MGLSignpost.h"
 #import <objc/runtime.h>
 
 static const CLLocationCoordinate2D WorldTourDestinations[] = {
@@ -31,7 +31,7 @@ static const MGLCoordinateBounds colorado = {
     .ne = { .latitude = 40.989329, .longitude = -102.062592},
 };
 
-static NSString * const MBXViewControllerAnnotationViewReuseIdentifer = @"MBXViewControllerAnnotationViewReuseIdentifer";
+static NSString * const MBXViewControllerAnnotationViewReuseIdentifier = @"MBXViewControllerAnnotationViewReuseIdentifier";
 
 typedef NS_ENUM(NSInteger, MBXSettingsSections) {
     MBXSettingsDebugTools = 0,
@@ -49,7 +49,9 @@ typedef NS_ENUM(NSInteger, MBXSettingsDebugToolsRows) {
     MBXSettingsDebugToolsOverdrawVisualization,
     MBXSettingsDebugToolsShowZoomLevel,
     MBXSettingsDebugToolsShowFrameTimeGraph,
-    MBXSettingsDebugToolsShowReuseQueueStats
+    MBXSettingsDebugToolsShowReuseQueueStats,
+    MBXSettingsDebugToolsSetPreferredFramesPerSecond,
+    MBXSettingsDebugToolsSetSignpostEnabled
 };
 
 typedef NS_ENUM(NSInteger, MBXSettingsAnnotationsRows) {
@@ -152,10 +154,12 @@ CLLocationCoordinate2D randomWorldCoordinate() {
         {{ -20.997030,  134.660541 },   2220000 },  // Australia
 
         // A few cities
-        {{ 51.504787,   -0.106977 },    33000 },    // London
-        {{ 37.740186,   -122.437086 },  8500 },     // SF
-        {{ 52.509978,   13.406510 },    12000 },    // Berlin
-        {{ 12.966246,   77.586505 },    19000 }     // Bengaluru
+        {{ 51.504787,   -0.106977 },    33000 },     // London
+        {{ 38.8999418, -77.033996 },    33000 },     // DC
+        {{ 52.509978,   13.406510 },    12000 },     // Berlin
+        {{ 37.740186, -122.437086 },    8500  },     // SF
+        {{ 12.966246,   77.586505 },    19000 },     // Bengaluru
+        {{ 53.8948782,  27.555847 },    19000 }      // Minsk
     };
 
     NSInteger index                   = arc4random_uniform(sizeof(landmasses)/sizeof(landmasses[0]));
@@ -168,10 +172,6 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     CLLocationCoordinate2D newLocation = coordinateCentered(coordinate, heading, distance);
     return newLocation;
 }
-
-
-
-
 
 @interface MBXDroppedPinAnnotation : MGLPointAnnotation
 @end
@@ -193,11 +193,20 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 @implementation MBXSpriteBackedAnnotation
 @end
 
+@interface MBXTestObserver: MGLObserver
+@end
+
+@implementation MBXTestObserver
+- (void)notifyWithEvent:(MGLEvent *)event {
+    NSLog(@"Received event: %@", event);
+}
+@end
+
+
 @interface MBXViewController () <UITableViewDelegate,
                                  UITableViewDataSource,
                                  MGLMapViewDelegate,
                                  MGLComputedShapeSourceDataSource>
-
 
 @property (nonatomic) IBOutlet MGLMapView *mapView;
 @property (nonatomic) MBXState *currentState;
@@ -213,7 +222,8 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 @property (nonatomic) BOOL zoomLevelOrnamentEnabled;
 @property (nonatomic) NSMutableArray<UIWindow *> *helperWindows;
 @property (nonatomic) NSMutableArray<UIView *> *contentInsetsOverlays;
-
+@property (nonatomic) MBXTestObserver *testObserver;
+@property (nonatomic, copy) void (^locationBlock)(void);
 @end
 
 @interface MGLMapView (MBXViewController)
@@ -300,6 +310,15 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             }
         }
     }];
+    
+    // TODO: Replace with menu implementation
+    self.testObserver = [[MBXTestObserver alloc] init];
+    [self.mapView subscribeForObserver:self.testObserver event:MGLEventTypeResourceRequest];
+        
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.mapView unsubscribeForObserver:self.testObserver];
+        self.testObserver = nil;
+    });
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
@@ -373,7 +392,11 @@ CLLocationCoordinate2D randomWorldCoordinate() {
                     (debugMask & MGLMapDebugOverdrawVisualizationMask ? @"Hide" :@"Show")],
                 [NSString stringWithFormat:@"%@ zoom level ornament", (self.zoomLevelOrnamentEnabled ? @"Hide" :@"Show")],
                 [NSString stringWithFormat:@"%@ frame time graph", (self.frameTimeGraphEnabled ? @"Hide" :@"Show")],
-                [NSString stringWithFormat:@"%@ reuse queue stats", (self.reuseQueueStatsEnabled ? @"Hide" :@"Show")]
+                [NSString stringWithFormat:@"%@ reuse queue stats", (self.reuseQueueStatsEnabled ? @"Hide" :@"Show")],
+                ((self.mapView.preferredFramesPerSecond != MGLMapViewPreferredFramesPerSecondLowPower)?
+                 [NSString stringWithFormat:@"Set preferred FPS to: %ld", (long)MGLMapViewPreferredFramesPerSecondLowPower ] :
+                 @"Set preferred FPS to: Maximum"),
+                [NSString stringWithFormat:@"%@ signpost", (self.mapView.experimental_enableSignpost ? @"Disable" :@"Enable")]
             ]];
             break;
         case MBXSettingsAnnotations:
@@ -498,6 +521,22 @@ CLLocationCoordinate2D randomWorldCoordinate() {
                     [self updateHUD];
                     break;
                 }
+                case MBXSettingsDebugToolsSetPreferredFramesPerSecond:
+                {
+                    if (self.mapView.preferredFramesPerSecond != MGLMapViewPreferredFramesPerSecondLowPower) {
+                        self.mapView.preferredFramesPerSecond = MGLMapViewPreferredFramesPerSecondLowPower;
+                    }
+                    else {
+                        self.mapView.preferredFramesPerSecond = MGLMapViewPreferredFramesPerSecondMaximum;
+                    }
+                    break;
+                }
+                case MBXSettingsDebugToolsSetSignpostEnabled:
+                {
+                    self.mapView.experimental_enableSignpost = !self.mapView.experimental_enableSignpost;
+                    break;
+                }
+
                 default:
                     NSAssert(NO, @"All debug tools setting rows should be implemented");
                     break;
@@ -1583,6 +1622,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     for (NSUInteger i = 0; i < numberOfAnnotations; i++)
     {
         MBXDroppedPinAnnotation *annotation = [[MBXDroppedPinAnnotation alloc] init];
+
         annotation.coordinate = WorldTourDestinations[i];
         [annotations addObject:annotation];
     }
@@ -1724,7 +1764,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
         CLLocationDistance distance        = (CLLocationDistance)arc4random_uniform(radius);
         CLLocationCoordinate2D newLocation = coordinateCentered(coordinate, heading, distance);
 
-        MBXDroppedPinAnnotation *annotation = [[MBXDroppedPinAnnotation alloc] init];
+        MGLPointAnnotation *annotation = [[MGLPointAnnotation alloc] init];
         annotation.coordinate = newLocation;
         [annotations addObject:annotation];
     }
@@ -1754,14 +1794,11 @@ CLLocationCoordinate2D randomWorldCoordinate() {
         [weakSelf.mapView removeAnnotations:annotationsToRemove];
     });
 
-    MBXDroppedPinAnnotation *annotation = [[MBXDroppedPinAnnotation alloc] init];
-    annotation.coordinate = randomWorldCoordinate();
-    [self.mapView addAnnotation:annotation];
-
     // Add annotations around that coord
-    [self addAnnotations:50 aroundCoordinate:annotation.coordinate radius:100000]; // 100km
+    CLLocationCoordinate2D coordinate = randomWorldCoordinate();
+    [self addAnnotations:50 aroundCoordinate:coordinate radius:100000]; // 100km
 
-    MGLMapCamera *camera = [MGLMapCamera cameraLookingAtCenterCoordinate:annotation.coordinate
+    MGLMapCamera *camera = [MGLMapCamera cameraLookingAtCenterCoordinate:coordinate
                                                                 altitude:10000.0
                                                                    pitch:(CLLocationDegrees)arc4random_uniform(60)
                                                                  heading:(CLLocationDegrees)arc4random_uniform(360)];
@@ -1899,6 +1936,10 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     }
 }
 
++ (NSURL *)greenStyleURL {
+    return [[NSBundle bundleForClass:[self class]] URLForResource:@"green" withExtension:@"json"];
+}
+
 - (IBAction)cycleStyles:(__unused id)sender
 {
     static NSArray *styleNames;
@@ -1913,6 +1954,7 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             @"Dark",
             @"Satellite",
             @"Satellite Streets",
+            @"Green"
         ];
         styleURLs = @[
             [MGLStyle streetsStyleURL],
@@ -1920,7 +1962,8 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             [MGLStyle lightStyleURL],
             [MGLStyle darkStyleURL],
             [MGLStyle satelliteStyleURL],
-            [MGLStyle satelliteStreetsStyleURL]
+            [MGLStyle satelliteStreetsStyleURL],
+            [MBXViewController greenStyleURL]
         ];
         NSAssert(styleNames.count == styleURLs.count, @"Style names and URLs don’t match.");
 
@@ -1939,9 +1982,9 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             }
         }
         free(methods);
-        NSAssert(numStyleURLMethods == styleNames.count,
+        NSAssert(numStyleURLMethods == styleNames.count - 1,
                  @"MGLStyle provides %u default styles but iosapp only knows about %lu of them.",
-                 numStyleURLMethods, (unsigned long)styleNames.count);
+                 numStyleURLMethods, (unsigned long)styleNames.count - 1);
     });
 
     self.styleIndex = (self.styleIndex + 1) % styleNames.count;
@@ -1954,6 +1997,10 @@ CLLocationCoordinate2D randomWorldCoordinate() {
 
 - (IBAction)locateUser:(id)sender
 {
+    [self nextTrackingMode:sender];
+}
+
+- (void)nextTrackingMode:(id)sender {
     MGLUserTrackingMode nextMode;
     NSString *nextAccessibilityValue;
     switch (self.mapView.userTrackingMode) {
@@ -2016,10 +2063,10 @@ CLLocationCoordinate2D randomWorldCoordinate() {
         return nil;
     }
 
-    MBXAnnotationView *annotationView = (MBXAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:MBXViewControllerAnnotationViewReuseIdentifer];
+    MBXAnnotationView *annotationView = (MBXAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:MBXViewControllerAnnotationViewReuseIdentifier];
     if (!annotationView)
     {
-        annotationView = [[MBXAnnotationView alloc] initWithReuseIdentifier:MBXViewControllerAnnotationViewReuseIdentifer];
+        annotationView = [[MBXAnnotationView alloc] initWithReuseIdentifier:MBXViewControllerAnnotationViewReuseIdentifier];
         annotationView.frame = CGRectMake(0, 0, 10, 10);
         annotationView.backgroundColor = [UIColor whiteColor];
 
@@ -2332,6 +2379,34 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     if (self.frameTimeGraphEnabled) {
         [self.frameTimeGraphView updatePathWithFrameDuration:mapView.frameTime];
     }
+}
+
+- (void)mapView:(nonnull MGLMapView *)mapView didChangeLocationManagerAuthorization:(nonnull id<MGLLocationManager>)manager {
+    if (@available(iOS 14, *)) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+        if (mapView.userTrackingMode != MGLUserTrackingModeNone
+            && (manager.authorizationStatus == kCLAuthorizationStatusDenied
+            || manager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy)) {
+            [self alertAccuracyChanges];
+        }
+#endif
+    }
+}
+
+- (void)alertAccuracyChanges {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Mapbox GL works best with your precise location."
+                                   message:@"You'll get turn-by-turn directions."
+                                   preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:@"Turn On in Settings" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }];
+
+    UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"Keep Precise Location Off" style:UIAlertActionStyleDefault
+       handler:nil];
+    [alert addAction:settingsAction];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)saveCurrentMapState:(__unused NSNotification *)notification {
