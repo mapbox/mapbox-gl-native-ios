@@ -59,7 +59,8 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     {
         if (@available(iOS 14, *)) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
-            if (self.mapView.locationManager.accuracyAuthorization == CLAccuracyAuthorizationFullAccuracy) {
+            if (![self.mapView.locationManager respondsToSelector:@selector(accuracyAuthorization)] ||
+                self.mapView.locationManager.accuracyAuthorization == CLAccuracyAuthorizationFullAccuracy) {
                 [self drawPreciseLocationPuck];
             } else {
                 [self drawApproximate];
