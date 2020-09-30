@@ -1,6 +1,6 @@
 Pod::Spec.new do |m|
 
-  version = '6.2.0'
+  version = '6.2.1'
 
   m.name    = 'Mapbox-iOS-SDK'
   m.version = version
@@ -30,4 +30,9 @@ Pod::Spec.new do |m|
   m.preserve_path = '**/*.bcsymbolmap'
 
   m.dependency "MapboxMobileEvents", "~> 0.10.4"
+
+  m.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 arm64e' }
+ 
+  m.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 arm64e' }
+
 end

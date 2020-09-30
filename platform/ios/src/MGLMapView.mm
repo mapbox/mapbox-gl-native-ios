@@ -556,7 +556,7 @@ public:
     // setup mbgl map
     MGLRendererConfiguration *config = [MGLRendererConfiguration currentConfiguration];
 
-    auto localFontFamilyName = config.localFontFamilyName ? std::string(config.localFontFamilyName.UTF8String) : nullptr;
+    mbgl::optional<std::string> localFontFamilyName = config.localFontFamilyName ? mbgl::optional<std::string>(std::string(config.localFontFamilyName.UTF8String)) : mbgl::nullopt;
     auto renderer = std::make_unique<mbgl::Renderer>(_mbglView->getRendererBackend(), config.scaleFactor, localFontFamilyName);
     BOOL enableCrossSourceCollisions = !config.perSourceCollisions;
     _rendererFrontend = std::make_unique<MGLRenderFrontend>(std::move(renderer), self, _mbglView->getRendererBackend());
@@ -1099,7 +1099,7 @@ public:
     }
 }
 
-- (void)updateViewsPostMapRendering {
+- (void)updateViewsWithCurrentUpdateParameters {
     // Update UIKit elements, prior to rendering
     [self updateUserLocationAnnotationView];
     [self updateAnnotationViews];
@@ -1120,6 +1120,19 @@ public:
 
     if (!self.dormant && needsRender)
     {
+        // It's important to call this *before* `_rendererFrontend->render()`, as
+        // that function saves the current `updateParameters` before rendering. If this
+        // occurs after then the views will be a frame behind.
+        //
+        // The update parameters will have been updated earlier, for example by
+        // calls to easeTo, flyTo, called from gesture handlers.
+        
+        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "update");
+        [self updateViewsWithCurrentUpdateParameters];
+        MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
+
+        // - - - - -
+
         MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "render");
         if (_rendererFrontend) {
             _numberOfRenderCalls++;
@@ -1136,15 +1149,6 @@ public:
             }
         }
         MGL_SIGNPOST_END(_log, _signpost, "renderSync", "render");
-
-        // - - - - -
-
-        // TODO: This should be moved from what's essentially the UIView rendering
-        // To do this, add view models that can be updated separately, before the
-        // UIViews can be updated to match
-        MGL_SIGNPOST_BEGIN(_log, _signpost, "renderSync", "update");
-        [self updateViewsPostMapRendering];
-        MGL_SIGNPOST_END(_log, _signpost, "renderSync", "update");
     }
 
     if (hasPendingBlocks) {
@@ -6481,9 +6485,11 @@ static void *windowScreenContext = &windowScreenContext;
         if (@available(iOS 14, *)) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
             if (self.userTrackingMode != MGLUserTrackingModeNone &&
+                [manager respondsToSelector:@selector(authorizationStatus)] &&
                 (manager.authorizationStatus != kCLAuthorizationStatusRestricted ||
                  manager.authorizationStatus != kCLAuthorizationStatusAuthorizedAlways ||
                  manager.authorizationStatus != kCLAuthorizationStatusAuthorizedWhenInUse) &&
+                [manager respondsToSelector:@selector(accuracyAuthorization)] &&
                 manager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy &&
                 [self accuracyDescriptionString] != nil ) {
                 [self.locationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:@"MGLAccuracyAuthorizationDescription"];

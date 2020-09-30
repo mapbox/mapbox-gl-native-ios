@@ -55,8 +55,8 @@ function query(after) {
             accept: 'application/vnd.github.antiope-preview'
         },
         query: `query {
-              repository(owner: "mapbox", name: "mapbox-gl-native") {
-                ref(qualifiedName: "master") {
+              repository(owner: "mapbox", name: "mapbox-gl-native-ios") {
+                ref(qualifiedName: "main") {
                   target {
                     ... on Commit {
                       history(first: 100, before: "36c6a8ea79bbd2596abb58ffb58debf65a4ea13d" ${after ? `, after: "${after}"` : ''}) {

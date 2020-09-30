@@ -1,6 +1,6 @@
 # [Mapbox Maps SDK for iOS](https://docs.mapbox.com/ios/maps/)
 
-[![Circle CI build status](https://circleci.com/gh/mapbox/mapbox-gl-native-ios.svg?style=shield)](https://circleci.com/gh/mapbox/workflows/mapbox-gl-native-ios/tree/master)
+[![Circle CI build status](https://circleci.com/gh/mapbox/mapbox-gl-native-ios.svg?style=shield)](https://circleci.com/gh/mapbox/workflows/mapbox-gl-native-ios/tree/main)
 
 A library based on Mapbox GL Native for embedding interactive map views with scalable, customizable vector maps into Cocoa Touch applications on iOS using Objective-C, Swift, or Interface Builder.
 
