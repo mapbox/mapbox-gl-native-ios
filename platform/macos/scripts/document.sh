@@ -8,7 +8,7 @@ if [ -z `which jazzy` ]; then
     echo "Installing jazzy…"
     gem install jazzy
     if [ -z `which jazzy` ]; then
-        echo "Unable to install jazzy. See https://github.com/mapbox/mapbox-gl-native-ios/blob/master/platform/macos/INSTALL.md"
+        echo "Unable to install jazzy. See https://github.com/mapbox/mapbox-gl-native-ios/blob/main/platform/macos/INSTALL.md"
         exit 1
     fi
 fi
@@ -24,7 +24,7 @@ mkdir -p /tmp/mbgl/
 README=/tmp/mbgl/README.md
 if [[ ${STANDALONE:-} ]]; then
     cp platform/macos/docs/pod-README.md "${README}"
-    perl -pi -e 's|https://raw.githubusercontent.com/mapbox/mapbox-gl-native-ios/master/platform/macos/docs/||' \
+    perl -pi -e 's|https://raw.githubusercontent.com/mapbox/mapbox-gl-native-ios/main/platform/macos/docs/||' \
         "${README}"
 else
     cp platform/macos/docs/doc-README.md "${README}"
