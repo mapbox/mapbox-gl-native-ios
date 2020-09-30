@@ -37,11 +37,6 @@ We’ve color-coded our labels by facet to make them easier to use:
 
 This repository automates generating documentation using CircleCI and Travis.
 
-<!-- TO DO
-- Where does documentation live?
-- Where does the archive live?
--->
-
 When a new release tag is created, CircleCI will trigger `scripts/trigger-maps-documentation-deploy-steps.sh` twice: 
 
 1. In this repository, the script will trigger Travis to fetch the release tag, generate documentation for that release, commit the files, and create a new branch and pull request against the publisher-production branch.
