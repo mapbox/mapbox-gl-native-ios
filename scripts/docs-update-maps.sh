@@ -28,12 +28,6 @@ rm -rf "./$VERSION"
 mkdir -p "./$VERSION"
 mv -v $OUTPUT/* "./$VERSION"
 
-# Do we generate docs for pre-releases?
-#if [[ $( echo ${VERSION} | awk '/[0-9]-/' ) ]]; then
-#    step "Skipping website updates because ${VERSION} is a pre-release"
-#    exit 0
-#fi
-
 step "Switching branch to publisher-production"
 git checkout origin/publisher-production
 step "Committing API docs for $VERSION"
