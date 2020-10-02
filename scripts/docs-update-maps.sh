@@ -14,7 +14,7 @@ step "Updating mapbox-gl-native-ios repository…"
 git fetch --all
 git fetch --tags
 
-VERSION=${1}
+VERSION=${1//ios-v/''}
 
 step "Checking out ios-v${VERSION}"
 
