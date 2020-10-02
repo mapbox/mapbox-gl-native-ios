@@ -6,7 +6,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ### 🔧 Dependencies
 
-* Updated `mapbox-events-ios` to `~> 0.10.5-beta.2` in order to add additional iOS 14 support.([#491](https://github.com/mapbox/mapbox-gl-native-ios/pull/491))
+* Updated `mapbox-events-ios` to `0.10.5-beta.2` in order to add additional iOS 14 support.([#491](https://github.com/mapbox/mapbox-gl-native-ios/pull/491))
 
 ### 🐞 Bug fixes
 
