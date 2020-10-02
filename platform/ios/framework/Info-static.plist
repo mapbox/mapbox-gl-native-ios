@@ -11,11 +11,11 @@
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>6.2.1</string>
+	<string>6.3.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>15271</string>
+	<string>15272</string>
 	<key>MGLCommitHash</key>
 	<string>$(CURRENT_COMMIT_HASH)</string>
 	<key>MGLSemanticVersionString</key>
