@@ -2,12 +2,16 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## main
+## 6.3.0
+
+### 🔧 Dependencies
+
+* Updated `mapbox-events-ios` to `0.10.5-beta.2` in order to add additional iOS 14 support.([#491](https://github.com/mapbox/mapbox-gl-native-ios/pull/491))
 
 ### 🐞 Bug fixes
 
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
-* Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/82))
+* Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/482))
 
 ## 6.2.1 - September 23, 2020
 
