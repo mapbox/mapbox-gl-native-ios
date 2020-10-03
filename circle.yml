@@ -478,7 +478,13 @@ jobs:
       - install-dependencies
       - install-ios-packaging-dependencies
       - run:
-          name: Trigger external deploy steps
+          name: Trigger documentation deploy steps
+          command: |
+            export VERSION_TAG=${CIRCLE_TAG}
+            export DOCS_REPO="mapbox-gl-native-ios"
+            scripts/trigger-maps-documentation-deploy-steps.sh
+      - run:
+          name: Trigger external deploy steps in ios-sdk
           command: |
             export VERSION_TAG=${CIRCLE_TAG}
             export DOCS_REPO="ios-sdk"
