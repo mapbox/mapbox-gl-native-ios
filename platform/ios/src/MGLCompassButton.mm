@@ -31,6 +31,10 @@
     return self;
 }
 
+- (void)setImage:(UIImage *)image {
+    self.imageLayer.contents = (id)image.CGImage;
+}
+
 - (void)commonInit {
     UIImage *image = self.compassImage;
     CGRect bounds = (CGRect){CGPointZero, image.size};
@@ -38,7 +42,9 @@
 
     self.imageLayer = [[CALayer alloc] init];
     self.imageLayer.frame = bounds;
-    self.imageLayer.contents = (id)image.CGImage;
+    self.imageLayer.contentsGravity = kCAGravityResizeAspect;
+
+    self.image = image;
     [self.layer addSublayer:self.imageLayer];
 
     self.compassVisibility = MGLOrnamentVisibilityAdaptive;
@@ -103,7 +109,10 @@
     CLLocationDirection direction = self.mapView.direction;
     CLLocationDirection plateDirection = mbgl::util::wrap(-direction, 0., 360.);
 
+    [CATransaction begin];
+    [CATransaction setValue:@(YES) forKey:kCATransactionDisableActions];
     self.imageLayer.transform = CATransform3DMakeRotation(MGLRadiansFromDegrees(plateDirection), 0.0, 0.0, 1.0);
+    [CATransaction commit];
 
     self.isAccessibilityElement = direction > 0;
     self.accessibilityValue = [self.accessibilityCompassFormatter stringFromDirection:direction];
