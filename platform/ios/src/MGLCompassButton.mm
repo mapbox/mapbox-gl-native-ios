@@ -12,6 +12,7 @@
 @interface MGLCompassButton ()
 
 @property (nonatomic, weak) MGLMapView *mapView;
+@property (nonatomic) CALayer *imageLayer;
 @property (nonatomic) MGLCompassDirectionFormatter *accessibilityCompassFormatter;
 
 @end
@@ -31,7 +32,14 @@
 }
 
 - (void)commonInit {
-    self.image = self.compassImage;
+    UIImage *image = self.compassImage;
+    CGRect bounds = (CGRect){CGPointZero, image.size};
+    self.bounds = bounds;
+
+    self.imageLayer = [[CALayer alloc] init];
+    self.imageLayer.frame = bounds;
+    self.imageLayer.contents = (id)image.CGImage;
+    [self.layer addSublayer:self.imageLayer];
 
     self.compassVisibility = MGLOrnamentVisibilityAdaptive;
 
@@ -48,8 +56,6 @@
 
     self.accessibilityCompassFormatter = [[MGLCompassDirectionFormatter alloc] init];
     self.accessibilityCompassFormatter.unitStyle = NSFormattingUnitStyleLong;
-
-    [self sizeToFit];
 }
 
 - (void)setCompassVisibility:(MGLOrnamentVisibility)compassVisibility {
@@ -96,7 +102,8 @@
 - (void)updateCompassAnimated:(BOOL)animated {
     CLLocationDirection direction = self.mapView.direction;
     CLLocationDirection plateDirection = mbgl::util::wrap(-direction, 0., 360.);
-    self.transform = CGAffineTransformMakeRotation(MGLRadiansFromDegrees(plateDirection));
+
+    self.imageLayer.transform = CATransform3DMakeRotation(MGLRadiansFromDegrees(plateDirection), 0.0, 0.0, 1.0);
 
     self.isAccessibilityElement = direction > 0;
     self.accessibilityValue = [self.accessibilityCompassFormatter stringFromDirection:direction];
