@@ -1,6 +1,6 @@
 #import <Mapbox/Mapbox.h>
 #import <XCTest/XCTest.h>
-
+#import "MGLCompassButton_Private.h"
 #import <mbgl/math/wrap.hpp>
 
 @interface MGLMapView (MGLCompassButtonTests)
@@ -84,14 +84,21 @@
     for (NSNumber *degrees in @[@-999, @-359, @-240, @-180, @-90, @-45, @0, @45, @90, @180, @240, @360, @999]) {
         self.mapView.direction = [degrees doubleValue];
         CGFloat wrappedDirection = mbgl::util::wrap(-self.mapView.direction, 0., 360.);
-        CGAffineTransform rotation = CGAffineTransformMakeRotation(MGLRadiansFromDegrees(wrappedDirection));
-        XCTAssertTrue(CGAffineTransformEqualToTransform(self.mapView.compassView.transform, rotation),
-                      @"Compass transform direction %f° should equal wrapped transform direction %f° (~%.f°).", [self degreesFromAffineTransform:self.mapView.compassView.transform], [self degreesFromAffineTransform:rotation], wrappedDirection);
+        CATransform3D rotation = CATransform3DMakeRotation(MGLRadiansFromDegrees(wrappedDirection), 0.0, 0.0, 1.0);
+
+        CGFloat deg1 = [self degreesFromAffineTransform:self.mapView.compassView.imageLayer.transform];
+        CGFloat deg2 = [self degreesFromAffineTransform:rotation];
+        XCTAssertEqual(deg1, deg2);
+        XCTAssertTrue(CATransform3DEqualToTransform(self.mapView.compassView.imageLayer.transform, rotation),
+                      @"Compass transform direction %f° should equal wrapped transform direction %f° (~%.f°).",
+                      deg1,
+                      deg2,
+                      wrappedDirection);
     }
 }
 
-- (CGFloat)degreesFromAffineTransform:(CGAffineTransform)transform {
-    CGFloat angle = atan2f(transform.b, transform.a);
+- (CGFloat)degreesFromAffineTransform:(CATransform3D)transform {
+    CGFloat angle = atan2f(transform.m12, transform.m11);
     return MGLDegreesFromRadians(angle);
 }
 
