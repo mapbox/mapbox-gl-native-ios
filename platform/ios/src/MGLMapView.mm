@@ -7269,7 +7269,10 @@ static void *windowScreenContext = &windowScreenContext;
 
 - (void)updateCompass
 {
-    [self.compassView updateCompass];
+    if ((self.compassView.compassVisibility != MGLOrnamentVisibilityHidden) &&
+        (!self.compassView.isHidden)) {
+        [self.compassView updateCompass];
+    }
 }
 
 - (void)updateScaleBar
