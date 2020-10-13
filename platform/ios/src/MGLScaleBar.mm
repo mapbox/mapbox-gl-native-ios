@@ -87,7 +87,6 @@ static const MGLRow MGLImperialTable[] ={
 @property (nonatomic) MGLScaleBarLabel* prototypeLabel;
 @property (nonatomic) CGFloat lastLabelWidth;
 @property (nonatomic) CGSize size;
-@property (nonatomic) BOOL recalculateSize;
 @property (nonatomic) BOOL shouldLayoutBars;
 @property (nonatomic) NSNumber *testingRightToLeftOverride;
 @end
@@ -285,41 +284,14 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 #pragma mark - Setters
 
 - (void)setMetersPerPoint:(CLLocationDistance)metersPerPoint {
-    if (_metersPerPoint == metersPerPoint) {
+    _metersPerPoint = metersPerPoint;
+
+    if (self.isHidden) {
         return;
     }
-    
-    _metersPerPoint = metersPerPoint;
     
     [self updateVisibility];
     
-    self.recalculateSize = YES;
-    [self invalidateIntrinsicContentSize];
-}
-
-- (CGSize)intrinsicContentSize {
-    // Size is calculated elsewhere - since intrinsicContentSize is part of the
-    // constraint system, this should be done in updateConstraints
-    if (self.size.width < 0.0) {
-        return CGSizeZero;
-    }
-    return self.size;
-}
-
-/// updateConstraints
-///
-/// The primary job of updateConstraints here is to recalculate the
-/// intrinsicContentSize: _metersPerPoint and the maximum width determine the
-/// current "row", which in turn determines the "actualWidth". To obtain the full
-/// width of the scale bar, we also need to include some space for the "last"
-/// label
-
-- (void)updateConstraints {
-    if (self.isHidden || !self.recalculateSize) {
-        [super updateConstraints];
-        return;
-    }
-        
     // TODO: Improve this (and the side-effects)
     self.row = [self preferredRow];
 
@@ -328,7 +300,6 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     CGFloat totalBarWidth = self.actualWidth;
     
     if (totalBarWidth <= 0.0) {
-        [super updateConstraints];
         return;
     }
 
@@ -344,10 +315,11 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     
     CGFloat halfLabelWidth = ceil(self.lastLabelWidth/2);
        
-    self.size = CGSizeMake(totalBarWidth + halfLabelWidth, 16);
-       
-    [self setNeedsLayout];
-    [super updateConstraints]; // This calls intrinsicContentSize
+    CGSize newSize = CGSizeMake(totalBarWidth + halfLabelWidth, self.bounds.size.height);
+    if (!CGSizeEqualToSize(self.size, newSize)) {
+        self.size = newSize;
+        [self setNeedsLayout];
+    }
 }
 
 - (void)updateVisibility {
@@ -474,12 +446,6 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 - (void)layoutSubviews {
     [super layoutSubviews];
 
-    if (!self.recalculateSize) {
-        return;
-    }
-
-    self.recalculateSize = NO;
-
     // If size is 0, then we keep the existing layout (which will fade out)
     if (self.size.width <= 0.0) {
         return;
@@ -498,21 +464,21 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     }
 
     // Re-layout the component bars and labels of the scale bar
-    CGFloat intrinsicContentHeight = self.intrinsicContentSize.height;
     CGFloat barWidth               = totalBarWidth/self.bars.count;
 
     BOOL RTL               = [self usesRightToLeftLayout];
     CGFloat halfLabelWidth = ceil(self.lastLabelWidth/2);
     CGFloat barOffset      = RTL ? halfLabelWidth : 0.0;
     
-    self.containerView.frame = CGRectMake(barOffset,
-                                          intrinsicContentHeight - MGLBarHeight,
+    CGFloat containerViewX = self.isOnScreenRight ? self.bounds.size.width - totalBarWidth - barOffset : barOffset;
+    self.containerView.frame = CGRectMake(containerViewX,
+                                          self.bounds.size.height - MGLBarHeight,
                                           totalBarWidth,
                                           MGLBarHeight);
 
     [self layoutBarsWithWidth:barWidth];
     
-    CGFloat yPosition = round(0.5 * ( intrinsicContentHeight - MGLBarHeight));
+    CGFloat yPosition = round(0.5 * (self.bounds.size.height - MGLBarHeight));
     CGFloat barDelta = RTL ? -barWidth : barWidth;
     [self layoutLabelsWithOffset:barOffset delta:barDelta yPosition:yPosition];
 }
@@ -548,7 +514,8 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
         // Label frames have 0 size - though the layer contents use "center" and do
         // not clip to bounds. This way we don't need to worry about positioning the
         // label. (Though you won't see the label in the view debugger)
-        label.frame = CGRectMake(xPosition, yPosition, 0.0, 0.0);
+        CGFloat labelX = self.isOnScreenRight ? self.bounds.size.width - xPosition : xPosition;
+        label.frame = CGRectMake(labelX, yPosition, 0.0, 0.0);
         
         xPosition += barDelta;
     }
