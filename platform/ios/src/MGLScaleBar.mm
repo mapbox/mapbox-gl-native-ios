@@ -200,6 +200,13 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 
 #pragma mark - Dimensions
 
+- (void)setIsOnScreenRight:(BOOL)isOnScreenRight {
+    if (_isOnScreenRight != isOnScreenRight) {
+        _isOnScreenRight = isOnScreenRight;
+        [self setNeedsLayout];
+    }
+}
+
 - (void)setBorderWidth:(CGFloat)borderWidth {
     _borderWidth = borderWidth;
     _containerView.layer.borderWidth = borderWidth / [[UIScreen mainScreen] scale];
@@ -214,7 +221,7 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
     if (unitsPerPoint == 0.0) {
         return 0.0;
     }
-        
+
     CGFloat width = self.row.distance / unitsPerPoint;
 
     if (width <= MGLScaleBarMinimumBarWidth) {
@@ -228,7 +235,7 @@ static const CGFloat MGLScaleBarMinimumBarWidth = 30.0; // Arbitrary
 - (CGFloat)maximumWidth {
     // TODO: Consider taking Scale Bar margins into account here.
     CGFloat fullWidth = CGRectGetWidth(self.superview.bounds);
-    return floorf(fullWidth / 2);
+    return floorf(fullWidth / 2 - 16);
 }
 
 - (CGFloat)unitsPerPoint {
