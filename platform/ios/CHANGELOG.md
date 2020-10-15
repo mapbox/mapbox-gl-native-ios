@@ -8,6 +8,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 * Partly fixed an issue on iOS 14 where `-[UIView layoutSubviews]` was being repeatedly called. ([#501](https://github.com/mapbox/mapbox-gl-native-ios/pull/501))
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
+* Fixed an issue on iOS 14 where scalebar triggers unnecessary `-[UIView layoutSubviews]`. ([#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
 
 ## 6.2.1 - September 23, 2020
 
