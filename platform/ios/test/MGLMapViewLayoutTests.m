@@ -281,8 +281,7 @@
 
             NSArray *testDataList = [self makeTestDataListWithView:scaleBar margin:margin];
 
-            CGSize initialSize = scaleBar.intrinsicContentSize;
-            XCTAssert(CGSizeEqualToSize(initialSize, scaleBar.bounds.size));
+            CGSize initialSize = scaleBar.bounds.size;
 
             for (MGLOrnamentTestData *testData in testDataList) {
                 self.mapView.scaleBarPosition = testData.position;
