@@ -19,6 +19,14 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 * The default branch is now `main`. Please rebase any existing branches you may have. ([#489](https://github.com/mapbox/mapbox-gl-native-ios/pull/489))
 
+## 6.2.2 - October 19, 2020
+
+### 🐞 Bug fixes
+
+* Partly fixed an issue on iOS 14 where `-[UIView layoutSubviews]` was being repeatedly called. ([#501](https://github.com/mapbox/mapbox-gl-native-ios/pull/501))
+* Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
+* Fixed an issue on iOS 14 where scalebar triggers unnecessary `-[UIView layoutSubviews]`. ([#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
+
 ## 6.2.1 - September 23, 2020
 
 * Fixed an issue where completion blocks were not called until the map was rendered. ([#463](https://github.com/mapbox/mapbox-gl-native-ios/pull/463))
