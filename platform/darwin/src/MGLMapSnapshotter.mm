@@ -726,9 +726,23 @@ NSArray<MGLAttributionInfo *> *MGLAttributionInfosFromAttributions(mbgl::MapSnap
 
     // Create the snapshotter
     mbgl::optional<std::string> localFontFamilyName = config.localFontFamilyName ? mbgl::optional<std::string>(std::string(config.localFontFamilyName.UTF8String)) : mbgl::nullopt;
+    mbgl::GlyphsRasterizationOptions glyphsRasterizationOptions;
+    glyphsRasterizationOptions.fontFamily = localFontFamilyName;
+    switch (config.glyphsRasterizationMode) {
+        case MGLNoGlyphsRasterizedLocally:
+            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally;
+            break;
+        case MGLIdeographsRasterizedLocally:
+            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::IdeographsRasterizedLocally;
+            break;
+        case MGLAllGlyphsRasterizedLocally:
+            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::AllGlyphsRasterizedLocally;
+            break;
+    }
+
     _delegateHost = std::make_unique<MGLMapSnapshotterDelegateHost>(self);
     _mbglMapSnapshotter = std::make_unique<mbgl::MapSnapshotter>(
-                                                                 size, pixelRatio, resourceOptions, *_delegateHost, localFontFamilyName);
+                                                                 size, pixelRatio, resourceOptions, *_delegateHost, glyphsRasterizationOptions);
     
     _mbglMapSnapshotter->setStyleURL(std::string(options.styleURL.absoluteString.UTF8String));
     

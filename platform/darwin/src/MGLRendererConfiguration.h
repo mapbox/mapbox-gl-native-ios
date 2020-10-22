@@ -3,6 +3,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Indicates how the map view load glyphs.
+typedef NS_ENUM(NSUInteger, MGLGlyphsRasterizationMode) {
+    /// No glyphs are rasterized locally. All glyphs are loaded from the server.
+    MGLNoGlyphsRasterizedLocally = 0,
+    /// Ideographs are rasterized locally, and they are not loaded from the server.
+    MGLIdeographsRasterizedLocally,
+    /// All glyphs are rasterized locally. No glyphs are loaded from the server.
+    MGLAllGlyphsRasterizedLocally
+};
+
 /**
  The MGLRendererConfiguration object represents configuration values for the
  renderer.
@@ -50,6 +60,15 @@ MGL_EXPORT
 @property (nonatomic, readonly) BOOL perSourceCollisions;
 
 - (BOOL)perSourceCollisionsWithInfoDictionaryObject:(nullable id)infoDictionaryObject;
+
+/**
+ Indicates how the map view load glyphs.
+
+ Set `MGLGlyphsRasterizationOptions` in your containing app's Info.plist.
+ */
+@property (nonatomic, readonly) MGLGlyphsRasterizationMode glyphsRasterizationMode;
+
+- (MGLGlyphsRasterizationMode)glyphsRasterizationModeWithInfoDictionaryObject:(nullable id)infoDictionaryObject;
 
 @end
 

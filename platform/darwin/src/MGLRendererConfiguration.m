@@ -8,6 +8,7 @@
 
 static NSString * const MGLCollisionBehaviorPre4_0Key = @"MGLCollisionBehaviorPre4_0";
 static NSString * const MGLIdeographicFontFamilyNameKey = @"MGLIdeographicFontFamilyName";
+static NSString * const MGLGlyphsRasterizationModeKey = @"MGLGlyphsRasterizationMode";
 
 @implementation MGLRendererConfiguration
 
@@ -61,6 +62,22 @@ static NSString * const MGLIdeographicFontFamilyNameKey = @"MGLIdeographicFontFa
         return [infoDictionaryObject boolValue];
     }
     return NO;
+}
+
+- (MGLGlyphsRasterizationMode)glyphsRasterizationMode {
+    id infoDictionaryObject = [NSBundle.mainBundle objectForInfoDictionaryKey:MGLGlyphsRasterizationModeKey];
+    return [self glyphsRasterizationModeWithInfoDictionaryObject:infoDictionaryObject];
+}
+
+- (MGLGlyphsRasterizationMode)glyphsRasterizationModeWithInfoDictionaryObject:(id)infoDictionaryObject {
+    if (!infoDictionaryObject || ![infoDictionaryObject isKindOfClass:[NSString class]]) {
+        return MGLNoGlyphsRasterizedLocally;
+    }
+    NSDictionary *nameOptionMap = @{@"MGLNoGlyphsRasterizedLocally":@(MGLNoGlyphsRasterizedLocally),
+                                    @"MGLIdeographsRasterizedLocally":@(MGLIdeographsRasterizedLocally),
+                                    @"MGLAllGlyphsRasterizedLocally":@(MGLAllGlyphsRasterizedLocally)};
+
+    return [nameOptionMap[infoDictionaryObject] integerValue];
 }
 
 @end

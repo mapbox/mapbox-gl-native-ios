@@ -159,4 +159,43 @@ static NSString * const MGLRendererConfigurationTests_collisionBehaviorKey = @"M
     }
 }
 
+- (void)testMGLGlyphsRasterizationModeWithPlistValue {
+    MGLRendererConfiguration *config = [[MGLRendererConfiguration alloc] init];
+
+    // `MGLGlyphsRasterizationMode` set to nil or not set.
+    {
+        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:nil];
+
+        XCTAssertEqual(option, MGLNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally` when it setting to nil or not set");
+    }
+
+    // `MGLGlyphsRasterizationMode` set to invalid value.
+    {
+        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"invalide option value"];
+
+        XCTAssertEqual(option, MGLNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally` when it setting to invalid value.");
+    }
+
+    // `MGLGlyphsRasterizationMode` set to "MGLNoGlyphsRasterizedLocally".
+    {
+        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLNoGlyphsRasterizedLocally"];
+
+        XCTAssertEqual(option, MGLNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally`.");
+    }
+
+    // `MGLGlyphsRasterizationMode` set to "MGLIdeographsRasterizedLocally".
+    {
+        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLIdeographsRasterizedLocally"];
+
+        XCTAssertEqual(option, MGLIdeographsRasterizedLocally, @"Glyphs rasterization mode should be `MGLIdeographsRasterizedLocally`.");
+    }
+
+    // `MGLGlyphsRasterizationMode` set to "MGLAllGlyphsRasterizedLocally".
+    {
+        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLAllGlyphsRasterizedLocally"];
+
+        XCTAssertEqual(option, MGLAllGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLAllGlyphsRasterizedLocally`.");
+    }
+}
+
 @end
