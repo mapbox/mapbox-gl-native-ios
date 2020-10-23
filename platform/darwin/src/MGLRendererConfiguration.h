@@ -5,12 +5,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Indicates how the map view load glyphs.
 typedef NS_ENUM(NSUInteger, MGLGlyphsRasterizationMode) {
+    /// The MGLGlyphsRasterizationMode was unset .
+    MGLGlyphsRasterizationModeNone,
     /// No glyphs are rasterized locally. All glyphs are loaded from the server.
-    MGLNoGlyphsRasterizedLocally = 0,
+    MGLGlyphsRasterizationModeIdeographsRasterizedLocally,
     /// Ideographs are rasterized locally, and they are not loaded from the server.
-    MGLIdeographsRasterizedLocally,
+    MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally,
     /// All glyphs are rasterized locally. No glyphs are loaded from the server.
-    MGLAllGlyphsRasterizedLocally
+    MGLGlyphsRasterizationModeAllGlyphsRasterizedLocally
 };
 
 /**

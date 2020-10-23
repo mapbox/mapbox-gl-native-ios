@@ -1,6 +1,6 @@
 #import <Mapbox/Mapbox.h>
 #import <XCTest/XCTest.h>
-#import "MGLRendererConfiguration.h"
+#import "MGLRendererConfiguration_Private.h"
 
 static NSString * const MGLRendererConfigurationTests_collisionBehaviorKey = @"MGLCollisionBehaviorPre4_0";
 
@@ -164,37 +164,89 @@ static NSString * const MGLRendererConfigurationTests_collisionBehaviorKey = @"M
 
     // `MGLGlyphsRasterizationMode` set to nil or not set.
     {
-        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:nil];
+        MGLGlyphsRasterizationMode mode = [config glyphsRasterizationModeWithInfoDictionaryObject:nil];
 
-        XCTAssertEqual(option, MGLNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally` when it setting to nil or not set");
+        XCTAssertEqual(mode, MGLGlyphsRasterizationModeNone, @"Glyphs rasterization mode should be `MGLGlyphsRasterizationModeNone` when it setting to nil or not set");
     }
 
     // `MGLGlyphsRasterizationMode` set to invalid value.
     {
-        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"invalide option value"];
+        MGLGlyphsRasterizationMode mode = [config glyphsRasterizationModeWithInfoDictionaryObject:@"invalide option value"];
 
-        XCTAssertEqual(option, MGLNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally` when it setting to invalid value.");
+        XCTAssertEqual(mode, MGLGlyphsRasterizationModeNone, @"Glyphs rasterization mode should be `MGLGlyphsRasterizationModeNone` when it setting to invalid value.");
     }
 
     // `MGLGlyphsRasterizationMode` set to "MGLNoGlyphsRasterizedLocally".
     {
-        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLNoGlyphsRasterizedLocally"];
+        MGLGlyphsRasterizationMode mode = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLNoGlyphsRasterizedLocally"];
 
-        XCTAssertEqual(option, MGLNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally`.");
+        XCTAssertEqual(mode, MGLGlyphsRasterizationModeIdeographsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally`.");
     }
 
     // `MGLGlyphsRasterizationMode` set to "MGLIdeographsRasterizedLocally".
     {
-        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLIdeographsRasterizedLocally"];
+        MGLGlyphsRasterizationMode mode = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLIdeographsRasterizedLocally"];
 
-        XCTAssertEqual(option, MGLIdeographsRasterizedLocally, @"Glyphs rasterization mode should be `MGLIdeographsRasterizedLocally`.");
+        XCTAssertEqual(mode, MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLIdeographsRasterizedLocally`.");
     }
 
     // `MGLGlyphsRasterizationMode` set to "MGLAllGlyphsRasterizedLocally".
     {
-        MGLGlyphsRasterizationMode option = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLAllGlyphsRasterizedLocally"];
+        MGLGlyphsRasterizationMode mode = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLAllGlyphsRasterizedLocally"];
 
-        XCTAssertEqual(option, MGLAllGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLAllGlyphsRasterizedLocally`.");
+        XCTAssertEqual(mode, MGLGlyphsRasterizationModeAllGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLAllGlyphsRasterizedLocally`.");
+    }
+}
+
+- (void)testGlyphsRasterizationOptions {
+    MGLRendererConfiguration *config = [[MGLRendererConfiguration alloc] init];
+
+    // `MGLIdeographicFontFamilyName` unset, MGLGlyphsRasterizationMode set to AllGlyphsRasterizedLocally.
+    {
+        mbgl::GlyphsRasterizationOptions options = [config glyphsRasterizationOptionsWithLocalFontFamilyName:nil rasterizationMode:MGLGlyphsRasterizationModeAllGlyphsRasterizedLocally];
+
+        XCTAssertEqual(options.fontFamily, mbgl::nullopt, @"Font family name should be `nullptr`");
+        XCTAssertEqual(options.rasterizationMode, mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `NoGlyphsRasterizedLocally`");
+    }
+    
+    // `MGLIdeographicFontFamilyName` unset, MGLGlyphsRasterizationMode set to NoGlyphsRasterizedLocally.
+    {
+        mbgl::GlyphsRasterizationOptions options = [config glyphsRasterizationOptionsWithLocalFontFamilyName:nil rasterizationMode:MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally];
+
+        XCTAssertEqual(options.fontFamily, mbgl::nullopt, @"Font family name should be `nullptr`");
+        XCTAssertEqual(options.rasterizationMode, mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `NoGlyphsRasterizedLocally`");
+    }
+    
+    // `MGLIdeographicFontFamilyName` set to "Ping Fang", MGLGlyphsRasterizationMode set to IdeographsRasterizedLocally.
+    {
+        mbgl::GlyphsRasterizationOptions options = [config glyphsRasterizationOptionsWithLocalFontFamilyName:@"Ping Fang" rasterizationMode:MGLGlyphsRasterizationModeIdeographsRasterizedLocally];
+
+        XCTAssertEqual(options.fontFamily, std::string(@"Ping Fang".UTF8String), @"Font family name should be `Ping Fang`");
+        XCTAssertEqual(options.rasterizationMode, mbgl::GlyphsRasterizationMode::IdeographsRasterizedLocally, @"Glyphs rasterization mode should be `IdeographsRasterizedLocally`");
+    }
+    
+    // `MGLIdeographicFontFamilyName` set to "Ping Fang", MGLGlyphsRasterizationMode set to NoGlyphsRasterizedLocally.
+    {
+        mbgl::GlyphsRasterizationOptions options = [config glyphsRasterizationOptionsWithLocalFontFamilyName:@"Ping Fang" rasterizationMode:MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally];
+
+        XCTAssertEqual(options.fontFamily, std::string(@"Ping Fang".UTF8String), @"Font family name should be `Ping Fang`");
+        XCTAssertEqual(options.rasterizationMode, mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `NoGlyphsRasterizedLocally`");
+    }
+    
+    // `MGLIdeographicFontFamilyName` set to "Ping Fang", MGLGlyphsRasterizationMode set to AllGlyphsRasterizedLocally.
+    {
+        mbgl::GlyphsRasterizationOptions options = [config glyphsRasterizationOptionsWithLocalFontFamilyName:@"Ping Fang" rasterizationMode:MGLGlyphsRasterizationModeAllGlyphsRasterizedLocally];
+
+        XCTAssertEqual(options.fontFamily, std::string(@"Ping Fang".UTF8String), @"Font family name should be `Ping Fang`");
+        XCTAssertEqual(options.rasterizationMode, mbgl::GlyphsRasterizationMode::AllGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `AllGlyphsRasterizedLocally`");
+    }
+    
+    // `MGLIdeographicFontFamilyName` set to "Ping Fang", MGLGlyphsRasterizationMode unset.
+    {
+        mbgl::GlyphsRasterizationOptions options = [config glyphsRasterizationOptionsWithLocalFontFamilyName:@"Ping Fang" rasterizationMode:MGLGlyphsRasterizationModeNone];
+
+        XCTAssertEqual(options.fontFamily, std::string(@"Ping Fang".UTF8String), @"Font family name should be `Ping Fang`");
+        XCTAssertEqual(options.rasterizationMode, mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `NoGlyphsRasterizedLocally`");
     }
 }
 

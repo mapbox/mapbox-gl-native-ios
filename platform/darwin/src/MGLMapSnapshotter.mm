@@ -14,7 +14,7 @@
 #import "MGLStyle_Private.h"
 #import "MGLAttributionInfo_Private.h"
 #import "MGLLoggingConfiguration_Private.h"
-#import "MGLRendererConfiguration.h"
+#import "MGLRendererConfiguration_Private.h"
 #import "MGLMapSnapshotter_Private.h"
 
 #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
@@ -725,24 +725,9 @@ NSArray<MGLAttributionInfo *> *MGLAttributionInfosFromAttributions(mbgl::MapSnap
                    .withAssetPath(NSBundle.mainBundle.resourceURL.path.UTF8String);
 
     // Create the snapshotter
-    mbgl::optional<std::string> localFontFamilyName = config.localFontFamilyName ? mbgl::optional<std::string>(std::string(config.localFontFamilyName.UTF8String)) : mbgl::nullopt;
-    mbgl::GlyphsRasterizationOptions glyphsRasterizationOptions;
-    glyphsRasterizationOptions.fontFamily = localFontFamilyName;
-    switch (config.glyphsRasterizationMode) {
-        case MGLNoGlyphsRasterizedLocally:
-            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally;
-            break;
-        case MGLIdeographsRasterizedLocally:
-            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::IdeographsRasterizedLocally;
-            break;
-        case MGLAllGlyphsRasterizedLocally:
-            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::AllGlyphsRasterizedLocally;
-            break;
-    }
-
     _delegateHost = std::make_unique<MGLMapSnapshotterDelegateHost>(self);
     _mbglMapSnapshotter = std::make_unique<mbgl::MapSnapshotter>(
-                                                                 size, pixelRatio, resourceOptions, *_delegateHost, glyphsRasterizationOptions);
+                                                                 size, pixelRatio, resourceOptions, *_delegateHost, config.glyphsRasterizationOptions);
     
     _mbglMapSnapshotter->setStyleURL(std::string(options.styleURL.absoluteString.UTF8String));
     

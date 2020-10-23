@@ -1,4 +1,5 @@
-#import "MGLRendererConfiguration.h"
+#import "MGLRendererConfiguration_Private.h"
+#import "MGLLoggingConfiguration_Private.h"
 
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -71,13 +72,48 @@ static NSString * const MGLGlyphsRasterizationModeKey = @"MGLGlyphsRasterization
 
 - (MGLGlyphsRasterizationMode)glyphsRasterizationModeWithInfoDictionaryObject:(id)infoDictionaryObject {
     if (!infoDictionaryObject || ![infoDictionaryObject isKindOfClass:[NSString class]]) {
-        return MGLNoGlyphsRasterizedLocally;
+        return MGLGlyphsRasterizationModeNone;
     }
-    NSDictionary *nameOptionMap = @{@"MGLNoGlyphsRasterizedLocally":@(MGLNoGlyphsRasterizedLocally),
-                                    @"MGLIdeographsRasterizedLocally":@(MGLIdeographsRasterizedLocally),
-                                    @"MGLAllGlyphsRasterizedLocally":@(MGLAllGlyphsRasterizedLocally)};
+    NSDictionary *nameOptionMap = @{@"MGLNoGlyphsRasterizedLocally":@(MGLGlyphsRasterizationModeIdeographsRasterizedLocally),
+                                    @"MGLIdeographsRasterizedLocally":@(MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally),
+                                    @"MGLAllGlyphsRasterizedLocally":@(MGLGlyphsRasterizationModeAllGlyphsRasterizedLocally)};
 
-    return [nameOptionMap[infoDictionaryObject] integerValue];
+    return (MGLGlyphsRasterizationMode)[nameOptionMap[infoDictionaryObject] integerValue];
 }
+
+- (mbgl::GlyphsRasterizationOptions)glyphsRasterizationOptions {
+    return [self glyphsRasterizationOptionsWithLocalFontFamilyName:self.localFontFamilyName rasterizationMode:self.glyphsRasterizationMode];
+}
+
+- (mbgl::GlyphsRasterizationOptions)glyphsRasterizationOptionsWithLocalFontFamilyName:(nullable NSString *)fontFamilyName
+                                                                    rasterizationMode:(MGLGlyphsRasterizationMode)rasterizationMode {
+    mbgl::GlyphsRasterizationOptions options;
+    if (fontFamilyName == nil) {
+        if (rasterizationMode != MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally) {
+            MGLLogError(@"The `MGLIdeographicFontFamilyName` is set to `NO`, this will make `MGLGlyphsRasterizationMode` always be `MGLNoGlyphsRasterizedLocally`.");
+        }
+        options.rasterizationMode = mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally;
+        return options;
+    }
+    
+    options.fontFamily =  mbgl::optional<std::string>(std::string(fontFamilyName.UTF8String));
+    switch (rasterizationMode) {
+        case MGLGlyphsRasterizationModeIdeographsRasterizedLocally:
+            options.rasterizationMode = mbgl::GlyphsRasterizationMode::IdeographsRasterizedLocally;
+            break;
+        case MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally:
+            options.rasterizationMode = mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally;
+            break;
+        case MGLGlyphsRasterizationModeAllGlyphsRasterizedLocally:
+            options.rasterizationMode = mbgl::GlyphsRasterizationMode::AllGlyphsRasterizedLocally;
+            break;
+        default:
+            options.rasterizationMode = mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally;
+            break;
+    }
+
+    return options;
+}
+
 
 @end
