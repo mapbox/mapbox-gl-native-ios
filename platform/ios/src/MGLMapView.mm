@@ -37,7 +37,7 @@
 #import "MGLVectorTileSource_Private.h"
 #import "MGLFoundation_Private.h"
 #import "MGLRendererFrontend.h"
-#import "MGLRendererConfiguration.h"
+#import "MGLRendererConfiguration_Private.h"
 
 #import "NSBundle+MGLAdditions.h"
 #import "NSDate+MGLAdditions.h"
@@ -555,23 +555,7 @@ public:
 
     // setup mbgl map
     MGLRendererConfiguration *config = [MGLRendererConfiguration currentConfiguration];
-
-    mbgl::optional<std::string> localFontFamilyName = config.localFontFamilyName ? mbgl::optional<std::string>(std::string(config.localFontFamilyName.UTF8String)) : mbgl::nullopt;
-    mbgl::GlyphsRasterizationOptions glyphsRasterizationOptions;
-    glyphsRasterizationOptions.fontFamily = localFontFamilyName;
-    switch (config.glyphsRasterizationMode) {
-        case MGLNoGlyphsRasterizedLocally:
-            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::NoGlyphsRasterizedLocally;
-            break;
-        case MGLIdeographsRasterizedLocally:
-            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::IdeographsRasterizedLocally;
-            break;
-        case MGLAllGlyphsRasterizedLocally:
-            glyphsRasterizationOptions.rasterizationMode = mbgl::GlyphsRasterizationMode::AllGlyphsRasterizedLocally;
-            break;
-    }
-
-    auto renderer = std::make_unique<mbgl::Renderer>(_mbglView->getRendererBackend(), config.scaleFactor, glyphsRasterizationOptions);
+    auto renderer = std::make_unique<mbgl::Renderer>(_mbglView->getRendererBackend(), config.scaleFactor, config.glyphsRasterizationOptions);
     BOOL enableCrossSourceCollisions = !config.perSourceCollisions;
     _rendererFrontend = std::make_unique<MGLRenderFrontend>(std::move(renderer), self, _mbglView->getRendererBackend());
 
