@@ -18,6 +18,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 ### ✨ Other changes
 
 * The default branch is now `main`. Please rebase any existing branches you may have. ([#489](https://github.com/mapbox/mapbox-gl-native-ios/pull/489))
+* Added `MGLGlyphsRasterizationMode`, which can be configured in order to specify whether glyphs and ideographs are rendered by the server or locally. ([#517](https://github.com/mapbox/mapbox-gl-native-ios/pull/517))
 
 ## 6.2.2 - October 19, 2020
 
