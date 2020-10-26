@@ -4,7 +4,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// Indicates how the map view load glyphs.
-typedef NS_ENUM(NSUInteger, MGLGlyphsRasterizationMode) {
+typedef NS_CLOSED_ENUM(NSUInteger, MGLGlyphsRasterizationMode) {
     /// The MGLGlyphsRasterizationMode was unset.
     MGLGlyphsRasterizationModeNone,
     /// Ideographs are rasterized locally, and they are not loaded from the server.
