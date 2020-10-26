@@ -180,14 +180,14 @@ static NSString * const MGLRendererConfigurationTests_collisionBehaviorKey = @"M
     {
         MGLGlyphsRasterizationMode mode = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLNoGlyphsRasterizedLocally"];
 
-        XCTAssertEqual(mode, MGLGlyphsRasterizationModeIdeographsRasterizedLocally, @"Glyphs rasterization mode should be `MGLNoGlyphsRasterizedLocally`.");
+        XCTAssertEqual(mode, MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally`.");
     }
 
-    // `MGLGlyphsRasterizationMode` set to "MGLIdeographsRasterizedLocally".
+    // `MGLGlyphsRasterizationMode` set to "MGLGlyphsRasterizationModeIdeographsRasterizedLocally".
     {
         MGLGlyphsRasterizationMode mode = [config glyphsRasterizationModeWithInfoDictionaryObject:@"MGLIdeographsRasterizedLocally"];
 
-        XCTAssertEqual(mode, MGLGlyphsRasterizationModeNoGlyphsRasterizedLocally, @"Glyphs rasterization mode should be `MGLIdeographsRasterizedLocally`.");
+        XCTAssertEqual(mode, MGLGlyphsRasterizationModeIdeographsRasterizedLocally, @"Glyphs rasterization mode should be `MGLGlyphsRasterizationModeIdeographsRasterizedLocally`.");
     }
 
     // `MGLGlyphsRasterizationMode` set to "MGLAllGlyphsRasterizedLocally".
