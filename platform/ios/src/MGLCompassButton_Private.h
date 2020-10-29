@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)compassButtonWithMapView:(MGLMapView *)mapView;
 
 @property (nonatomic, weak) MGLMapView *mapView;
+@property (nonatomic) CALayer *imageLayer;
 
 - (void)updateCompass;
 

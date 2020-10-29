@@ -8,7 +8,7 @@ If you want to contribute code:
 
 1. Ensure that existing [pull requests](https://github.com/mapbox/mapbox-gl-native-ios/pulls) and [issues](https://github.com/mapbox/mapbox-gl-native-ios/issues) don’t already cover your contribution or question.
 
-1. Pull requests are gladly accepted. If there are any changes that developers using one of the GL SDKs should be aware of, please update the **master** section of the relevant changelog(s):
+1. Pull requests are gladly accepted. If there are any changes that developers using one of the GL SDKs should be aware of, please update the **main** section of the relevant changelog(s):
   * [Mapbox Maps SDK for iOS](platform/ios/CHANGELOG.md)
   * [Mapbox Maps SDK for macOS](platform/macos/CHANGELOG.md)
 
@@ -32,3 +32,12 @@ We’ve color-coded our labels by facet to make them easier to use:
  * non-actionable status (grey)
  * importance / urgency (green)
  * topic / project / misc (yellow)
+
+### Generating documentation
+
+This repository automates generating documentation using CircleCI and Travis.
+
+When a new release tag is created, CircleCI will trigger `scripts/trigger-maps-documentation-deploy-steps.sh` twice: 
+
+1. In this repository, the script will trigger Travis to fetch the release tag, generate documentation for that release, commit the files, and create a new branch and pull request against the publisher-production branch.
+2. In https://github.com/mapbox/ios-sdk, the script will trigger Travis to update various metadata files with the latest version, commit the changes, and create a new branch and pull request against the publisher-production branch.

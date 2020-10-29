@@ -19,7 +19,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.1.0", "11.7.0"]
+              xcode: ["11.7.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
       - ios-release-template:
           xcode: "12.0.0"
@@ -42,7 +42,7 @@ workflows:
             - ios-release
           filters:
             branches:
-              only: master
+              only: main
 
       # - macos-debug
   nightly:
@@ -52,12 +52,12 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
     jobs:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.5.0", "11.6.0", "12.0.0"]
+              xcode: ["11.1.0", "11.3.1", "12.2.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -103,9 +103,9 @@ commands:
           echo "$CIRCLE_SHA1"
           echo "$CIRCLE_SHA1" > .circle-sha1
           echo "$CIRCLE_TARGET_BRANCH"
-          echo "${CIRCLE_TARGET_BRANCH:master}" > .circle-target-branch
+          echo "${CIRCLE_TARGET_BRANCH:main}" > .circle-target-branch
           echo "$CIRCLE_MERGE_BASE"
-          echo "${CIRCLE_MERGE_BASE:master}" > .circle-merge-base
+          echo "${CIRCLE_MERGE_BASE:main}" > .circle-merge-base
           ccache --clear
   reset-ccache-stats:
     steps:
@@ -238,7 +238,7 @@ commands:
         name: Install macOS dependencies
         command: |
           brew update && brew upgrade carthage
-          brew install cmake ccache pkg-config glfw3 github/gh/gh
+          brew install cmake ccache pkg-config glfw3 gh
 
   trigger-metrics:
     steps:
@@ -246,7 +246,7 @@ commands:
           name: Trigger metrics
           command: |
             if [ -n "${MOBILE_METRICS_TOKEN}" ]; then
-              bash -c "curl -X POST --header \"Content-Type: application/json\" --data '{\"parameters\": {\"run_ios_maps_benchmark\": true, \"ci_ref\": $CIRCLE_BUILD_NUM }, \"branch\": \"master\" }' https://circleci.com/api/v2/project/github/mapbox/mobile-metrics/pipeline?circle-token=${MOBILE_METRICS_TOKEN}"
+              bash -c "curl -X POST --header \"Content-Type: application/json\" --data '{\"parameters\": {\"run_ios_maps_benchmark\": true, \"ci_ref\": $CIRCLE_BUILD_NUM }, \"branch\": \"main\" }' https://circleci.com/api/v2/project/github/mapbox/mobile-metrics/pipeline?circle-token=${MOBILE_METRICS_TOKEN}"
             else
               echo "MOBILE_METRICS_TOKEN not provided"
             fi
@@ -270,7 +270,7 @@ commands:
     steps:
     - slack/status:
         fail_only: true
-        only_for_branches: 'internal,master'
+        only_for_branches: 'internal,main'
         include_visit_job_action: true
         failure_message: ':red_circle: Job \`$CIRCLE_JOB\` <$CIRCLE_BUILD_URL|failed>.'
 
@@ -292,7 +292,7 @@ commands:
     - run:
         name: Check if this job can be skipped
         command: |
-          if [[ $CIRCLE_BRANCH != master ]] && [[ $CIRCLE_BRANCH != release-* ]] && [[ -z $CIRCLE_TAG ]]; then
+          if [[ $CIRCLE_BRANCH != main ]] && [[ $CIRCLE_BRANCH != release-* ]] && [[ -z $CIRCLE_TAG ]]; then
             scripts/check-ci-job-skippability.js
           fi
 
@@ -438,13 +438,13 @@ jobs:
       - deploy:
           name: Upload snapshot build to s3
           command: |
-            if [[ $CIRCLE_BRANCH == master ]]; then
+            if [[ $CIRCLE_BRANCH == main ]]; then
               platform/ios/scripts/deploy-snapshot.sh
             fi
 #      - deploy:
 #          name: Deploy to Mapbox CocoaPods spec repo
 #          command: |
-#            if [[ $CIRCLE_BRANCH == master ]]; then
+#            if [[ $CIRCLE_BRANCH == main ]]; then
 #              platform/ios/scripts/deploy-to-cocoapods.sh
 #            fi
       - run:
@@ -478,7 +478,13 @@ jobs:
       - install-dependencies
       - install-ios-packaging-dependencies
       - run:
-          name: Trigger external deploy steps
+          name: Trigger documentation deploy steps
+          command: |
+            export VERSION_TAG=${CIRCLE_TAG}
+            export DOCS_REPO="mapbox-gl-native-ios"
+            scripts/trigger-maps-documentation-deploy-steps.sh
+      - run:
+          name: Trigger external deploy steps in ios-sdk
           command: |
             export VERSION_TAG=${CIRCLE_TAG}
             export DOCS_REPO="ios-sdk"

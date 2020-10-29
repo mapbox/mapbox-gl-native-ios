@@ -1,6 +1,6 @@
 Pod::Spec.new do |m|
 
-  version = '6.2.1'
+  version = '6.3.0-beta.1'
 
   m.name    = 'Mapbox-iOS-SDK-snapshot-dynamic'
   m.version = "#{version}-snapshot"
@@ -10,9 +10,9 @@ Pod::Spec.new do |m|
   m.homepage          = 'https://docs.mapbox.com/ios/maps/'
   m.license           = { :type => 'BSD', :file => 'LICENSE.md' }
   m.author            = { 'Mapbox' => 'mobile@mapbox.com' }
-  m.screenshot        = "https://docs.mapbox.com/ios/api/maps/#{version}/img/screenshot.png"
+  m.screenshot        = "https://docs.mapbox.com/ios/maps/api/#{version}/img/screenshot.png"
   m.social_media_url  = 'https://twitter.com/mapbox'
-  m.documentation_url = 'https://docs.mapbox.com/ios/api/maps/'
+  m.documentation_url = 'https://docs.mapbox.com/ios/maps/api/'
 
   m.source = {
     :http => "https://mapbox.s3.amazonaws.com/mapbox-gl-native/ios/builds/mapbox-ios-sdk-snapshot-dynamic.zip",
