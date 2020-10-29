@@ -8,6 +8,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
 * Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/82))
+* Fixed an issue where approximate Location indicator disappears at high zoom. [#531](https://github.com/mapbox/mapbox-gl-native-ios/pull/531)
 
 ## 6.2.1 - September 23, 2020
 
