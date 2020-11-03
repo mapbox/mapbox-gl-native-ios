@@ -4,14 +4,29 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 
 ## 6.3.0
 
+### 🐞 Bug fixes
+
+* Partly fixed an issue on iOS 14 where `-[UIView layoutSubviews]` was being repeatedly called. ([#501](https://github.com/mapbox/mapbox-gl-native-ios/pull/501))
+* Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
+* Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/482))
+* Fixed an issue on iOS 14 where scalebar triggers unnecessary `-[UIView layoutSubviews]`. ([#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
+
 ### 🔧 Dependencies
 
 * Updated `mapbox-events-ios` to `0.10.5-beta.2` in order to add additional iOS 14 support.([#491](https://github.com/mapbox/mapbox-gl-native-ios/pull/491))
 
+### ✨ Other changes
+
+* The default branch is now `main`. Please rebase any existing branches you may have. ([#489](https://github.com/mapbox/mapbox-gl-native-ios/pull/489))
+* Added `MGLGlyphsRasterizationMode`, which can be configured in order to specify whether glyphs and ideographs are rendered by the server or locally. ([#517](https://github.com/mapbox/mapbox-gl-native-ios/pull/517))
+
+## 6.2.2 - October 19, 2020
+
 ### 🐞 Bug fixes
 
+* Partly fixed an issue on iOS 14 where `-[UIView layoutSubviews]` was being repeatedly called. ([#501](https://github.com/mapbox/mapbox-gl-native-ios/pull/501))
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
-* Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/482))
+* Fixed an issue on iOS 14 where scalebar triggers unnecessary `-[UIView layoutSubviews]`. ([#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
 
 ## 6.2.1 - September 23, 2020
 
