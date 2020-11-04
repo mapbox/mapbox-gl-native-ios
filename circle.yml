@@ -19,7 +19,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.1.0", "11.7.0"]
+              xcode: ["11.7.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
       - ios-release-template:
           xcode: "12.0.0"
@@ -57,7 +57,7 @@ workflows:
       - ios-build:
           matrix:
             parameters:
-              xcode: ["11.3.1", "11.5.0", "11.6.0", "12.0.0"]
+              xcode: ["11.1.0", "11.3.1", "12.2.0"]
               buildtype: ["Debug", "Release"]
       - ios-sanitize-nightly:
           requires:
@@ -238,7 +238,7 @@ commands:
         name: Install macOS dependencies
         command: |
           brew update && brew upgrade carthage
-          brew install cmake ccache pkg-config glfw3 github/gh/gh
+          brew install cmake ccache pkg-config glfw3 gh
 
   trigger-metrics:
     steps:
@@ -478,7 +478,13 @@ jobs:
       - install-dependencies
       - install-ios-packaging-dependencies
       - run:
-          name: Trigger external deploy steps
+          name: Trigger documentation deploy steps
+          command: |
+            export VERSION_TAG=${CIRCLE_TAG}
+            export DOCS_REPO="mapbox-gl-native-ios"
+            scripts/trigger-maps-documentation-deploy-steps.sh
+      - run:
+          name: Trigger external deploy steps in ios-sdk
           command: |
             export VERSION_TAG=${CIRCLE_TAG}
             export DOCS_REPO="ios-sdk"

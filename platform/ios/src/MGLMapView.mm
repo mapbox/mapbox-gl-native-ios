@@ -37,7 +37,7 @@
 #import "MGLVectorTileSource_Private.h"
 #import "MGLFoundation_Private.h"
 #import "MGLRendererFrontend.h"
-#import "MGLRendererConfiguration.h"
+#import "MGLRendererConfiguration_Private.h"
 
 #import "NSBundle+MGLAdditions.h"
 #import "NSDate+MGLAdditions.h"
@@ -555,9 +555,7 @@ public:
 
     // setup mbgl map
     MGLRendererConfiguration *config = [MGLRendererConfiguration currentConfiguration];
-
-    mbgl::optional<std::string> localFontFamilyName = config.localFontFamilyName ? mbgl::optional<std::string>(std::string(config.localFontFamilyName.UTF8String)) : mbgl::nullopt;
-    auto renderer = std::make_unique<mbgl::Renderer>(_mbglView->getRendererBackend(), config.scaleFactor, localFontFamilyName);
+    auto renderer = std::make_unique<mbgl::Renderer>(_mbglView->getRendererBackend(), config.scaleFactor, config.glyphsRasterizationOptions);
     BOOL enableCrossSourceCollisions = !config.perSourceCollisions;
     _rendererFrontend = std::make_unique<MGLRenderFrontend>(std::move(renderer), self, _mbglView->getRendererBackend());
 
@@ -866,6 +864,7 @@ public:
 - (void)setScaleBarPosition:(MGLOrnamentPosition)scaleBarPosition {
     MGLLogDebug(@"Setting scaleBarPosition: %lu", scaleBarPosition);
     _scaleBarPosition = scaleBarPosition;
+    _scaleBar.isOnScreenRight = (scaleBarPosition == MGLOrnamentPositionTopRight || scaleBarPosition == MGLOrnamentPositionBottomRight);
     [self installScaleBarConstraints];
 }
 
@@ -914,7 +913,7 @@ public:
 - (void)updateConstraintsForOrnament:(UIView *)view
                          constraints:(NSMutableArray *)constraints
                             position:(MGLOrnamentPosition)position
-                                size:(CGSize)size
+                     sizeConstraints:(NSArray *)sizeConstraints
                              margins:(CGPoint)margins {
     NSMutableArray *updatedConstraints = [NSMutableArray array];
     UIEdgeInsets inset = UIEdgeInsetsZero;
@@ -950,15 +949,9 @@ public:
             [updatedConstraints addObject: [self.safeTrailingAnchor constraintEqualToAnchor:view.trailingAnchor constant:margins.x + inset.right]];
             break;
     }
-
-    if (!CGSizeEqualToSize(size, CGSizeZero)) {
-        NSLayoutConstraint *widthConstraint = [view.widthAnchor constraintEqualToConstant:size.width];
-        widthConstraint.identifier = @"width";
-        NSLayoutConstraint *heightConstraint = [view.heightAnchor constraintEqualToConstant:size.height];
-        heightConstraint.identifier = @"height";
-        [updatedConstraints addObjectsFromArray:@[widthConstraint,heightConstraint]];
-    }
     
+    [updatedConstraints addObjectsFromArray:sizeConstraints];
+
     [NSLayoutConstraint deactivateConstraints:constraints];
     [constraints removeAllObjects];
     [NSLayoutConstraint activateConstraints:updatedConstraints];
@@ -1034,7 +1027,7 @@ public:
     [self updateConstraintsForOrnament:self.compassView
                            constraints:self.compassViewConstraints
                               position:self.compassViewPosition
-                                  size:[self sizeForOrnament:self.compassView constraints:self.compassViewConstraints]
+                       sizeConstraints:[self sizeConstraintsForOrnament:self.compassView constraints:self.compassViewConstraints]
                                margins:self.compassViewMargins];
 }
 
@@ -1043,7 +1036,7 @@ public:
     [self updateConstraintsForOrnament:self.scaleBar
                            constraints:self.scaleBarConstraints
                               position:self.scaleBarPosition
-                                  size:CGSizeZero
+                       sizeConstraints:[self sizeConstraintsForOrnament:self.scaleBar constraints:self.compassViewConstraints]
                                margins:self.scaleBarMargins];
 }
 
@@ -1052,7 +1045,7 @@ public:
     [self updateConstraintsForOrnament:self.logoView
                            constraints:self.logoViewConstraints
                               position:self.logoViewPosition
-                                  size:[self sizeForOrnament:self.logoView constraints:self.logoViewConstraints]
+                       sizeConstraints:[self sizeConstraintsForOrnament:self.logoView constraints:self.logoViewConstraints]
                                margins:self.logoViewMargins];
 }
 
@@ -1061,29 +1054,56 @@ public:
     [self updateConstraintsForOrnament:self.attributionButton
                            constraints:self.attributionButtonConstraints
                               position:self.attributionButtonPosition
-                                  size:[self sizeForOrnament:self.attributionButton constraints:self.attributionButtonConstraints]
+                       sizeConstraints:[self sizeConstraintsForOrnament:self.attributionButton constraints:self.attributionButtonConstraints]
                                margins:self.attributionButtonMargins];
 }
 
-- (CGSize)sizeForOrnament:(UIView *)view
-              constraints:(NSMutableArray *)constraints {
-    // avoid regenerating size constraints
-    CGSize size;
-    if(constraints && constraints.count > 0) {
-        for (NSLayoutConstraint * constraint in constraints) {
-            if([constraint.identifier isEqualToString:@"width"]) {
-                size.width = constraint.constant;
-            }
-            else if ([constraint.identifier isEqualToString:@"height"]) {
-                size.height = constraint.constant;
-            }
-        }
+- (NSArray *)sizeConstraintsForOrnament:(UIView *)view
+                            constraints:(NSMutableArray *)constraints {
+
+    NSLayoutConstraint *widthConstraint = nil;
+    NSLayoutConstraint *heightConstraint = nil;
+
+    if (view == _scaleBar) {
+        widthConstraint = [NSLayoutConstraint constraintWithItem:_scaleBar
+                                                       attribute:NSLayoutAttributeWidth
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:self
+                                                       attribute:NSLayoutAttributeWidth
+                                                      multiplier:.5
+                                                        constant:0];
+        heightConstraint = [NSLayoutConstraint constraintWithItem:_scaleBar
+                                                        attribute:NSLayoutAttributeHeight
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:nil
+                                                        attribute:NSLayoutAttributeNotAnAttribute
+                                                       multiplier:1
+                                                         constant:16];
     }
     else {
-        size = view.bounds.size;
+        // avoid regenerating size constraints
+        CGSize size;
+        if(constraints && constraints.count > 0) {
+            for (NSLayoutConstraint * constraint in constraints) {
+                if([constraint.identifier isEqualToString:@"width"]) {
+                    size.width = constraint.constant;
+                }
+                else if ([constraint.identifier isEqualToString:@"height"]) {
+                    size.height = constraint.constant;
+                }
+            }
+        }
+        else {
+            size = view.bounds.size;
+        }
+
+        widthConstraint = [view.widthAnchor constraintEqualToConstant:size.width];
+        widthConstraint.identifier = @"width";
+        heightConstraint = [view.heightAnchor constraintEqualToConstant:size.height];
+        heightConstraint.identifier = @"height";
     }
-    
-    return size;
+
+    return @[widthConstraint, heightConstraint];
 }
 
 - (BOOL)isOpaque
@@ -1168,13 +1188,6 @@ public:
 {
     [super layoutSubviews];
 
-    // Calling this here instead of in the scale bar itself because if this is done in the
-    // scale bar instance, it triggers a call to this `layoutSubviews` method that calls
-    // `_mbglMap->setSize()` just below that triggers rendering update which triggers
-    // another scale bar update which causes a rendering update loop and a major performace
-    // degradation.
-    [self.scaleBar invalidateIntrinsicContentSize];
-
     [self adjustContentInset];
 
     if (_mbglView) {
@@ -1188,6 +1201,10 @@ public:
         if (existingSize != newSize) {
             self.mbglMap.setSize(newSize);
         }
+    }
+
+    if (self.scaleBar.alpha) {
+        [self updateScaleBar];
     }
 
     if (self.compassView.alpha)
@@ -7269,7 +7286,10 @@ static void *windowScreenContext = &windowScreenContext;
 
 - (void)updateCompass
 {
-    [self.compassView updateCompass];
+    if ((self.compassView.compassVisibility != MGLOrnamentVisibilityHidden) &&
+        (!self.compassView.isHidden)) {
+        [self.compassView updateCompass];
+    }
 }
 
 - (void)updateScaleBar
