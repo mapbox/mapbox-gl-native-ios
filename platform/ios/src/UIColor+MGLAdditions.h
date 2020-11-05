@@ -9,7 +9,9 @@
 
 - (mbgl::style::PropertyValue<mbgl::Color>)mgl_colorPropertyValue;
 
-- (mbgl::Color)mgl_colorForPremultipliedValue;
+- (NSArray *)mgl_rgbValueArray;
+
+- (NSString *)mgl_rgbStringValue;
 
 + (UIColor *)mgl_colorWithColor:(mbgl::Color)color;
 
