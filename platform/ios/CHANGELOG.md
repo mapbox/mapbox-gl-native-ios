@@ -15,7 +15,7 @@ This version does not support Apple Silicon Macs (arm64).
 ### 🔧 Dependencies
 
 * Updated `mapbox-events-ios` to `0.10.5` in order to add additional iOS 14 support.([#510](https://github.com/mapbox/mapbox-gl-native-ios/pull/510))
-* Core library updated to `5.2.1`. (todo)
+* Core library updated to `5.2.1`. ([#537](https://github.com/mapbox/mapbox-gl-native-ios/pull/537))
 
 ### ✨ Other changes
 
