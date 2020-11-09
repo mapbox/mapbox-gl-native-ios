@@ -59,11 +59,15 @@ fi
 
 step "Recording library version…"
 VERSION="${OUTPUT}"/version.txt
-echo -n "https://github.com/mapbox/mapbox-gl-native-ios/commit/" > ${VERSION}
+# Remove characters from end of string - https://stackoverflow.com/a/27658733
+REMOTE_ORIGIN_GIT=$(git remote get-url origin)
+REMOTE_ORIGIN_URL=${REMOTE_ORIGIN_GIT::${#REMOTE_ORIGIN_GIT}-4}
+REMOTE_ORIGIN_REPO=$(basename -s .git ${REMOTE_ORIGIN_GIT})
 HASH=`git log | head -1 | awk '{ print $2 }' | cut -c 1-10` && true
-echo -n "mapbox-gl-native-ios "
-echo ${HASH}
-echo ${HASH} >> ${VERSION}
+step "  ${REMOTE_ORIGIN_REPO} ${HASH}"
+REMOTE_ORIGIN_COMMIT_PATH="${REMOTE_ORIGIN_URL}/commit/${HASH}"
+echo ${REMOTE_ORIGIN_COMMIT_PATH}
+echo -n ${REMOTE_ORIGIN_COMMIT_PATH} > ${VERSION}
 
 PROJ_VERSION=$(git rev-list --count HEAD)
 SEM_VERSION=$( git describe --tags --match=ios-v*.*.* --abbrev=0 | sed 's/^ios-v//' )
