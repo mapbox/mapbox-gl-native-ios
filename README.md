@@ -19,5 +19,5 @@ The docs in this repo should be generated automatically each time a tagged relea
   merge_mode: deep_merge
   env:
   - SDK_FLAVOR=maps RELEASE_TAG=ios-vx.x.x
-  ``
+  ```
 6. Click the "trigger custom build" button. If the build finishes successfully, you should see a PR from the `MapboxCI` user.
