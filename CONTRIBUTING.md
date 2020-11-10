@@ -32,3 +32,7 @@ We’ve color-coded our labels by facet to make them easier to use:
  * non-actionable status (grey)
  * importance / urgency (green)
  * topic / project / misc (yellow)
+ 
+ ### Documentation
+ 
+ Please see [the README](https://github.com/mapbox/mapbox-gl-native-ios/tree/publisher-production#generated-documentation) in this repo's `publisher-production` branch.
