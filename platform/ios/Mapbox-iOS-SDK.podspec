@@ -29,7 +29,7 @@ Pod::Spec.new do |m|
 
   m.preserve_path = '**/*.bcsymbolmap'
 
-  m.dependency "MapboxMobileEvents", "~> 0.10.4"
+  m.dependency "MapboxMobileEvents", "~> 0.10"
 
   m.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 arm64e' }
  
