@@ -11,6 +11,7 @@ This version does not support Apple Silicon Macs (arm64).
 * Fixed issues on iOS 14 where `-[UIView layoutSubviews]` was being repeatedly called. ([#501](https://github.com/mapbox/mapbox-gl-native-ios/pull/501), [#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
 * Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/482))
+* Fixed an issue where a color in a feature attribute was misinterpreted when used in a key path expression. ([#536](https://github.com/mapbox/mapbox-gl-native-ios/pull/536))
 
 ### 🔧 Dependencies
 

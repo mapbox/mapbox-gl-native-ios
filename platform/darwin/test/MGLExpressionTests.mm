@@ -64,7 +64,8 @@ using namespace std::string_literals;
 }
 
 - (void)testColorValuation {
-    MGLAssertConstantEqualsValue([MGLColor redColor], "rgba(255,0,0,1)"s, @"MGLColor should convert to std::string containing CSS color string.");
+    MGLAssertConstantEqualsValue([MGLColor colorWithRed:147/255.0 green:123/255.0 blue:100/255.0 alpha:1], "rgb(147, 123, 100)"s, @"MGLColor should convert to std::string containing CSS color string.");
+    MGLAssertConstantEqualsValue([MGLColor colorWithRed:147/255.0 green:123/255.0 blue:100/255.0 alpha:0.3], "rgba(147, 123, 100, 0.3)"s, @"MGLColor should convert to std::string containing CSS color string.");
 }
 
 - (void)testBooleanValuation {
