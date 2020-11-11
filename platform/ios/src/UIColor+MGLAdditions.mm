@@ -2,6 +2,12 @@
 
 @implementation UIColor (MGLAdditions)
 
+static inline unsigned ToByte(CGFloat f)
+{
+    f = MAX(0, MIN(f, 1)); // Clamp
+    return (unsigned)round(f * 255);
+}
+
 - (mbgl::Color)mgl_color
 {
     CGFloat r, g, b, a;
@@ -12,12 +18,30 @@
     return { static_cast<float>(r*a), static_cast<float>(g*a), static_cast<float>(b*a), static_cast<float>(a) };
 }
 
-// Intended to be used when providing colors on the basis of an NSExpression
-- (mbgl::Color)mgl_colorForPremultipliedValue
+- (NSArray *)mgl_rgbValueArray {
+    CGFloat red, green, blue, alpha;
+    [self getRed:&red green:&green blue:&blue alpha:&alpha];
+    if (alpha == 1.0) {
+        return @[@(ToByte(red)), @(ToByte(green)), @(ToByte(blue))];
+    }
+
+    return @[@(ToByte(red)), @(ToByte(green)), @(ToByte(blue)), @(alpha)];
+}
+
+- (NSString *)mgl_rgbStringValue
 {
-    CGFloat r, g, b, a;
-    [self getRed:&r green:&g blue:&b alpha:&a];
-    return { static_cast<float>(r), static_cast<float>(g), static_cast<float>(b), static_cast<float>(a) };
+    NSString *rgb = nil;
+    NSArray *rgbValues = [self mgl_rgbValueArray];
+
+    if ([rgbValues count] == 3) {
+        rgb = [NSString stringWithFormat:@"rgb(%u, %u, %u)",
+               [rgbValues[0] unsignedIntValue], [rgbValues[1] unsignedIntValue], [rgbValues[2] unsignedIntValue]];
+    } else {
+        rgb = [NSString stringWithFormat:@"rgba(%u, %u, %u, %g)",
+        [rgbValues[0] unsignedIntValue], [rgbValues[1] unsignedIntValue], [rgbValues[2] unsignedIntValue], [rgbValues[3] floatValue]];
+    }
+
+    return rgb;
 }
 
 - (mbgl::style::PropertyValue<mbgl::Color>)mgl_colorPropertyValue
