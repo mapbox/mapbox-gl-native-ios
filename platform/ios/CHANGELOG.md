@@ -12,6 +12,7 @@ This version does not support Apple Silicon Macs (arm64).
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
 * Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/482))
 * Fixed an issue where a color in a feature attribute was misinterpreted when used in a key path expression. ([#536](https://github.com/mapbox/mapbox-gl-native-ios/pull/536))
+* Fixed an issue where approximate Location indicator disappears at high zoom. [#531](https://github.com/mapbox/mapbox-gl-native-ios/pull/531)
 
 ### 🔧 Dependencies
 
