@@ -10,7 +10,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
 * Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/482))
 * Fixed an issue on iOS 14 where scalebar triggers unnecessary `-[UIView layoutSubviews]`. ([#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
-* Fixed an issue where colors in feature attributes are misinterpreted when used in key path. ([#536](https://github.com/mapbox/mapbox-gl-native-ios/pull/536))
+* Fixed an issue where a color in a feature attribute was misinterpreted when used in a key path expression. ([#536](https://github.com/mapbox/mapbox-gl-native-ios/pull/536))
 
 ### 🔧 Dependencies
 
