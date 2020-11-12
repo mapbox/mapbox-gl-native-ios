@@ -37,9 +37,9 @@ workflows:
             branches:
               ignore: /.*/
       - ios-trigger-metrics:
-          # requires: 
-          #   - ios-build
-          #   - ios-release
+          requires: 
+            - ios-build
+            - ios-release
           filters:
             branches:
               only: main
@@ -246,7 +246,7 @@ commands:
           name: Trigger metrics
           command: |
             if [ -n "${MOBILE_METRICS_TOKEN}" ]; then
-              bash -c "curl -X POST --header \"Content-Type: application/json\" --data '{\"parameters\": {\"run_ios_maps_benchmark\": true, \"ci_ref\": $CIRCLE_BUILD_NUM }, \"branch\": \"main\" }' https://circleci.com/api/v2/project/github/mapbox/mobile-metrics/pipeline?circle-token=${MOBILE_METRICS_TOKEN}"
+              bash -c "curl -X POST --header \"Content-Type: application/json\" --data '{\"parameters\": {\"run_ios_maps_benchmark\": true, \"ci_ref\": $CIRCLE_BUILD_NUM }, \"branch\": \"master\" }' https://circleci.com/api/v2/project/github/mapbox/mobile-metrics/pipeline?circle-token=${MOBILE_METRICS_TOKEN}"
             else
               echo "MOBILE_METRICS_TOKEN not provided"
             fi
