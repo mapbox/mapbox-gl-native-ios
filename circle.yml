@@ -37,9 +37,9 @@ workflows:
             branches:
               ignore: /.*/
       - ios-trigger-metrics:
-          requires: 
-            - ios-build
-            - ios-release
+          # requires: 
+          #   - ios-build
+          #   - ios-release
           filters:
             branches:
               only: main
