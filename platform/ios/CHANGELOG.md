@@ -2,6 +2,12 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## main
+
+### 🐞 Bug fixes
+
+* Fixed a CocoaPods warning when integrating this SDK and the Mapbox Navigation SDK for iOS into the same application. ([#549](https://github.com/mapbox/mapbox-gl-native-ios/pull/549))
+
 ## 6.3.0 - November 10, 2020
 
 This version does not support Apple Silicon Macs (arm64).
