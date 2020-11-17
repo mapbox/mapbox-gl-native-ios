@@ -28,6 +28,7 @@
 * Fixed a crash when encountering an invalid polyline. ([mapbox/mapbox-gl-native#16409](https://github.com/mapbox/mapbox-gl-native/pull/16409))
 * Fixed an issue where an `MGLMapSnapshotOptions` with an invalid `MGLMapCamera.centerCoordinate`, negative `MGLMapCamera.heading`, negative `MGLMapCamera.pitch`, and negative `MGLMapSnapshotOptions.zoomLevel` resulted in a snapshot centered on Null Island at zoom level 0 even if the style specified a different initial center coordinate or zoom level. ([#280](https://github.com/mapbox/mapbox-gl-native-ios/pull/280))
 * Certain logging statements no longer run on the main thread. ([mapbox/mapbox-gl-native#16325](https://github.com/mapbox/mapbox-gl-native/pull/16325))
+* Fixed a crash when calling `-[MGLMapView setVisibleCoordinateBounds:edgePadding:animated:completionHandler:]` with a `nil` completion handler. ([#311](https://github.com/mapbox/mapbox-gl-native-ios/pull/311))
 
 ## 0.15.1
 
