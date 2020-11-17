@@ -7201,8 +7201,24 @@ static void *windowScreenContext = &windowScreenContext;
         annotationView.center = userPoint;
     }
 
-    if (CGRectContainsPoint(CGRectInset(self.bounds, -MGLAnnotationUpdateViewportOutset.width,
-        -MGLAnnotationUpdateViewportOutset.height), userPoint))
+
+    CGRect annotationViewportRect = CGRectInset(self.bounds, -MGLAnnotationUpdateViewportOutset.width,
+                                                -MGLAnnotationUpdateViewportOutset.height);
+    BOOL annotationVisible = CGRectContainsPoint(annotationViewportRect, userPoint);
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 140000
+    if (@available(iOS 14, *)) {
+        if ([self.locationManager respondsToSelector:@selector(accuracyAuthorization)] && self.locationManager.accuracyAuthorization == CLAccuracyAuthorizationReducedAccuracy) {
+            CGFloat accuracyRingRadius = round(self.userLocation.location.horizontalAccuracy / [self metersPerPointAtLatitude:self.userLocation.coordinate.latitude zoomLevel:self.zoomLevel]);
+            CGRect accuracyRingRect = CGRectMake(userPoint.x - accuracyRingRadius,
+                                                 userPoint.y - accuracyRingRadius,
+                                                 accuracyRingRadius * 2,
+                                                 accuracyRingRadius * 2);
+            annotationVisible = CGRectIntersectsRect(annotationViewportRect, accuracyRingRect);
+        }
+    }
+#endif
+
+    if (annotationVisible)
     {
         // Smoothly move the user location annotation view and callout view to
         // the new location.

@@ -318,7 +318,7 @@ const MGLExpressionInterpolationMode MGLExpressionInterpolationModeCubicBezier =
             return { (int64_t)number.longLongValue };
         }
     } else if ([value isKindOfClass:[MGLColor class]]) {
-        auto hexString = [(MGLColor *)value mgl_colorForPremultipliedValue].stringify();
+        auto hexString = std::string([[(MGLColor *)value mgl_rgbStringValue] UTF8String]);
         return { hexString };
     } else if (value && value != [NSNull null]) {
         [NSException raise:NSInvalidArgumentException
@@ -491,11 +491,11 @@ const MGLExpressionInterpolationMode MGLExpressionInterpolationModeCubicBezier =
 @implementation MGLColor (MGLExpressionAdditions)
 
 - (id)mgl_jsonExpressionObject {
-    auto color = [self mgl_colorForPremultipliedValue];
-    if (color.a == 1) {
-        return @[@"rgb", @(color.r * 255), @(color.g * 255), @(color.b * 255)];
+    NSArray *values = [self mgl_rgbValueArray];
+    if (values.count == 3) {
+        return @[@"rgb", values[0], values[1], values[2]];
     }
-    return @[@"rgba", @(color.r * 255), @(color.g * 255), @(color.b * 255), @(color.a)];
+    return @[@"rgba", values[0], values[1], values[2], values[3]];
 }
 
 @end
@@ -1031,11 +1031,7 @@ NSArray *MGLSubexpressionsWithJSONObjects(NSArray *objects) {
                 return @[@"literal", collection];
             }
             if ([constantValue isKindOfClass:[MGLColor class]]) {
-                auto color = [constantValue mgl_colorForPremultipliedValue];
-                if (color.a == 1) {
-                    return @[@"rgb", @(color.r * 255), @(color.g * 255), @(color.b * 255)];
-                }
-                return @[@"rgba", @(color.r * 255), @(color.g * 255), @(color.b * 255), @(color.a)];
+                return [(MGLColor *)constantValue mgl_jsonExpressionObject];
             }
             if ([constantValue isKindOfClass:[NSValue class]]) {
                 const auto boxedValue = (NSValue *)constantValue;

@@ -2,18 +2,22 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 6.3.0
+## 6.3.0 - November 10, 2020
+
+This version does not support Apple Silicon Macs (arm64).
 
 ### 🐞 Bug fixes
 
-* Partly fixed an issue on iOS 14 where `-[UIView layoutSubviews]` was being repeatedly called. ([#501](https://github.com/mapbox/mapbox-gl-native-ios/pull/501))
+* Fixed issues on iOS 14 where `-[UIView layoutSubviews]` was being repeatedly called. ([#501](https://github.com/mapbox/mapbox-gl-native-ios/pull/501), [#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
 * Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
 * Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/482))
-* Fixed an issue on iOS 14 where scalebar triggers unnecessary `-[UIView layoutSubviews]`. ([#507](https://github.com/mapbox/mapbox-gl-native-ios/pull/507))
+* Fixed an issue where a color in a feature attribute was misinterpreted when used in a key path expression. ([#536](https://github.com/mapbox/mapbox-gl-native-ios/pull/536))
+* Fixed an issue where approximate Location indicator disappears at high zoom. [#531](https://github.com/mapbox/mapbox-gl-native-ios/pull/531)
 
 ### 🔧 Dependencies
 
-* Updated `mapbox-events-ios` to `0.10.5-beta.2` in order to add additional iOS 14 support.([#491](https://github.com/mapbox/mapbox-gl-native-ios/pull/491))
+* Updated `mapbox-events-ios` to `0.10.5` in order to add additional iOS 14 support.([#510](https://github.com/mapbox/mapbox-gl-native-ios/pull/510))
+* Core library updated to `5.2.1`. ([#537](https://github.com/mapbox/mapbox-gl-native-ios/pull/537))
 
 ### ✨ Other changes
 
