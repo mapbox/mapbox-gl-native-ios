@@ -5499,7 +5499,7 @@ static void *windowScreenContext = &windowScreenContext;
         // of the `-[MGLCalloutView marginInsetsHintForPresentationFromRect:]
         // protocol method.
         bounds = CGRectInset(bounds, -calloutPositioningRect.size.width, -calloutPositioningRect.size.height);
-    }        
+    }
 
     if (moveIntoView)
     {
@@ -6474,6 +6474,7 @@ static void *windowScreenContext = &windowScreenContext;
         && self.userTrackingState != MGLUserTrackingStateBegan)
     {
         [self _setDirection:headingDirection animated:YES];
+        [self updateUserLocationAnnotationView];
     }
 }
 
