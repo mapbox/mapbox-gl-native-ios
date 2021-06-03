@@ -326,8 +326,8 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - install-dependencies
       - install-macos-dependencies
+      - install-dependencies
       - check-public-symbols
       - run:
           name: Lint podspecs and plist files
@@ -351,8 +351,8 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - install-dependencies
       - install-macos-dependencies
+      - install-dependencies
       - run:
           name: Build and run SDK unit tests with thread and undefined behavior sanitizers
           command: make ios-sanitize
@@ -377,8 +377,8 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - install-dependencies
       - install-macos-dependencies
+      - install-dependencies
       - run:
           name: Build and run SDK unit tests with address sanitizer
           command: make ios-sanitize-address
@@ -396,8 +396,8 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - install-dependencies
       - install-macos-dependencies
+      - install-dependencies
       - run:
           name: Build and run SDK unit tests with the static analyzer
           command: make ios-static-analyzer
@@ -440,8 +440,8 @@ jobs:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - install-mbx-ci
-      - install-dependencies
       - install-macos-dependencies
+      - install-dependencies
       - check-if-this-job-can-be-skipped
       - install-ios-packaging-dependencies
       - run:
@@ -489,8 +489,8 @@ jobs:
           message: '<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` started.>'
           include_visit_job_action: true
       - install-mbx-ci
-      - install-dependencies
       - install-macos-dependencies
+      - install-dependencies
       - install-ios-packaging-dependencies
       - run:
           name: Trigger documentation deploy steps
@@ -542,8 +542,8 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - install-dependencies
       - install-macos-dependencies
+      - install-dependencies
       - check-if-this-job-can-be-skipped
       - build-macos-test
       - check-public-symbols
