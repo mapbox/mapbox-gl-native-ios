@@ -426,6 +426,7 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-template:
+    working_directory: /Users/distiller/project
     parameters:
       xcode:
         type: string
@@ -471,6 +472,7 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-tag:
+    working_directory: /Users/distiller/project
     parameters:
       xcode:
         type: string
