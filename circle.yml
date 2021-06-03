@@ -309,7 +309,7 @@ commands:
 jobs:
 
   ios-build:
-    working_directory: /Users/distiller/project
+    working_directory: /Users/distiller/projects
     parameters:
       xcode:
         type: string
@@ -427,7 +427,7 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-template:
-    working_directory: /Users/distiller/project
+    working_directory: /Users/distiller/projects
     parameters:
       xcode:
         type: string
@@ -473,7 +473,7 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-tag:
-    working_directory: /Users/distiller/project
+    working_directory: /Users/distiller/projects
     parameters:
       xcode:
         type: string
