@@ -22,7 +22,6 @@ workflows:
               xcode: ["11.7.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
       - ios-release-template: 
-          working_directory: /Users/distiller/project
           xcode: "12.0.0"
           name: ios-release
       # This should depend on sanitize jobs              
