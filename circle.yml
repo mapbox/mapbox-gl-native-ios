@@ -440,8 +440,8 @@ jobs:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - run:
-        name: Configure working dir
-        command: ls -lR /Users/distiller/project
+          name: Configure working dir
+          command: ls -lR /Users/distiller/project
       - install-mbx-ci
       - install-macos-dependencies
       - install-dependencies
