@@ -309,6 +309,7 @@ commands:
 jobs:
 
   ios-build:
+    working_directory: /Users/distiller/project
     parameters:
       xcode:
         type: string
