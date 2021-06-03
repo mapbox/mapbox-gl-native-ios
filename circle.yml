@@ -74,6 +74,13 @@ workflows:
             - ios-build
 
 commands:
+  install-mbx-ci:
+    steps:
+    - run:
+        name: Install latest mbx-ci
+        command: |
+          curl -Ls https://mapbox-release-engineering.s3.amazonaws.com/mbx-ci/latest/mbx-ci-darwin-amd64 > mbx-ci && chmod 755 ./mbx-ci
+          ./mbx-ci aws setup
   npm-install:
     steps:
     - run:
@@ -163,6 +170,9 @@ commands:
         default: true
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "3b:cd:47:bf:57:9c:e5:36:b0:4d:5f:12:5e:d3:b3:3e"
       - prepare-submodules
       - when:
           condition: << parameters.node_modules >>
@@ -427,6 +437,7 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
+      - install-mbx-ci
       - install-macos-dependencies
       - install-dependencies
       - check-if-this-job-can-be-skipped
@@ -474,6 +485,7 @@ jobs:
       - slack/notify:
           message: '<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` started.>'
           include_visit_job_action: true
+      - install-mbx-ci
       - install-macos-dependencies
       - install-dependencies
       - install-ios-packaging-dependencies
