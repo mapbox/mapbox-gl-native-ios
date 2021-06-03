@@ -439,10 +439,10 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
-      - install-mbx-ci
       - install-macos-dependencies
       - install-dependencies
       - check-if-this-job-can-be-skipped
+      - install-mbx-ci
       - install-ios-packaging-dependencies
       - run:
           name: Build dynamic framework for device and simulator
@@ -488,9 +488,9 @@ jobs:
       - slack/notify:
           message: '<$CIRCLE_BUILD_URL|Release build for \`$CIRCLE_TAG\` started.>'
           include_visit_job_action: true
-      - install-mbx-ci
       - install-macos-dependencies
       - install-dependencies
+      - install-mbx-ci
       - install-ios-packaging-dependencies
       - run:
           name: Trigger documentation deploy steps
