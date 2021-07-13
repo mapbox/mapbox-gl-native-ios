@@ -30,7 +30,8 @@
     // NSAttributedString doesn’t preserve the class attribute.
     NSMutableString *css = [NSMutableString stringWithString:
                             @"html { font-family: -apple-system, -apple-system-font, sans-serif; }"
-                            @".mapbox-improve-map { -webkit-text-stroke-width: 1000px; }"];
+                            @".mapbox-improve-map { -webkit-text-stroke-width: 1000px; }"
+                            @"[title~=Improve] { -webkit-text-stroke-width: 1000px; }"];
     if (fontSize) {
         NSString *sizeRule = [NSString stringWithFormat:@"font-size: %.1fpx;", fontSize];
 #if !TARGET_OS_IPHONE
