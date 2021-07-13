@@ -1265,7 +1265,7 @@ NSArray *MGLSubexpressionsWithJSONObjects(NSArray *objects) {
                 }
 
                 return self.arguments.mgl_jsonExpressionObject;
-            } else if (op == [MGLColor class] && [function isEqualToString:@"colorWithRed:green:blue:alpha:"]) {
+            } else if ((id)op == [MGLColor class] && [function isEqualToString:@"colorWithRed:green:blue:alpha:"]) {
                 NSArray *arguments = self.arguments.mgl_jsonExpressionObject;
                 return [@[@"rgba"] arrayByAddingObjectsFromArray:arguments];
             } else if ([function isEqualToString:@"median:"] ||
