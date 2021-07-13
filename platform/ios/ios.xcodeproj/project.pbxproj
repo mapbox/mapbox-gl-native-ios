@@ -2858,7 +2858,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = MBX;
-				LastUpgradeCheck = 1120;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = Mapbox;
 				TargetAttributes = {
 					16376B061FFD9DAF0000563E = {
@@ -3133,7 +3133,6 @@
 				CA4F3BE223107793008BAFEA /* MGLCameraTransitionTests.mm in Sources */,
 				CA176AD8250805BC00D47E3D /* MGLBackgroundIntegrationTest.mm in Sources */,
 				CA4C54FE2324948100A81659 /* MGLSourceTests.swift in Sources */,
-				CA6914B520E67F50002DB0EE /* MGLAnnotationViewIntegrationTests.mm in Sources */,
 				CAB92CF122F204720037BE12 /* MGLQueryFeatureTests.m in Sources */,
 				CA1B4A512099FB2200EDD491 /* MGLMapSnapshotterTest.m in Sources */,
 				CA4F3BE4231077B9008BAFEA /* MGLCameraTransitionFinishTests.mm in Sources */,
@@ -3785,6 +3784,7 @@
 				SYMROOT = ../../build/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALIDATE_WORKSPACE = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = RelWithDebInfo;
@@ -3986,6 +3986,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../build/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_WORKSPACE = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -4008,6 +4009,7 @@
 				SYMROOT = ../../build/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALIDATE_WORKSPACE = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
