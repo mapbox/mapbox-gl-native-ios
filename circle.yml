@@ -21,7 +21,7 @@ workflows:
             parameters:
               xcode: ["11.7.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
-      - ios-release-template:
+      - ios-release-template: 
           xcode: "12.0.0"
           name: ios-release
       # This should depend on sanitize jobs              
@@ -74,6 +74,13 @@ workflows:
             - ios-build
 
 commands:
+  install-mbx-ci:
+    steps:
+    - run:
+        name: Install latest mbx-ci
+        command: |
+          curl -Ls https://mapbox-release-engineering.s3.amazonaws.com/mbx-ci/latest/mbx-ci-darwin-amd64 > mbx-ci && chmod 755 ./mbx-ci
+          ./mbx-ci aws setup
   npm-install:
     steps:
     - run:
@@ -163,6 +170,9 @@ commands:
         default: true
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "3b:cd:47:bf:57:9c:e5:36:b0:4d:5f:12:5e:d3:b3:3e"
       - prepare-submodules
       - when:
           condition: << parameters.node_modules >>
@@ -299,6 +309,7 @@ commands:
 jobs:
 
   ios-build:
+    working_directory: /Users/distiller/project
     parameters:
       xcode:
         type: string
@@ -416,6 +427,7 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-template:
+    working_directory: /Users/distiller/project
     parameters:
       xcode:
         type: string
@@ -430,6 +442,7 @@ jobs:
       - install-macos-dependencies
       - install-dependencies
       - check-if-this-job-can-be-skipped
+      - install-mbx-ci
       - install-ios-packaging-dependencies
       - run:
           name: Build dynamic framework for device and simulator
@@ -460,6 +473,7 @@ jobs:
 
 # ------------------------------------------------------------------------------
   ios-release-tag:
+    working_directory: /Users/distiller/project
     parameters:
       xcode:
         type: string
@@ -476,6 +490,7 @@ jobs:
           include_visit_job_action: true
       - install-macos-dependencies
       - install-dependencies
+      - install-mbx-ci
       - install-ios-packaging-dependencies
       - run:
           name: Trigger documentation deploy steps

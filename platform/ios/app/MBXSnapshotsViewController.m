@@ -28,8 +28,8 @@
     MGLMapSnapshotter* bottomRightSnapshotter;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 
     // Start snapshotters
     topLeftSnapshotter = [self startSnapshotterForImageView:_snapshotImageViewTL coordinates:CLLocationCoordinate2DMake(37.7184, -122.4365)];
@@ -46,6 +46,7 @@
     MGLMapCamera* mapCamera = [[MGLMapCamera alloc] init];
     mapCamera.pitch = 20;
     mapCamera.centerCoordinate = coordinates;
+
     MGLMapSnapshotOptions* options = [[MGLMapSnapshotOptions alloc] initWithStyleURL:[MGLStyle satelliteStreetsStyleURL] camera:mapCamera size:CGSizeMake(imageView.frame.size.width, imageView.frame.size.height)];
     options.zoomLevel = 10;
     
