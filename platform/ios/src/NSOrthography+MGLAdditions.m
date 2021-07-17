@@ -5,9 +5,10 @@
 + (NSString *)mgl_dominantScriptForMapboxStreetsLanguage:(NSString *)language {
     if (@available(iOS 11.0, *)) {
         NSLocale *locale = [NSLocale localeWithLocaleIdentifier:language];
-        NSOrthography *orthography = [NSOrthography defaultOrthographyForLanguage:locale.localeIdentifier];
-
-        return orthography.dominantScript;
+        if (locale.localeIdentifier != nil) {
+            NSOrthography *orthography = [NSOrthography defaultOrthographyForLanguage:locale.localeIdentifier];
+            return orthography.dominantScript;
+        }
     }
 
     // Manually map Mapbox Streets languages to ISO 15924 script codes.
