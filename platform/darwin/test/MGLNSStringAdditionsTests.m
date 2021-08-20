@@ -84,6 +84,8 @@
     XCTAssertEqualObjects([@"ロンドン" mgl_stringByTransliteratingIntoScript:@"Jpan"], @"ロンドン");
     XCTAssertEqualObjects([@"ロンドン" mgl_stringByTransliteratingIntoScript:@"Kore"], @"론돈");
     XCTAssertEqualObjects([@"ロンドン" mgl_stringByTransliteratingIntoScript:@"Fake"], @"ロンドン");
+
+    XCTAssertEqualObjects([@"" mgl_stringByTransliteratingIntoScript:nil], @"");
 }
 
 @end

@@ -22,14 +22,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Returns a transliterated representation of the receiver using the specified
- script. If transliteration fails, the receiver will be returned.
+ script. If transliteration fails or script is nil, the receiver will be returned.
 
  Only supports scripts for languages used by Mapbox Streets.
 
  @param script The four-letter code representing the name of the script, as
     specified by ISO 15924.
  */
-- (NSString *)mgl_stringByTransliteratingIntoScript:(NSString *)script;
+- (NSString *)mgl_stringByTransliteratingIntoScript:(nullable NSString *)script;
 
 @end
 

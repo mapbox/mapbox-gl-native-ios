@@ -49,8 +49,11 @@
         _feature = feature;
         
         NSString *languageCode = [MGLVectorTileSource preferredMapboxStreetsLanguage];
-        NSString *nameAttribute = [NSString stringWithFormat:@"name_%@", languageCode];
-        NSString *name = [feature attributeForKey:nameAttribute];
+        NSString *name;
+        if (languageCode != nil) {
+            NSString *nameAttribute = [NSString stringWithFormat:@"name_%@", languageCode];
+            name = [feature attributeForKey:nameAttribute];
+        }
 
         NSString *dominantScript;
         if (name == nil && [feature attributeForKey:@"name"] != nil) {
@@ -62,7 +65,7 @@
         // may be in the local language, which may be written in another script.
         // Attempt to transform to the script of the preferred language, keeping
         // the original string if no transform exists or if transformation fails.
-        if (!dominantScript) {
+        if (dominantScript == nil && languageCode != nil) {
             dominantScript = [NSOrthography mgl_dominantScriptForMapboxStreetsLanguage:languageCode];
         }
         name = [name mgl_stringByTransliteratingIntoScript:dominantScript];
@@ -88,7 +91,7 @@
         // Announce the kind of place or POI.
         NSString *languageCode = [MGLVectorTileSource preferredMapboxStreetsLanguage];
         NSString *categoryAttribute = [NSString stringWithFormat:@"category_%@", languageCode];
-        if (attributes[categoryAttribute]) {
+        if (languageCode != nil && attributes[categoryAttribute]) {
             [facts addObject:attributes[categoryAttribute]];
         } else if (attributes[@"type"]) {
             // FIXME: Unfortunately, these types aren’t a closed set that can be
