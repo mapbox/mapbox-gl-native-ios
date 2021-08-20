@@ -40,7 +40,7 @@
     return string;
 }
 
-- (NSString *)mgl_stringByTransliteratingIntoScript:(NSString *)script {
+- (NSString *)mgl_stringByTransliteratingIntoScript:(nullable NSString *)script {
     NSMutableString *string = self.mutableCopy;
     NSStringTransform transform;
     if ([script isEqualToString:@"Latn"]) {

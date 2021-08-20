@@ -2,7 +2,11 @@
 
 @implementation NSOrthography (MGLAdditions)
 
-+ (NSString *)mgl_dominantScriptForMapboxStreetsLanguage:(NSString *)language {
++ (nullable NSString *)mgl_dominantScriptForMapboxStreetsLanguage:(nullable NSString *)language {
+    if (language == nil) {
+        return nil;
+    }
+
     if (@available(iOS 11.0, *)) {
         NSLocale *locale = [NSLocale localeWithLocaleIdentifier:language];
         NSOrthography *orthography = [NSOrthography defaultOrthographyForLanguage:locale.localeIdentifier];

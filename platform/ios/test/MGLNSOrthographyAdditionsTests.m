@@ -16,4 +16,8 @@
     }
 }
 
+- (void)testDominantScriptWhenLanguageIsNil {
+    XCTAssertNil([NSOrthography mgl_dominantScriptForMapboxStreetsLanguage:nil]);
+}
+
 @end
