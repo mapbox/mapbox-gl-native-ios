@@ -2,7 +2,7 @@
 
 @implementation NSOrthography (MGLAdditions)
 
-+ (NSString *)mgl_dominantScriptForMapboxStreetsLanguage:(NSString *)language {
++ (nullable NSString *)mgl_dominantScriptForMapboxStreetsLanguage:(nullable NSString *)language {
     if (language == nil) {
         return nil;
     }
