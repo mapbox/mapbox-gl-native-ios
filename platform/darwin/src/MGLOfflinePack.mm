@@ -147,11 +147,16 @@ private:
     MGLOfflineStorage *sharedOfflineStorage = [MGLOfflineStorage sharedOfflineStorage];
     __weak MGLOfflinePack *weakSelf = self;
     [sharedOfflineStorage getPacksWithCompletionHandler:^(NSArray<MGLOfflinePack *> *packs, __unused NSError * _Nullable error) {
+        MGLOfflinePack *strongSelf = weakSelf;
         for (MGLOfflinePack *pack in packs) {
             if (pack.mbglOfflineRegion->getID() == regionID) {
-                weakSelf.mbglOfflineRegion = pack.mbglOfflineRegion;
-                break;
+                if (strongSelf.mbglOfflineRegion) {
+                    strongSelf->_mbglDatabaseFileSource->setOfflineRegionObserver(*strongSelf.mbglOfflineRegion, nullptr);
+                }
+                strongSelf.mbglOfflineRegion = pack.mbglOfflineRegion;
+                strongSelf->_mbglDatabaseFileSource->setOfflineRegionObserver(*strongSelf.mbglOfflineRegion, std::make_unique<MBGLOfflineDownloadObserver>(strongSelf));
             }
+            [pack invalidate];
         }
         completion(error);
     }];
