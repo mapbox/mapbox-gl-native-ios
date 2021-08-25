@@ -9,6 +9,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Fixed a CocoaPods warning when integrating this SDK and the Mapbox Navigation SDK for iOS into the same application. ([#549](https://github.com/mapbox/mapbox-gl-native-ios/pull/549))
 * Fixed an issue where offline packs were not invalidated before being deallocated, resulting in a crash. ([#620](https://github.com/mapbox/mapbox-gl-native-ios/pull/620))
 * Fixed a crash in `-[NSOrthography mgl_dominantScriptForMapboxStreetsLanguage]`. ([#619](https://github.com/mapbox/mapbox-gl-native-ios/pull/619))
+* Core library updated to `5.2.3`. ([#621](https://github.com/mapbox/mapbox-gl-native-ios/pull/621))
 
 ## 6.3.0 - November 10, 2020
 
