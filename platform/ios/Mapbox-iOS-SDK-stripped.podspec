@@ -14,7 +14,7 @@ Pod::Spec.new do |m|
   m.social_media_url  = 'https://twitter.com/mapbox'
   m.documentation_url = 'https://docs.mapbox.com/ios/maps/api/'
 
-  m.source = {    
+  m.source = {
     :http => "https://api.mapbox.com/downloads/v2/mobile-maps/releases/ios/packages/#{version.to_s}/mapbox-ios-sdk-stripped-dynamic.zip",
     :flatten => true
   }
@@ -29,6 +29,6 @@ Pod::Spec.new do |m|
 
   m.preserve_path = '**/*.bcsymbolmap'
 
-  m.dependency "MapboxMobileEvents", "~> 0.10.5"
+  m.dependency "MapboxMobileEvents", "~> 0.10.10"
 
 end
