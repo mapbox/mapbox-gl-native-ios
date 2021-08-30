@@ -29,6 +29,6 @@ Pod::Spec.new do |m|
 
   m.preserve_path = '**/*.bcsymbolmap'
 
-  m.dependency "MapboxMobileEvents", "~> 0.10.9"
+  m.dependency "MapboxMobileEvents", git: 'https://github.com/mapbox/mapbox-events-ios.git', branch: 'ah/excluded-archs'
 
 end
