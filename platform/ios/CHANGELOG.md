@@ -9,8 +9,10 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Fixed a CocoaPods warning when integrating this SDK and the Mapbox Navigation SDK for iOS into the same application. ([#549](https://github.com/mapbox/mapbox-gl-native-ios/pull/549))
 * Fixed an issue where offline packs were not invalidated before being deallocated, resulting in a crash. ([#620](https://github.com/mapbox/mapbox-gl-native-ios/pull/620))
 * Fixed a crash in `-[NSOrthography mgl_dominantScriptForMapboxStreetsLanguage]`. ([#619](https://github.com/mapbox/mapbox-gl-native-ios/pull/619))
-* Core library updated to `5.2.3`. ([#621](https://github.com/mapbox/mapbox-gl-native-ios/pull/621))
 
+### Dependencies
+* Core library updated to `5.2.3`. ([#621](https://github.com/mapbox/mapbox-gl-native-ios/pull/621))
+* Update the project's build settings for Xcode 13. ([#630](https://github.com/mapbox/mapbox-gl-native-ios/pull/630))
 ## 6.3.0 - November 10, 2020
 
 This version does not support Apple Silicon Macs (arm64).
@@ -50,7 +52,7 @@ This version does not support Apple Silicon Macs (arm64).
 
 ### 🔧 Dependencies
 
-* Core library updated to `5.1.0`. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475)) 
+* Core library updated to `5.1.0`. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475))
 
 ## 6.2.0 - September 17, 2020
 
@@ -97,19 +99,19 @@ For building with Xcode 12, please ensure that mapbox-events-ios is at version 0
 * Core library updated to `3.1.0`.
 
 ## 6.0.0 - July 16, 2020
- 
-This major release does not include any breaking changes to public APIs. We are treating this release as a SEMVER major change because our installation instructions have changed. 
- 
+
+This major release does not include any breaking changes to public APIs. We are treating this release as a SEMVER major change because our installation instructions have changed.
+
 **Distribution Updates**
- 
+
 Standard installation methods still apply – we will continue to support SDK installation via CocoaPods, Carthage, and manual integration. However, you are now required to authenticate installation with a new access token. For more information about this new process, [view our installation guide](https://docs.mapbox.com/ios/maps/overview/#install-the-sdk).
- 
+
 **Licensing Updates**
- 
+
 Release v6.0.0 updates the Mapbox Maps SDK for iOS to use a pre-built GL Native binary rather than building from source as a submodule dependency. GL Native is changing some of its development workflows to build some Mapbox platform-specific features internally, similar to Chrome/Chromium development. Please refer to the [README.md](https://github.com/mapbox/mapbox-gl-native-ios/blob/master/platform/ios/README.md) and/or [DEVELOPING.md](https://github.com/mapbox/mapbox-gl-native-ios/blob/master/platform/ios/DEVELOPING.md) for guidance.
- 
+
 Starting today, new binary releases of GL Native are licensed under the Mapbox Terms of Service. The Mapbox Maps SDKs repos will continue to be public and licensed under BSD-2.
- 
+
 If you have any questions about how this change may impact your use of the Maps SDK, please don’t hesitate to reach out to Mapbox Support to connect with the Mapbox mobile team.
 
 ### ✨ New features
@@ -142,7 +144,7 @@ If you have any questions about how this change may impact your use of the Maps 
 
 * Added the `-[MGLOfflinePack setContext:completionHandler:]` method for replacing the data associated with an offline pack, such as a name. ([#288](https://github.com/mapbox/mapbox-gl-native-ios/pull/288))
 * Added the `MGLOfflineStorage.databasePath` and `MGLOfflineStorage.databaseURL` properties to obtain the path of the database that contains offline packs and the ambient cache. To customize this path, set the `MGLOfflineStorageDatabasePath` in Info.plist. ([#298](https://github.com/mapbox/mapbox-gl-native-ios/pull/298))
-* Fixed an error that occurred if your implementation of the `-[MGLOfflineStorageDelegate offlineStorage:URLForResourceOfKind:]` method returned a local file URL. ([mapbox/mapbox-gl-native#16428](https://github.com/mapbox/mapbox-gl-native/pull/16428)) 
+* Fixed an error that occurred if your implementation of the `-[MGLOfflineStorageDelegate offlineStorage:URLForResourceOfKind:]` method returned a local file URL. ([mapbox/mapbox-gl-native#16428](https://github.com/mapbox/mapbox-gl-native/pull/16428))
 
 ### Other changes
 
@@ -267,7 +269,7 @@ This release includes a known issue where the binary size has increased. ([#63](
 * Fixed an issue that caused the map to rotate too easily during a pinch gesture. [(#15562)](https://github.com/mapbox/mapbox-gl-native/pull/15562)
 
 ### Performance improvements
- 
+
 * Improved offline region download performance by batching certain database activities. ([#15521](https://github.com/mapbox/mapbox-gl-native/pull/15521))
 * Newly loaded labels appear faster on the screen. ([#15308](https://github.com/mapbox/mapbox-gl-native/pull/15308))
 
