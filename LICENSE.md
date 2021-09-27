@@ -883,6 +883,6 @@ https://github.com/nfarina/calloutview/blob/master/LICENSE
 
 ===========================================================================
 
-Mapbox Maps SDK for iOS uses portions of software listed in [platform/android/LICENSE.md](https://github.com/mapbox/mapbox-gl-native/blob/master/platform/android/LICENSE.md).
+Mapbox Maps SDK for iOS uses portions of software listed in [mapbox/mapbox-gl-native-android repository](https://github.com/mapbox/mapbox-gl-native-android/blob/main/LICENSE.md).
 
-Mapbox Maps SDK for iOS uses portions of software listed in [platform/ios/vendor/mapbox-events-ios/LICENSE.md](https://github.com/mapbox/mobile-events-ios/blob/master/LICENSE.md).
+Mapbox Maps SDK for iOS uses portions of software listed in [mapbox/mapbox-events-ios repository](https://github.com/mapbox/mapbox-events-ios/blob/main/LICENSE.md).
