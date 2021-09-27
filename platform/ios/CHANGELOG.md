@@ -11,8 +11,10 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Fixed a crash in `-[NSOrthography mgl_dominantScriptForMapboxStreetsLanguage]`. ([#619](https://github.com/mapbox/mapbox-gl-native-ios/pull/619))
 
 ### Dependencies
-* Core library updated to `5.2.3`. ([#621](https://github.com/mapbox/mapbox-gl-native-ios/pull/621))
+* Core library updated to 5.3.0. ([#631](https://github.com/mapbox/mapbox-gl-native-ios/pull/631))
+* Update `mapbox-events-ios` to 0.10.12. ([#631](https://github.com/mapbox/mapbox-gl-native-ios/pull/631))
 * Update the project's build settings for Xcode 13. ([#630](https://github.com/mapbox/mapbox-gl-native-ios/pull/630))
+
 ## 6.3.0 - November 10, 2020
 
 This version does not support Apple Silicon Macs (arm64).
