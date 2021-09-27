@@ -2,13 +2,17 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## main
+## 6.4.0 - September 27, 2021
+
+This version does not support Apple Silicon Macs (arm64).
 
 ### 🐞 Bug fixes
 
+* Fixed an issue where the approximate location indicator could disappear at high zoom levels. ([#531](https://github.com/mapbox/mapbox-gl-native-ios/pull/531))
 * Fixed a CocoaPods warning when integrating this SDK and the Mapbox Navigation SDK for iOS into the same application. ([#549](https://github.com/mapbox/mapbox-gl-native-ios/pull/549))
 * Fixed an issue where offline packs were not invalidated before being deallocated, resulting in a crash. ([#620](https://github.com/mapbox/mapbox-gl-native-ios/pull/620))
 * Fixed a crash in `-[NSOrthography mgl_dominantScriptForMapboxStreetsLanguage]`. ([#619](https://github.com/mapbox/mapbox-gl-native-ios/pull/619))
+* Handle exceptions thrown at layout initialization (including those thrown from vector tile parsing). ([#631](https://github.com/mapbox/mapbox-gl-native-ios/pull/631))
 
 ### Dependencies
 * Core library updated to 5.3.0. ([#631](https://github.com/mapbox/mapbox-gl-native-ios/pull/631))
