@@ -10,7 +10,7 @@ workflows:
     jobs:
       #
       # Naming convention: {platform}-{additional description}-{build type}
-      #   - {platform} is the client platform/framework, which may differ from 
+      #   - {platform} is the client platform/framework, which may differ from
       #     the build platform. Specify both if applicable, e.g., "qt5-macos".
       #   - {additional description} optionally describes the compiler or other
       #     unique aspect of the build environment.
@@ -21,14 +21,14 @@ workflows:
             parameters:
               xcode: ["11.7.0", "12.0.0"]
               buildtype: ["Debug", "Release"]
-      - ios-release-template: 
+      - ios-release-template:
           xcode: "12.5.0"
           name: ios-release
-      # This should depend on sanitize jobs              
+      # This should depend on sanitize jobs
       - ios-release-tag:
-          xcode: "12.0.0"
+          xcode: "12.5.0"
         # Commenting out to test for release.
-          # requires: 
+          # requires:
           #   - ios-build
           #   - ios-release
           filters:
@@ -37,7 +37,7 @@ workflows:
             branches:
               ignore: /.*/
       - ios-trigger-metrics:
-          requires: 
+          requires:
             - ios-build
             - ios-release
           filters:
@@ -62,14 +62,14 @@ workflows:
       - ios-sanitize-nightly:
           requires:
             - ios-build
-      # TODO: Add matrix for these                  
+      # TODO: Add matrix for these
       - ios-sanitize-address-nightly:
           requires:
             - ios-build
       - ios-static-analyzer-nightly:
           requires:
             - ios-build
-      - metrics-nightly:      
+      - metrics-nightly:
           requires:
             - ios-build
 
