@@ -50,7 +50,6 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
 @property (nonatomic) std::shared_ptr<mbgl::DatabaseFileSource> mbglDatabaseFileSource;
 @property (nonatomic) std::shared_ptr<mbgl::FileSource> mbglOnlineFileSource;
 @property (nonatomic) std::shared_ptr<mbgl::FileSource> mbglFileSource;
-@property (nonatomic, getter=isPaused) BOOL paused;
 @end
 
 @implementation MGLOfflineStorage {
@@ -63,10 +62,6 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
     static MGLOfflineStorage *sharedOfflineStorage;
     dispatch_once(&onceToken, ^{
         sharedOfflineStorage = [[self alloc] init];
-#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
-        [[NSNotificationCenter defaultCenter] addObserver:sharedOfflineStorage selector:@selector(unpauseFileSource:) name:UIApplicationWillEnterForegroundNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:sharedOfflineStorage selector:@selector(pauseFileSource:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-#endif
         [sharedOfflineStorage reloadPacks];
     });
 
@@ -79,28 +74,6 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
 
     return sharedOfflineStorage;
 }
-
-#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
-- (void)pauseFileSource:(__unused NSNotification *)notification {
-    if (self.isPaused) {
-        return;
-    }
-
-    _mbglOnlineFileSource->pause();
-    _mbglDatabaseFileSource->pause();
-    self.paused = YES;
-}
-
-- (void)unpauseFileSource:(__unused NSNotification *)notification {
-    if (!self.isPaused) {
-        return;
-    }
-
-    _mbglOnlineFileSource->resume();
-    _mbglDatabaseFileSource->resume();
-    self.paused = NO;
-}
-#endif
 
 - (void)setDelegate:(id<MGLOfflineStorageDelegate>)newValue {
     MGLLogDebug(@"Setting delegate: %@", newValue);
@@ -188,7 +161,6 @@ const MGLExceptionName MGLUnsupportedRegionTypeException = @"MGLUnsupportedRegio
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[MGLAccountManager sharedManager] removeObserver:self forKeyPath:@"apiBaseURL"];
     [[MGLAccountManager sharedManager] removeObserver:self forKeyPath:@"accessToken"];
 
