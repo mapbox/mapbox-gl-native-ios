@@ -2,6 +2,10 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
+## main
+
+* Fixed watchdog termination caused by pausing file sources when entering the background. ([#639](https://github.com/mapbox/mapbox-gl-native-ios/pull/639))
+
 ## 6.4.0 - September 27, 2021
 
 This version does not support Apple Silicon Macs (arm64).
