@@ -139,7 +139,9 @@ CLLocationCoordinate2D coordinateCentered(CLLocationCoordinate2D origin, CLLocat
     return result;
 }
 
-CLLocationCoordinate2D randomWorldCoordinate() {
+CLLocationCoordinate2D randomWorldCoordinate(void);
+
+CLLocationCoordinate2D randomWorldCoordinate(void) {
 
     static const struct {
         CLLocationCoordinate2D coordinate;

@@ -117,7 +117,9 @@ static void MGLFreeArchInfo(const NXArchInfo *x)
     [MGLMapboxEvents pushEvent:eventName withAttributes:mutableAttributes];
 }
 
-NSString* deviceName()
+NSString* deviceName(void);
+
+NSString* deviceName(void)
 {
     struct utsname systemInfo;
     uname(&systemInfo);
