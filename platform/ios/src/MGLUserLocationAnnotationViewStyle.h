@@ -11,9 +11,13 @@ MGL_EXPORT
 @interface MGLUserLocationAnnotationViewStyle : NSObject
 
 /**
- The fill color for the puck view.
+ The fill color for the dot puck view.
  */
 @property (nonatomic) UIColor *puckFillColor;
+/**
+ The fill color for the background for the dot puck border.
+ */
+@property (nonatomic) UIColor *puckBorderBackgroundColor;
 /**
  The shadow color for the puck view.
  */
@@ -29,7 +33,11 @@ MGL_EXPORT
  */
 @property (nonatomic) UIColor *puckArrowFillColor;
 /**
- The fill color for the puck view.
+ The fill color for the background arrow puck.
+ */
+@property (nonatomic) UIColor *puckArrowBackgroundColor;
+/**
+ The halo fill color for the puck view.
  */
 @property (nonatomic) UIColor *haloFillColor;
 /**
