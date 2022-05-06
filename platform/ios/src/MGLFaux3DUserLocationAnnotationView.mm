@@ -72,8 +72,6 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         }
         
     }
-
-    
 }
 
 - (void)drawPreciseLocationPuck {
@@ -92,6 +90,8 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
 {
     UIColor *puckArrowFillColor = tintColor;
     UIColor *puckArrowStrokeColor = tintColor;
+    UIColor *puckBorderBackgroundColor = UIColor.whiteColor;
+    UIColor *puckArrowBackgroundColor = UIColor.whiteColor;
     
     UIColor *approximateFillColor = tintColor;
     
@@ -104,6 +104,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         MGLUserLocationAnnotationViewStyle *style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         
         puckArrowFillColor = style.puckArrowFillColor ? style.puckArrowFillColor : puckArrowFillColor;
+        puckArrowBackgroundColor = style.puckArrowBackgroundColor ? style.puckArrowBackgroundColor : puckArrowBackgroundColor;
         
         if (@available(iOS 14, *)) {
             approximateFillColor = style.approximateHaloFillColor ? style.approximateHaloFillColor : approximateFillColor;
@@ -111,12 +112,14 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         
         haloFillColor = style.haloFillColor ? style.haloFillColor : haloFillColor;
         dotFillColor = style.puckFillColor ? style.puckFillColor : dotFillColor;
+        puckBorderBackgroundColor = style.puckBorderBackgroundColor ? style.puckBorderBackgroundColor : puckBorderBackgroundColor;
         headingFillColor = style.puckFillColor ? style.puckFillColor : headingFillColor;
     }
     
     if (_puckModeActivated)
     {
         _puckArrow.fillColor = [puckArrowFillColor CGColor];
+        _puckArrow.backgroundColor = [puckArrowBackgroundColor CGColor];
         _puckArrow.strokeColor = [puckArrowStrokeColor CGColor];
     }
     else if (_approximateModeActivated)
@@ -128,6 +131,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         _accuracyRingLayer.backgroundColor = [accuracyFillColor CGColor];
         _haloLayer.backgroundColor = [haloFillColor CGColor];
         _dotLayer.backgroundColor = [dotFillColor CGColor];
+        _dotBorderLayer.backgroundColor = [puckBorderBackgroundColor CGColor];
         [_headingIndicatorLayer updateTintColor:[headingFillColor CGColor]];
     }
     
@@ -206,14 +210,17 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     }
     
     UIColor *arrowColor = self.mapView.tintColor;
+    UIColor *puckArrowBackgroundColor = UIColor.whiteColor;
+    
     UIColor *puckShadowColor = UIColor.blackColor;
     CGFloat shadowOpacity = 0.25;
 
-    
     if ([self.mapView.delegate respondsToSelector:@selector(mapViewStyleForDefaultUserLocationAnnotationView:)]) {
         MGLUserLocationAnnotationViewStyle *style = [self.mapView.delegate mapViewStyleForDefaultUserLocationAnnotationView:self.mapView];
         arrowColor = style.puckArrowFillColor ? style.puckArrowFillColor : arrowColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
+        puckArrowBackgroundColor = style.puckArrowBackgroundColor ? style.puckArrowBackgroundColor : puckArrowBackgroundColor;
+        
         shadowOpacity = style.puckShadowOpacity;
     }
 
@@ -222,7 +229,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     if ( ! _puckDot)
     {
         _puckDot = [self circleLayerWithSize:MGLUserLocationAnnotationPuckSize];
-        _puckDot.backgroundColor = [[UIColor whiteColor] CGColor];
+        _puckDot.backgroundColor = [puckArrowBackgroundColor CGColor];
         _puckDot.shadowColor = [puckShadowColor CGColor];
         _puckDot.shadowOpacity = shadowOpacity;
         _puckDot.shadowPath = [[UIBezierPath bezierPathWithOvalInRect:_puckDot.bounds] CGPath];
@@ -302,6 +309,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     UIColor *haloColor = self.mapView.tintColor;
     UIColor *puckBackgroundColor = self.mapView.tintColor;
     UIColor *puckShadowColor = UIColor.blackColor;
+    UIColor *puckBorderBackgroundColor = UIColor.whiteColor;
     CGFloat shadowOpacity = 0.25;
 
     
@@ -310,6 +318,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
         haloColor = style.haloFillColor ? style.haloFillColor : haloColor;
         puckBackgroundColor = style.puckFillColor ? style.puckFillColor : puckBackgroundColor;
         puckShadowColor = style.puckShadowColor ? style.puckShadowColor : puckShadowColor;
+        puckBorderBackgroundColor = style.puckBorderBackgroundColor ? style.puckBorderBackgroundColor : puckBorderBackgroundColor;
         shadowOpacity = style.puckShadowOpacity;
     }
 
@@ -467,7 +476,7 @@ const CGFloat MGLUserLocationApproximateZoomThreshold = 7.0;
     if ( ! _dotBorderLayer)
     {
         _dotBorderLayer = [self circleLayerWithSize:MGLUserLocationAnnotationDotSize];
-        _dotBorderLayer.backgroundColor = [[UIColor whiteColor] CGColor];
+        _dotBorderLayer.backgroundColor = [puckBorderBackgroundColor CGColor];
         _dotBorderLayer.shadowColor = [puckShadowColor CGColor];
         _dotBorderLayer.shadowOpacity = shadowOpacity;
         _dotBorderLayer.shadowPath = [[UIBezierPath bezierPathWithOvalInRect:_dotBorderLayer.bounds] CGPath];
