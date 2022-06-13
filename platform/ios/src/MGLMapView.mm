@@ -8,6 +8,7 @@
 #include <mbgl/annotation/annotation.hpp>
 #include <mbgl/map/camera.hpp>
 #include <mbgl/map/mode.hpp>
+#include <mbgl/platform/settings.hpp>
 #include <mbgl/util/platform.hpp>
 #include <mbgl/storage/resource_options.hpp>
 #include <mbgl/storage/network_status.hpp>
@@ -41,6 +42,7 @@
 
 #import "NSBundle+MGLAdditions.h"
 #import "NSDate+MGLAdditions.h"
+#import "NSDictionary+MGLAdditions.h"
 #import "NSException+MGLAdditions.h"
 #import "NSPredicate+MGLPrivateAdditions.h"
 #import "NSString+MGLAdditions.h"
@@ -137,6 +139,9 @@ const CLLocationDistance MGLDistanceThresholdForCameraPause = 500;
 
 /// Rotation threshold while a pinch gesture is occurring.
 static NSString * const MGLRotationThresholdWhileZoomingKey = @"MGLRotationThresholdWhileZooming";
+
+/// Key of a settings provisioning object.
+static NSString * const MGLRendererSettingsKey = @"MGLRendererSettings";
 
 /// Reuse identifier and file name of the default point annotation image.
 static NSString * const MGLDefaultStyleMarkerSymbolName = @"default_marker";
@@ -531,6 +536,16 @@ public:
     // platform SDK via delegation). Calling `resetNativeNetworkManagerDelegate`
     // is not necessary here, since the shared manager already calls it.
     [MGLNetworkConfiguration sharedManager];
+
+    // Provision in-memory settings from NSUserDefaults.
+    NSDictionary * provisioning = [[NSUserDefaults standardUserDefaults] dictionaryForKey:MGLRendererSettingsKey];
+    if (provisioning != nil) {
+        mbgl::PropertyMap provisioningMap = provisioning.mgl_propertyMap;
+        auto& settings = mbgl::platform::Settings::getInstance();
+        for (auto& pair : provisioningMap) {
+            settings.set(pair.first, pair.second);
+        }
+    }
 
     self.accessibilityLabel = NSLocalizedStringWithDefaultValue(@"MAP_A11Y_LABEL", nil, nil, @"Map", @"Accessibility label");
     self.accessibilityTraits = UIAccessibilityTraitAllowsDirectInteraction | UIAccessibilityTraitAdjustable;
