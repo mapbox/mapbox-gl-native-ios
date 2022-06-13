@@ -15,11 +15,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>6.4.1</string>
+	<string>6.5.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>15280</string>
+	<string>15281</string>
 	<key>MGLCommitHash</key>
 	<string>$(CURRENT_COMMIT_HASH)</string>
 	<key>MGLSemanticVersionString</key>
