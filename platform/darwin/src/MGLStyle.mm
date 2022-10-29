@@ -34,10 +34,15 @@
 #include <mbgl/style/image.hpp>
 #include <mbgl/style/light.hpp>
 #include <mbgl/style/sources/geojson_source.hpp>
+#include <mbgl/style/sources/geojson_source_impl.hpp>
 #include <mbgl/style/sources/vector_source.hpp>
+#include <mbgl/style/sources/vector_source_impl.hpp>
 #include <mbgl/style/sources/raster_source.hpp>
+#include <mbgl/style/sources/raster_source_impl.hpp>
 #include <mbgl/style/sources/raster_dem_source.hpp>
+#include <mbgl/style/sources/raster_dem_source_impl.hpp>
 #include <mbgl/style/sources/image_source.hpp>
+#include <mbgl/style/sources/image_source_impl.hpp>
 
 #import "NSDate+MGLAdditions.h"
 
@@ -182,20 +187,27 @@ static_assert(6 == mbgl::util::default_styles::numOrderedStyles,
     if (MGLSource *source = rawSource->peer.has_value() ? rawSource->peer.get<SourceWrapper>().source : nil) {
         return source;
     }
-
+    
     // TODO: Fill in options specific to the respective source classes
     // https://github.com/mapbox/mapbox-gl-native/issues/6584
-    if (auto vectorSource = rawSource->as<mbgl::style::VectorSource>()) {
-        return [[MGLVectorTileSource alloc] initWithRawSource:vectorSource stylable:self.stylable];
-    } else if (auto geoJSONSource = rawSource->as<mbgl::style::GeoJSONSource>()) {
-        return [[MGLShapeSource alloc] initWithRawSource:geoJSONSource stylable:self.stylable];
-    } else if (auto rasterSource = rawSource->as<mbgl::style::RasterSource>()) {
-        return [[MGLRasterTileSource alloc] initWithRawSource:rasterSource stylable:self.stylable];
-    } else if (auto rasterDEMSource = rawSource->as<mbgl::style::RasterDEMSource>()) {
-        return [[MGLRasterDEMSource alloc] initWithRawSource:rasterDEMSource stylable:self.stylable];
-    } else if (auto imageSource = rawSource->as<mbgl::style::ImageSource>()) {
-        return [[MGLImageSource alloc] initWithRawSource:imageSource stylable:self.stylable];
-    } else {
+    
+    const mbgl::style::SourceTypeInfo* typeInfo = rawSource->getTypeInfo();
+    if (typeInfo == mbgl::style::VectorSource::Impl::staticTypeInfo()) {
+        return [[MGLVectorTileSource alloc] initWithRawSource:rawSource stylable:self.stylable];
+    }
+    else if (typeInfo == mbgl::style::GeoJSONSource::Impl::staticTypeInfo()) {
+        return [[MGLShapeSource alloc] initWithRawSource:rawSource stylable:self.stylable];
+    }
+    else if (typeInfo == mbgl::style::RasterSource::Impl::staticTypeInfo()) {
+        return [[MGLRasterTileSource alloc] initWithRawSource:rawSource stylable:self.stylable];
+    }
+    else if (typeInfo == mbgl::style::RasterDEMSource::Impl::staticTypeInfo()) {
+        return [[MGLRasterDEMSource alloc] initWithRawSource:rawSource stylable:self.stylable];
+    }
+    else if (typeInfo == mbgl::style::ImageSource::Impl::staticTypeInfo()) {
+        return [[MGLImageSource alloc] initWithRawSource:rawSource stylable:self.stylable];
+    }
+    else {
         return [[MGLSource alloc] initWithRawSource:rawSource stylable:self.stylable];
     }
 }
@@ -615,10 +627,14 @@ static_assert(6 == mbgl::util::default_styles::numOrderedStyles,
 
 - (NSArray<MGLStyleLayer *> *)placeStyleLayers {
     NSSet *streetsSourceIdentifiers = [self.mapboxStreetsSources valueForKey:@"identifier"];
-    
+
     NSSet *placeSourceLayerIdentifiers = [NSSet setWithObjects:@"marine_label", @"country_label", @"state_label", @"place_label", @"water_label", @"poi_label", @"rail_station_label", @"mountain_peak_label", @"natural_label", @"transit_stop_label", nil];
+    if (self.accessiblePlaceSourceLayerIdentifiers == nil) {
+        _accessiblePlaceSourceLayerIdentifiers = [NSMutableSet set];
+    }
+
     NSPredicate *isPlacePredicate = [NSPredicate predicateWithBlock:^BOOL (MGLVectorStyleLayer * _Nullable layer, NSDictionary<NSString *, id> * _Nullable bindings) {
-        return [layer isKindOfClass:[MGLVectorStyleLayer class]] && [streetsSourceIdentifiers containsObject:layer.sourceIdentifier] && [placeSourceLayerIdentifiers containsObject:layer.sourceLayerIdentifier];
+        return [layer isKindOfClass:[MGLVectorStyleLayer class]] && (([streetsSourceIdentifiers containsObject:layer.sourceIdentifier] && [placeSourceLayerIdentifiers containsObject:layer.sourceLayerIdentifier]) || [self.accessiblePlaceSourceLayerIdentifiers containsObject:layer.sourceLayerIdentifier]);
     }];
     return [self.layers filteredArrayUsingPredicate:isPlacePredicate];
 }

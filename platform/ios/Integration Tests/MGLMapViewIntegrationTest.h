@@ -6,6 +6,7 @@
 @property (nonatomic) MGLStyle *style;
 @property (nonatomic) XCTestExpectation *styleLoadingExpectation;
 @property (nonatomic) XCTestExpectation *renderFinishedExpectation;
+@property (nonatomic) XCTestExpectation *idleExpectation;
 @property (nonatomic) MGLAnnotationView * (^viewForAnnotation)(MGLMapView *mapView, id<MGLAnnotation> annotation);
 @property (nonatomic) void (^regionWillChange)(MGLMapView *mapView, BOOL animated);
 @property (nonatomic) void (^regionIsChanging)(MGLMapView *mapView);
@@ -18,4 +19,6 @@
 - (void)waitForMapViewToFinishLoadingStyleWithTimeout:(NSTimeInterval)timeout;
 - (void)waitForMapViewToBeRenderedWithTimeout:(NSTimeInterval)timeout;
 - (MGLMapView *)mapViewForTestWithFrame:(CGRect)rect styleURL:(NSURL *)styleURL;
+- (void)waitForMapViewToIdleWithTimeout:(NSTimeInterval)timeout;
+- (NSURL*)styleURL;
 @end

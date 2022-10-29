@@ -4,6 +4,8 @@
 #import "MGLAccountManager_Private.h"
 #endif
 
+#include <mbgl/storage/network_status.hpp>
+
 #import "MGLReachability.h"
 
 static NSString * const MGLStartTime = @"start_time";
@@ -62,6 +64,19 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
     sessionConfiguration.URLCache = nil;
 
     return sessionConfiguration;
+}
+
+- (void)setConnected:(BOOL)connected {
+    if (!connected) {
+        mbgl::NetworkStatus::Set(mbgl::NetworkStatus::Status::Offline);
+    } else {
+        mbgl::NetworkStatus::Set(mbgl::NetworkStatus::Status::Online);
+    }
+}
+
+- (BOOL)connected {
+    auto status = mbgl::NetworkStatus::Get();
+    return status == mbgl::NetworkStatus::Status::Online;
 }
 
 #pragma mark - MGLNativeNetworkDelegate
@@ -127,13 +142,15 @@ NSString * const kMGLDownloadPerformanceEvent = @"mobile.performance_trace";
     [self sendEventForURLResponse:response withAction:@"cancel"];
 }
 
-- (void)debugLog:(NSString *)format, ... {
-    MGLLogDebug(format);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+// TODO: Remove in future release.
+- (void)debugLog:(nonnull NSString *)format, ... {
 }
 
-- (void)errorLog:(NSString *)format, ... {
-    MGLLogError(format);
+- (void)errorLog:(nonnull NSString *)format, ... {
 }
+#pragma clang diagnostic pop
 
 #pragma mark - Event management
 

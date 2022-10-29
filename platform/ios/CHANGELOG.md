@@ -2,7 +2,98 @@
 
 Mapbox welcomes participation and contributions from everyone. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) to get started.
 
-## 5.9.0
+## master
+
+### 🐞 Bug fixes
+
+* Fixed a bug with UIViews being incorrectly updated with a one frame delay. ([#483](https://github.com/mapbox/mapbox-gl-native-ios/pull/483))
+* Fixed an issue where CocoaPods users could not install the SDK when using Xcode 12. ([#482](https://github.com/mapbox/mapbox-gl-native-ios/pull/82))
+
+## 6.2.1 - September 23, 2020
+
+* Fixed an issue where completion blocks were not called until the map was rendered. ([#463](https://github.com/mapbox/mapbox-gl-native-ios/pull/463))
+* Fixed an issue that caused a crash when custom location managers did not implement `MGLLocationManager.accuracyAuthorization`. ([#474](https://github.com/mapbox/mapbox-gl-native-ios/pull/474))
+* Fixed a crash that occurred when `MGLIdeographicFontFamilyName` was set to `NO`. ([#467](https://github.com/mapbox/mapbox-gl-native-ios/pull/467), [#476](https://github.com/mapbox/mapbox-gl-native-ios/pull/476))
+* Fixed an issue with local font glyph rendering, by updating the core library to version 5.1.0. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475))
+
+### 🔧 Dependencies
+
+* Core library updated to `5.1.0`. ([#475](https://github.com/mapbox/mapbox-gl-native-ios/pull/475)) 
+
+## 6.2.0 - September 17, 2020
+
+**This release supports iOS 14 and Xcode 12**
+For building with Xcode 12, please ensure that mapbox-events-ios is at version 0.10.4 or higher. Please see our [dependency instructions](https://docs.mapbox.com/ios/maps/overview/#add-the-dependency) for more details. This version does not support Apple Silicon Macs (arm64).
+
+### ✨ New features
+
+* Added `MGLLocationManager.accuracyAuthorization` to check the level of accuracy the app is allowed to support. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
+* Added `[MGLLocationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:]` to allow developers request just-in-time full-accuracy permissions. ([#361](https://github.com/mapbox/mapbox-gl-native-ios/pull/361))
+* Added `[MGLLocationManagerDelegate locationManagerDidChangeAuthorization:]` to let `MGLMapView` know about privacy changes. ([#376](https://github.com/mapbox/mapbox-gl-native-ios/pull/376))
+* Added `[MGLMapViewDelegate mapView:didChangeLocationManagerAuthorization:]` to allow developers adjust their apps to privacy settings changes. ([#376](https://github.com/mapbox/mapbox-gl-native-ios/pull/376))
+* Added an approximate user location halo when `MGLLocationManager.accuracyAuthorization` is set to `CLAccuracyAuthorizationReducedAccuracy`. ([#381](https://github.com/mapbox/mapbox-gl-native-ios/pull/381))
+* The `MGLAccuracyAuthorizationDescription` as element of `NSLocationTemporaryUsageDescriptionDictionary` Info.plist key can now be set to describe why you request accuracy authorization. ([#392](https://github.com/mapbox/mapbox-gl-native-ios/pull/392))
+* Added `[MGLMapViewDelegate mapViewStyleForDefaultUserLocationAnnotationView:]` and `MGLUserLocationAnnotationViewStyle` class to allow developers customize the default user location annotation view UI style. ([#403](https://github.com/mapbox/mapbox-gl-native-ios/pull/403))
+* Added `MGLNetworkConfiguration.connected` property to enforce `MGLMapView` to use cached tiles. ([#416](https://github.com/mapbox/mapbox-gl-native-ios/pull/416))
+
+### 🐞 Bug fixes
+
+* Fixed an issue where the map would hang periodically (on iOS 14). ([#411](https://github.com/mapbox/mapbox-gl-native-ios/pull/411))
+* Fixed a sporadic crash when the application "resigns active", for example, when showing Control Center. ([#412](https://github.com/mapbox/mapbox-gl-native-ios/pull/412))
+* Fixed an issue that caused ornaments to consider safe areas when `MGLMapView.automaticallyAdjustsContentInset` is set to `NO`. ([#420](https://github.com/mapbox/mapbox-gl-native-ios/pull/420))
+* Fixed an issue that caused rendering crashes when entering the background. ([#432](https://github.com/mapbox/mapbox-gl-native-ios/pull/432))
+
+### 🔧 Dependencies
+
+* Supported Xcode 12 by updating `mapbox-events-ios` to `~> 0.10.4`.([#458](https://github.com/mapbox/mapbox-gl-native-ios/pull/458))
+* Core library updated to `4.0.0`. ([#458](https://github.com/mapbox/mapbox-gl-native-ios/pull/458))
+
+## 6.1.0 - August 26, 2020
+
+### ✨ New features
+
+* Added the `MGLStyle.accessiblePlaceSourceLayerIdentifiers` property to cause VoiceOver to read aloud certain layers in `MGLVectorTileSource`s as places, the same way that certain layers in the Mapbox Streets source are already read aloud as places. ([#336](https://github.com/mapbox/mapbox-gl-native-ios/pull/336))
+* Added `MGLObserver`, `MGLObservable` and `MGLEvent` to monitor events from the map view. ([#358](https://github.com/mapbox/mapbox-gl-native-ios/pull/358))
+
+### 🐞 Bug fixes
+
+* Fixed symbol flickering on updating symbols in the existing tiles (#630)
+* Fixed icons jittering during immediate camera transitions (#260)
+
+### 🔧 Dependencies
+
+* Core library updated to `3.1.0`.
+
+## 6.0.0 - July 16, 2020
+ 
+This major release does not include any breaking changes to public APIs. We are treating this release as a SEMVER major change because our installation instructions have changed. 
+ 
+**Distribution Updates**
+ 
+Standard installation methods still apply – we will continue to support SDK installation via CocoaPods, Carthage, and manual integration. However, you are now required to authenticate installation with a new access token. For more information about this new process, [view our installation guide](https://docs.mapbox.com/ios/maps/overview/#install-the-sdk).
+ 
+**Licensing Updates**
+ 
+Release v6.0.0 updates the Mapbox Maps SDK for iOS to use a pre-built GL Native binary rather than building from source as a submodule dependency. GL Native is changing some of its development workflows to build some Mapbox platform-specific features internally, similar to Chrome/Chromium development. Please refer to the [README.md](https://github.com/mapbox/mapbox-gl-native-ios/blob/master/platform/ios/README.md) and/or [DEVELOPING.md](https://github.com/mapbox/mapbox-gl-native-ios/blob/master/platform/ios/DEVELOPING.md) for guidance.
+ 
+Starting today, new binary releases of GL Native are licensed under the Mapbox Terms of Service. The Mapbox Maps SDKs repos will continue to be public and licensed under BSD-2.
+ 
+If you have any questions about how this change may impact your use of the Maps SDK, please don’t hesitate to reach out to Mapbox Support to connect with the Mapbox mobile team.
+
+### ✨ New features
+* Added support for the `hash` expression operator that generates a hash value for the given string. Use this function in expressions in style JSON or with the `MGL_FUNCTION()` syntax in an `NSExpression` format string. ([#326](https://github.com/mapbox/mapbox-gl-native-ios/pull/326))
+* Improved the performance of the `mgl_distance:` expression function (`distance` expression operator in JSON). ([#326](https://github.com/mapbox/mapbox-gl-native-ios/pull/326))
+
+### 🐞 Bug fixes
+* Fixed an issue where symbols flickered when zooming out. ([mapbox/mapbox-gl-native#16471](https://github.com/mapbox/mapbox-gl-native/issues/16471), [#273](https://github.com/mapbox/mapbox-gl-native-ios/issues/273))
+* Fixed a potential crash when switching from a style with many layers to an empty style. ([mapbox/mapbox-gl-native#16480](https://github.com/mapbox/mapbox-gl-native/issues/16480))
+* Fixed a potential memory leak when using VoiceOver. ([mapbox/mapbox-gl-native-ios#318](https://github.com/mapbox/mapbox-gl-native-ios/pull/318))
+
+### 🔧 Dependencies
+
+* Core library updated to `1.8.1`.
+
+## 5.9.0 - May 7, 2020
 
 ### Styles and rendering
 
@@ -28,7 +119,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * Certain logging statements no longer run on the main thread. ([mapbox/mapbox-gl-native#16325](https://github.com/mapbox/mapbox-gl-native/pull/16325))
 * Fixed an issue that prevented the Maps SDK from warning about a misconfiguration that violated the Mapbox ToS. ([#288](https://github.com/mapbox/mapbox-gl-native-ios/pull/288))
 
-## 5.8.0
+## 5.8.0 - April 7, 2020
 
 ### Styles and rendering
 
@@ -58,7 +149,7 @@ Mapbox welcomes participation and contributions from everyone. Please read [CONT
 * When an offline pack encounters an HTTP 404 error, the `MGLOfflinePackUserInfoKeyError` user info key of the `MGLOfflinePackErrorNotification` now indicates the resource that could not be downloaded. ([#16240](https://github.com/mapbox/mapbox-gl-native/pull/16240))
 
 ### Other changes
-
+* Added `MGLMapView.anchorRotateOrZoomGesturesToCenterCoordinate` property that anchors zoom and rotating gestures to the map's view center coordinate. ([#268](https://github.com/mapbox/mapbox-gl-native-ios/pull/268))
 * Added the `MGLMapView.minimumPitch` and `MGLMapView.maximumPitch` properties to further limit how much the user or your code can tilt the map. ([#208](https://github.com/mapbox/mapbox-gl-native-ios/pull/208))
 * Fixed a crash while quitting the application after adding an annotation to `MGLMapView`. ([#252](https://github.com/mapbox/mapbox-gl-native-ios/pull/252))
 * Fixed an issue where the user location annotation view’s heading indicator did not rotate if Compass Calibration was disabled in the device’s Location Services settings. ([#247](https://github.com/mapbox/mapbox-gl-native-ios/pull/247))

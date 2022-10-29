@@ -23,9 +23,9 @@ Before building, follow these steps to install prerequisites:
 1. Install [Xcode](https://developer.apple.com/xcode/)
 1. Launch Xcode and install any updates
 1. Install [Homebrew](http://brew.sh)
-1. Install [Node.js](https://nodejs.org/), [CMake](https://cmake.org/), and [ccache](https://ccache.samba.org):
+1. Install [Node.js](https://nodejs.org/), [CMake](https://cmake.org/), [ccache](https://ccache.samba.org) and [carthage](https://github.com/Carthage/Carthage):
    ```
-   brew install node cmake ccache
+   brew install node cmake ccache carthage
    ```
 1. Install [xcpretty](https://github.com/supermarin/xcpretty) (optional, used for prettifying command line builds):
    ```
@@ -38,14 +38,29 @@ Before building, follow these steps to install prerequisites:
 
 ### Building the SDK
 
-1. Clone the git repository:
+1. Create a Mapbox API token (from your account page on [mapbox.com](https://www.mapbox.com)) with the      `DOWNLOADS:READ` scope. 
+   **PLEASE NOTE: This is not the same as your production Mapbox API token.** 
+   Once you have the token, create a `~/.netrc` which looks like this:
+   ```
+   machine api.mapbox.com 
+      login mapbox
+      password <INSERT API TOKEN>
+   ```
+
+2. Clone the git repository:
    ```
    git clone https://github.com/mapbox/mapbox-gl-native-ios.git
-   cd mapbox-gl-native
    ```
    Note that this repository uses Git submodules. They'll be automatically checked out when you first run a `make` command,
    but are not updated automatically. We recommended that you run `git submodule update` after pulling down new commits to
    this repository.
+
+1. Fetch dependencies by running:
+   ```
+   carthage update --platform iOS --use-netrc
+   ```
+   _NOTE: You may need to clear your carthage caches before running this._
+
 1. Run `make iframework BUILDTYPE=Release`. The packaging script will produce a `build/ios/pkg/` folder containing:
   - a `dynamic` folder containing a dynamically-linked fat framework with debug symbols for devices and the iOS Simulator
   - a `documentation` folder with HTML API documentation
@@ -73,10 +88,6 @@ bash "${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework/strip-fra
 
 (The last step, courtesy of [Realm](https://github.com/realm/realm-cocoa/), is required for working around an [iOS App Store bug](http://www.openradar.me/radar?id=6409498411401216) when archiving universal binaries.)
 
-##### Snapshot builds
-
-A snapshot build of the dynamic framework, based on the latest commit to the master branch, is available for download [here](https://mapbox.s3.amazonaws.com/mapbox-gl-native/ios/builds/mapbox-ios-sdk-snapshot-dynamic.zip).
-
 #### Static framework
 
 You can alternatively install the SDK as a static framework:
@@ -103,8 +114,15 @@ You can alternatively install the SDK as a static framework:
 1. In the Build Settings tab, find the Other Linker Flags setting and add `-ObjC`.
 
 #### CocoaPods
-
-For instructions on installing stable release versions of the Mapbox Maps SDK for iOS with CocoaPods, see [our website](https://www.mapbox.com/install/ios/cocoapods/).
+1. Create a Mapbox API token (from your account page on [mapbox.com](https://www.mapbox.com)) with the      `DOWNLOADS:READ` scope. 
+   **PLEASE NOTE: This is not the same as your production Mapbox API token.** 
+   Once you have the token, create a `~/.netrc` which looks like this:
+   ```
+   machine api.mapbox.com 
+      login mapbox
+      password <INSERT API TOKEN>
+   ```
+2. Follow instructions on [our website](https://www.mapbox.com/install/ios/cocoapods/).
 
 As of v5.6.0, you must specify `use_frameworks!` in your Podfile.
 
@@ -161,8 +179,39 @@ pod 'Mapbox-iOS-SDK-stripped', '~> x.x.x'
 Note that these builds lack some debugging information, which could make development more difficult and result in less useful crash reports. Though initially smaller on disk, using these builds has no effect on the ultimate size of your application — see our [Understanding iOS Framework Size guide](https://www.mapbox.com/help/ios-framework-size/) for more information.
 
 #### Carthage
+Please note that a Mapbox download token is required from v5.10.0 forward and additional configuration is needed.
 
-For instructions on installing stable release versions of the Mapbox Maps SDK for iOS with Carthage, see [our website](https://www.mapbox.com/install/ios/carthage/).
+1. Create a Mapbox API token (from your account page on [mapbox.com](https://www.mapbox.com)) with the      `DOWNLOADS:READ` scope. 
+   **PLEASE NOTE: This is not the same as your production Mapbox API token.** 
+   Once you have the token, create a `~/.netrc` which looks like this:
+   ```
+   machine api.mapbox.com 
+      login mapbox
+      password <INSERT API TOKEN>
+   ```
+
+2. Follow instructions on [our website](https://www.mapbox.com/install/ios/carthage/).
+
+Starting with v6.0.0, you must specify `--use-netrc` when running `carthage update`:
+
+   ```
+   carthage update --platform iOS --use-netrc
+   ```
+
+Starting with v6.0.0, the URL for the artifact in your Cartfile must change:
+
+   ```
+   binary "https://api.mapbox.com/downloads/v2/carthage/mobile-maps/mapbox-ios-sdk-dynamic.json" == x.x.x-alpha.x
+github "mapbox/mapbox-events-ios" ~> x.x.x
+   ```
+
+As you're developing you may need to clear out your Carthage directories:
+   ```
+   Carthage, 
+   Cartfile.resolved, 
+   ~/Library/Caches/carthage, 
+   ~/Library/Caches/org.carthage.CarthageKit
+   ```
 
 Please note that as of ios-v5.6.0-alpha.2, `--no-use-binaries` has no affect on projects built with the Mapbox framework.
 
@@ -171,7 +220,7 @@ Please note that as of ios-v5.6.0-alpha.2, `--no-use-binaries` has no affect on 
 To test pre-releases of the dynamic framework, directly specify the version in your Cartfile:
 
 ```json
-binary "https://www.mapbox.com/ios-sdk/Mapbox-iOS-SDK.json" ~> x.x.x-alpha.1
+binary "https://api.mapbox.com/downloads/v2/carthage/mobile-maps/mapbox-ios-sdk-dynamic.json" ~> x.x.x-alpha.1
 github "mapbox/mapbox-events-ios" == x.x.x
 ```
 

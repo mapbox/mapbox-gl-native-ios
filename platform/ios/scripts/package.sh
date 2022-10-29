@@ -7,7 +7,7 @@ set -u
 NAME=Mapbox
 OUTPUT=build/ios/pkg
 DERIVED_DATA=build/ios
-PRODUCTS=${DERIVED_DATA}
+PRODUCTS=${DERIVED_DATA}/Build/Products
 LOG_PATH=build/xcodebuild-$(date +"%Y-%m-%d_%H%M%S").log
 
 BUILD_FOR_DEVICE=${BUILD_DEVICE:-true}
@@ -76,19 +76,21 @@ if [[ ${BUILD_STATIC} == true ]]; then
     SCHEME='static'
 fi
 
-CI_XCCONFIG=''
+XCCONFIG=''
 if [[ ! -z "${CI:=}" ]]; then
     xcconfig='platform/darwin/ci.xcconfig'
     echo "CI environment, using ${xcconfig}"
-    CI_XCCONFIG="-xcconfig ./${xcconfig}"
+    XCCONFIG="-xcconfig ./${xcconfig}"
 fi
+
+mkdir -p build/ios
 
 step "Building ${FORMAT} framework for iOS Simulator using ${SCHEME} scheme"
 xcodebuild \
     CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
     CURRENT_COMMIT_HASH=${HASH} \
     ONLY_ACTIVE_ARCH=NO \
-    ${CI_XCCONFIG} \
+    ${XCCONFIG} \
     -derivedDataPath ${DERIVED_DATA} \
     -workspace ./platform/ios/ios.xcworkspace \
     -scheme ${SCHEME} \
@@ -102,7 +104,7 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
         CURRENT_SEMANTIC_VERSION=${SEM_VERSION} \
         CURRENT_COMMIT_HASH=${HASH} \
         ONLY_ACTIVE_ARCH=NO \
-        ${CI_XCCONFIG} \
+        ${XCCONFIG} \
         -derivedDataPath ${DERIVED_DATA} \
         -workspace ./platform/ios/ios.xcworkspace \
         -scheme ${SCHEME} \
@@ -162,10 +164,11 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
         copyAndMakeFatFramework "${NAME}"
 
         if [[ ${INCLUDE_EVENTS_IN_PACKAGE} == true ]]; then
-            copyAndMakeFatFramework "MapboxMobileEvents"
+            step "Copying in MapboxMobileEvents.framework from Carthage directory"
+            cp -rv Carthage/Build/iOS/MapboxMobileEvents.framework ${OUTPUT}/dynamic
+            cp -rv Carthage/Build/iOS/MapboxMobileEvents.framework.dSYM ${OUTPUT}/dynamic
+            cp -rv Carthage/Build/iOS/*.bcsymbolmap ${OUTPUT}/dynamic
         fi
-
-        # Bundling mapbox-events-ios
     fi
     
     cp -rv platform/ios/app/Settings.bundle ${OUTPUT}

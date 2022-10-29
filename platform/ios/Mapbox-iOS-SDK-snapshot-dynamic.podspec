@@ -1,6 +1,6 @@
 Pod::Spec.new do |m|
 
-  version = '5.9.0'
+  version = '6.2.1'
 
   m.name    = 'Mapbox-iOS-SDK-snapshot-dynamic'
   m.version = "#{version}-snapshot"
@@ -29,6 +29,6 @@ Pod::Spec.new do |m|
 
   m.preserve_path = '**/*.bcsymbolmap'
 
-  m.dependency "MapboxMobileEvents", "0.10.2"
+  m.dependency "MapboxMobileEvents", "~> 0.10.4"
 
 end

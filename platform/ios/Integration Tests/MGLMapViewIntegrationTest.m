@@ -1,6 +1,7 @@
 #import "MGLMapViewIntegrationTest.h"
 
 @interface MGLMapView (MGLMapViewIntegrationTest)
+@property (nonatomic, weak) CADisplayLink *displayLink;
 - (void)updateFromDisplayLink:(CADisplayLink *)displayLink;
 - (void)setNeedsRerender;
 @end
@@ -11,10 +12,14 @@
     return [[MGLMapView alloc] initWithFrame:UIScreen.mainScreen.bounds styleURL:styleURL];
 }
 
+- (NSURL*)styleURL {
+    return [[NSBundle bundleForClass:[self class]] URLForResource:@"one-liner" withExtension:@"json"];
+}
+
 - (void)setUp {
     [super setUp];
-
-    NSURL *styleURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"one-liner" withExtension:@"json"];
+    
+    NSURL *styleURL = [self styleURL];
 
     self.mapView = [self mapViewForTestWithFrame:UIScreen.mainScreen.bounds styleURL:styleURL];
     self.mapView.delegate = self;
@@ -22,11 +27,34 @@
     UIView *superView = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
     [superView addSubview:self.mapView];
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    [self.window addSubview:superView];
+
+    UIViewController *controller = [[UIViewController alloc] init];
+    self.window.rootViewController = controller;
+
+    [controller.view addSubview:superView];
+
     [self.window makeKeyAndVisible];
+
+
+
+    // Wait for the application to be active. If testing with AirPlay, tests
+    // can start in `UIApplicationStateInactive`
+    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+        XCTNSNotificationExpectation *notificationExpectation = [[XCTNSNotificationExpectation alloc] initWithName:UIApplicationDidBecomeActiveNotification
+                                                                                                            object:nil
+                                                                                                notificationCenter:[NSNotificationCenter defaultCenter]];
+        notificationExpectation.handler = ^BOOL(NSNotification * _Nonnull notification) {
+            NSLog(@"Test launched in inactive state. Received active: %@", notification);
+            return YES;
+        };
+
+        [self waitForExpectations:@[notificationExpectation] timeout:30.0];
+        XCTAssert(UIApplication.sharedApplication.applicationState == UIApplicationStateActive);
+    }
 
     if (!self.mapView.style) {
         [self waitForMapViewToFinishLoadingStyleWithTimeout:10];
+        [self waitForMapViewToIdleWithTimeout:10];
     }
 }
 
@@ -56,12 +84,19 @@
     XCTAssertEqual(mapView.style, style);
 
     [self.styleLoadingExpectation fulfill];
+    self.styleLoadingExpectation = nil;
 }
 
 - (void)mapViewDidFinishRenderingFrame:(MGLMapView *)mapView fullyRendered:(__unused BOOL)fullyRendered {
     [self.renderFinishedExpectation fulfill];
     self.renderFinishedExpectation = nil;
 }
+
+- (void)mapViewDidBecomeIdle:(MGLMapView *)mapView {
+    [self.idleExpectation fulfill];
+    self.idleExpectation = nil;
+}
+
 
 - (void)mapView:(MGLMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
     if (self.regionWillChange) {
@@ -106,6 +141,11 @@
 
 - (void)waitForMapViewToFinishLoadingStyleWithTimeout:(NSTimeInterval)timeout {
     XCTAssertNil(self.styleLoadingExpectation);
+    XCTAssertNotNil(self.mapView.displayLink);
+    XCTAssert(!self.mapView.displayLink.paused);
+
+    [self.mapView setNeedsRerender];
+
     self.styleLoadingExpectation = [self expectationWithDescription:@"Map view should finish loading style."];
     [self waitForExpectations:@[self.styleLoadingExpectation] timeout:timeout];
     self.styleLoadingExpectation = nil;
@@ -117,6 +157,13 @@
     self.renderFinishedExpectation = [self expectationWithDescription:@"Map view should be rendered"];
     [self waitForExpectations:@[self.renderFinishedExpectation] timeout:timeout];
     self.renderFinishedExpectation = nil;
+}
+
+- (void)waitForMapViewToIdleWithTimeout:(NSTimeInterval)timeout {
+    XCTAssertNil(self.renderFinishedExpectation);
+    [self.mapView setNeedsRerender];
+    self.idleExpectation = [self expectationWithDescription:@"Map view should idle"];
+    [self waitForExpectations:@[self.idleExpectation] timeout:timeout];
 }
 
 - (void)waitForExpectations:(NSArray<XCTestExpectation *> *)expectations timeout:(NSTimeInterval)seconds {

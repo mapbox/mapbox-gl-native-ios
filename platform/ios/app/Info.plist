@@ -17,13 +17,18 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.9.0</string>
+	<string>6.2.1</string>
 	<key>CFBundleSignature</key>
 	<string>MBGL</string>
 	<key>CFBundleVersion</key>
-	<string>15256</string>
+	<string>15271</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>MGLAccuracyAuthorizationDescription</key>
+		<string>Mapbox requires your precise location to help you navigate the map.</string>
+	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2014–2019 Mapbox</string>
 	<key>NSLocationAlwaysUsageDescription</key>

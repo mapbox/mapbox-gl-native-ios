@@ -18,31 +18,24 @@ function finish { >&2 echo -en "\033[0m"; }
 trap finish EXIT
 
 buildPackageStyle() {
-    local package=$1 style=""
-    if [[ ${#} -eq 2 ]]; then
-        style="$2"
-    fi
+    local package=$1
+    local style=$2
     step "Building: make ${package} ${style}"
     FORMAT=${style} make ${package} 
     step "Publishing ${package} with ${style}"
     local file_name=""
-    if [ -z ${style} ]
-    then
-        ./platform/ios/scripts/publish.sh "${PUBLISH_VERSION}"
-        file_name=mapbox-ios-sdk-${PUBLISH_VERSION}.zip
-    else
-        ./platform/ios/scripts/publish.sh "${PUBLISH_VERSION}" ${style}
-        file_name=mapbox-ios-sdk-${PUBLISH_VERSION}-${style}.zip
-    fi
-    if [[ "${GITHUB_RELEASE}" == true ]]; then
-        step "Uploading ${file_name} to GitHub"
-        github-release upload \
-            --tag "ios-v${PUBLISH_VERSION}" \
-            --name ${file_name} \
-            --file "${BINARY_DIRECTORY}/${file_name}" > /dev/null
-    else
-        step "CREATED ${file_name} - skipping upload to Github"
-    fi
+    ./platform/ios/scripts/publish.sh "${PUBLISH_VERSION}" ${style}
+
+#    file_name=mapbox-ios-sdk-${PUBLISH_VERSION}-${style}.zip
+#    if [[ "${GITHUB_RELEASE}" == true ]]; then
+#        step "Uploading ${file_name} to GitHub"
+#        github-release upload \
+#            --tag "ios-v${PUBLISH_VERSION}" \
+#            --name ${file_name} \
+#            --file "${BINARY_DIRECTORY}/${file_name}" > /dev/null
+#    else
+#        step "CREATED ${file_name} - skipping upload to Github"
+#    fi
 }
 
 export GITHUB_USER=mapbox
@@ -86,20 +79,20 @@ if [[ $( echo ${VERSION_TAG} | grep --invert-match ios-v ) ]]; then
     fi
 fi
 
-if github-release info --tag ${VERSION_TAG} | grep --quiet "draft: ✗"; then
-    echo "Error: ${VERSION_TAG} has already been published on GitHub"
-    echo "See: https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/tag/${VERSION_TAG}"
-    if [[ "${GITHUB_RELEASE}" == true ]]; then
+if [[ "${GITHUB_RELEASE}" == true ]]; then
+    if github-release info --tag ${VERSION_TAG} | grep --quiet "draft: ✗"; then
+        echo "Error: ${VERSION_TAG} has already been published on GitHub"
+        echo "See: https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/tag/${VERSION_TAG}"
         exit 1
     fi
 fi
 
+PUBLISH_VERSION=$( echo ${VERSION_TAG} | sed 's/^ios-v//' )
+
 if [[ "${GITHUB_RELEASE}" == true ]]; then
-    PUBLISH_VERSION=$( echo ${VERSION_TAG} | sed 's/^ios-v//' )
     git checkout ${VERSION_TAG}
     step "Deploying version ${PUBLISH_VERSION}…"
 else
-    PUBLISH_VERSION=${VERSION_TAG}
     step "Building packages for version ${PUBLISH_VERSION} (Not deploying to Github)"
 fi
 
@@ -119,7 +112,7 @@ if [[ "${GITHUB_RELEASE}" == true ]]; then
         --description "${RELEASE_NOTES}"
 fi
 
-# Used for binary release on Github - includes events SDK
+# Build bundle
 buildPackageStyle "iframework" "dynamic-with-events"
 
 # Used for Cocoapods/Carthage

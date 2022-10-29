@@ -1,9 +1,10 @@
 #import "MGLMapViewIntegrationTest.h"
 #import "MGLTestUtility.h"
+#import "MGLMapView_Private.h"
 
 @interface MGLMapView (MGLMapViewPendingBlockTests)
 @property (nonatomic) NSMutableArray *pendingCompletionBlocks;
-- (void)pauseRendering:(__unused NSNotification *)notification;
+- (void)stopDisplayLink;
 @end
 
 @interface MGLMapViewPendingBlockTests : MGLMapViewIntegrationTest
@@ -14,39 +15,33 @@
 @implementation MGLMapViewPendingBlockTests
 
 - (void)testSetCenterCoordinate {
-    __typeof__(self) weakSelf = self;
-    
-    void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
-        __typeof__(self) strongSelf = weakSelf;
-        
-        if (strongSelf) {
-            [strongSelf.mapView setCenterCoordinate:CLLocationCoordinate2DMake(10.0, 10.0)
-                                          zoomLevel:10.0
-                                          direction:0
-                                           animated:NO
-                                  completionHandler:completion];
-        }
-        else {
-            completion();
-        }
-    };
-    
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
-                                                    transition:transition
-                                          addToPendingCallback:nil];
+    [self internal_testSetCenterCoordinate:CLLocationCoordinate2DMake(10.0, 20.0)
+                                 zoomLevel:10.0
+                                  animated:NO
+                                  testName:NSStringFromSelector(_cmd)];
 }
 
 - (void)testSetCenterCoordinateAnimated {
+    [self internal_testSetCenterCoordinate:CLLocationCoordinate2DMake(10.0, 20.0)
+                                 zoomLevel:10.0
+                                  animated:NO
+                                  testName:NSStringFromSelector(_cmd)];
+}
+
+- (void)internal_testSetCenterCoordinate:(CLLocationCoordinate2D)coord
+                               zoomLevel:(double)zoomLevel
+                                animated:(BOOL)animated
+                                testName:(NSString*)testName {
     __typeof__(self) weakSelf = self;
     
     void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
         __typeof__(self) strongSelf = weakSelf;
         
         if (strongSelf) {
-            [strongSelf.mapView setCenterCoordinate:CLLocationCoordinate2DMake(10.0, 10.0)
-                                          zoomLevel:10.0
+            [strongSelf.mapView setCenterCoordinate:coord
+                                          zoomLevel:zoomLevel
                                           direction:0
-                                           animated:YES
+                                           animated:animated
                                   completionHandler:completion];
         }
         else {
@@ -54,35 +49,55 @@
         }
     };
     
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
+    [self internalTestCompletionBlockAddedToPendingForTestName:testName
                                                     transition:transition
                                           addToPendingCallback:nil];
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+- (void)testSetSameCenterCoordinateBug461 {
+    [self internal_testSetSameCenterCoordinateBug461Animated:NO testName:NSStringFromSelector(_cmd)];
+}
+
+- (void)testSetSameCenterCoordinateBug461Animated {
+    [self internal_testSetSameCenterCoordinateBug461Animated:YES testName:NSStringFromSelector(_cmd)];
+}
+
+- (void)internal_testSetSameCenterCoordinateBug461Animated:(BOOL)animated testName:(NSString*)testName {
+
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(10.0, 20.0);
+    double zoomLevel = 10.0;
+    // Set the map zoom level to a specific constant
+    // Set the map center coordinate to a specific constant
+    [self.mapView setCenterCoordinate:coord
+                            zoomLevel:zoomLevel
+                             animated:NO];
+
+    [self.mapView setNeedsRerender];
+    [self waitForMapViewToIdleWithTimeout:1];
+
+    XCTAssert(self.mapView.zoomLevel == zoomLevel);
+    XCTAssertEqualWithAccuracy(self.mapView.centerCoordinate.latitude, coord.latitude, 0.000001);
+    XCTAssertEqualWithAccuracy(self.mapView.centerCoordinate.longitude, coord.longitude, 0.000001);
+
+    [self internal_testSetCenterCoordinate:coord
+                                 zoomLevel:zoomLevel
+                                  animated:NO
+                                  testName:testName];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 - (void)testSetVisibleCoordinateBounds {
-    __typeof__(self) weakSelf = self;
-    
-    void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
-        __typeof__(self) strongSelf = weakSelf;
-        
-        if (strongSelf) {
-            MGLCoordinateBounds unitBounds = MGLCoordinateBoundsMake(CLLocationCoordinate2DMake(0, 0), CLLocationCoordinate2DMake(1, 1));
-            [strongSelf.mapView setVisibleCoordinateBounds:unitBounds
-                                               edgePadding:UIEdgeInsetsZero
-                                                  animated:NO
-                                         completionHandler:completion];
-        }
-        else {
-            completion();
-        }
-    };
-    
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
-                                                    transition:transition
-                                          addToPendingCallback:nil];
+    [self internal_testSetVisibleCoordinateBoundsAnimated:NO testName:NSStringFromSelector(_cmd)];
 }
 
 - (void)testSetVisibleCoordinateBoundsAnimated {
+    [self internal_testSetVisibleCoordinateBoundsAnimated:YES testName:NSStringFromSelector(_cmd)];
+}
+
+- (void)internal_testSetVisibleCoordinateBoundsAnimated:(BOOL)animated testName:(NSString*)testName {
     __typeof__(self) weakSelf = self;
     
     void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
@@ -92,7 +107,7 @@
             MGLCoordinateBounds unitBounds = MGLCoordinateBoundsMake(CLLocationCoordinate2DMake(0, 0), CLLocationCoordinate2DMake(1, 1));
             [strongSelf.mapView setVisibleCoordinateBounds:unitBounds
                                                edgePadding:UIEdgeInsetsZero
-                                                  animated:YES
+                                                  animated:animated
                                          completionHandler:completion];
         }
         else {
@@ -100,34 +115,22 @@
         }
     };
     
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
+    [self internalTestCompletionBlockAddedToPendingForTestName:testName
                                                     transition:transition
                                           addToPendingCallback:nil];
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 - (void)testSetCamera {
-    __typeof__(self) weakSelf = self;
-    
-    void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
-        __typeof__(self) strongSelf = weakSelf;
-        
-        if (strongSelf) {
-            MGLCoordinateBounds unitBounds = MGLCoordinateBoundsMake(CLLocationCoordinate2DMake(0, 0), CLLocationCoordinate2DMake(1, 1));
-            MGLMapCamera *camera = [strongSelf.mapView cameraThatFitsCoordinateBounds:unitBounds];
-            
-            [strongSelf.mapView setCamera:camera withDuration:0.0 animationTimingFunction:nil completionHandler:completion];
-        }
-        else {
-            completion();
-        }
-    };
-    
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
-                                                    transition:transition
-                                          addToPendingCallback:nil];
+    [self internal_testSetCameraAnimated:NO testName:NSStringFromSelector(_cmd)];
 }
 
 - (void)testSetCameraAnimated {
+    [self internal_testSetCameraAnimated:YES testName:NSStringFromSelector(_cmd)];
+}
+
+- (void)internal_testSetCameraAnimated:(BOOL)animated testName:(NSString*)testName {
     __typeof__(self) weakSelf = self;
     
     void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
@@ -137,41 +140,32 @@
             MGLCoordinateBounds unitBounds = MGLCoordinateBoundsMake(CLLocationCoordinate2DMake(0, 0), CLLocationCoordinate2DMake(1, 1));
             MGLMapCamera *camera = [strongSelf.mapView cameraThatFitsCoordinateBounds:unitBounds];
             
-            [strongSelf.mapView setCamera:camera withDuration:0.3 animationTimingFunction:nil completionHandler:completion];
+            [strongSelf.mapView setCamera:camera
+                             withDuration:animated ? 0.3 : 0.0
+                  animationTimingFunction:nil
+                        completionHandler:completion];
         }
         else {
             completion();
         }
     };
     
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
+    [self internalTestCompletionBlockAddedToPendingForTestName:testName
                                                     transition:transition
                                           addToPendingCallback:nil];
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 - (void)testFlyToCamera {
-    __typeof__(self) weakSelf = self;
-    
-    void (^transition)(dispatch_block_t) = ^(dispatch_block_t completion) {
-        __typeof__(self) strongSelf = weakSelf;
-        
-        if (strongSelf) {
-            MGLCoordinateBounds unitBounds = MGLCoordinateBoundsMake(CLLocationCoordinate2DMake(0, 0), CLLocationCoordinate2DMake(1, 1));
-            MGLMapCamera *camera = [strongSelf.mapView cameraThatFitsCoordinateBounds:unitBounds];
-            
-            [strongSelf.mapView flyToCamera:camera withDuration:0.0 completionHandler:completion];
-        }
-        else {
-            completion();
-        }
-    };
-    
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
-                                                    transition:transition
-                                          addToPendingCallback:nil];
+    [self internal_testFlyToCameraAnimated:NO testName:NSStringFromSelector(_cmd)];
 }
 
 - (void)testFlyToCameraAnimated {
+    [self internal_testFlyToCameraAnimated:YES testName:NSStringFromSelector(_cmd)];
+}
+
+- (void)internal_testFlyToCameraAnimated:(BOOL)animated testName:(NSString*)testName {
     
     __typeof__(self) weakSelf = self;
 
@@ -182,18 +176,19 @@
             MGLCoordinateBounds unitBounds = MGLCoordinateBoundsMake(CLLocationCoordinate2DMake(0, 0), CLLocationCoordinate2DMake(1, 1));
             MGLMapCamera *camera = [strongSelf.mapView cameraThatFitsCoordinateBounds:unitBounds];
             
-            [strongSelf.mapView flyToCamera:camera withDuration:0.3 completionHandler:completion];
+            [strongSelf.mapView flyToCamera:camera
+                               withDuration:animated ? 0.3 : 0.0
+                          completionHandler:completion];
         }
         else {
             completion();
         }
     };
     
-    [self internalTestCompletionBlockAddedToPendingForTestName:NSStringFromSelector(_cmd)
+    [self internalTestCompletionBlockAddedToPendingForTestName:testName
                                                     transition:transition
                                           addToPendingCallback:nil];
 }
-
 
 #pragma mark - test interrupting regular rendering
 
@@ -256,8 +251,8 @@
         
         MGLTestAssert(strongSelf, !strongSelf.completionHandlerCalled);
         
-        // Pause rendering, stopping display link
-        [strongSelf.mapView pauseRendering:nil];
+        // Stopping display link, should trigger the pending blocks
+        [strongSelf.mapView stopDisplayLink];
         
         MGLTestAssert(strongSelf, strongSelf.completionHandlerCalled);
     };

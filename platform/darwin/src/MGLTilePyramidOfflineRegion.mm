@@ -73,9 +73,9 @@
     return self;
 }
 
-- (instancetype)initWithOfflineRegionDefinition:(const mbgl::OfflineTilePyramidRegionDefinition &)definition {
+- (instancetype)initWithOfflineDownloadParameters:(const mbgl::OfflineDownloadParameters &)definition {
     NSURL *styleURL = [NSURL URLWithString:@(definition.styleURL.c_str())];
-    MGLCoordinateBounds bounds = MGLCoordinateBoundsFromLatLngBounds(definition.bounds);
+    MGLCoordinateBounds bounds = MGLCoordinateBoundsFromLatLngBounds(definition.location.get<mbgl::LatLngBounds>());
     MGLTilePyramidOfflineRegion* result = [self initWithStyleURL:styleURL bounds:bounds fromZoomLevel:definition.minZoom toZoomLevel:definition.maxZoom];
     result.includesIdeographicGlyphs = definition.includeIdeographs;
     return result;
@@ -87,10 +87,10 @@
 #elif TARGET_OS_MAC
     const float scaleFactor = [NSScreen mainScreen].backingScaleFactor;
 #endif
-    return mbgl::OfflineTilePyramidRegionDefinition(_styleURL.absoluteString.UTF8String,
-                                                    MGLLatLngBoundsFromCoordinateBounds(_bounds),
-                                                    _minimumZoomLevel, _maximumZoomLevel,
-                                                    scaleFactor, _includesIdeographicGlyphs);
+    return mbgl::OfflineDownloadParameters(_styleURL.absoluteString.UTF8String,
+                                           MGLLatLngBoundsFromCoordinateBounds(_bounds),
+                                           _minimumZoomLevel, _maximumZoomLevel,
+                                           scaleFactor, _includesIdeographicGlyphs);
 }
 
 - (nullable instancetype)initWithCoder:(NSCoder *)coder {

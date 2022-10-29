@@ -1,8 +1,11 @@
 #import "MGLMapView.h"
 #import "MGLUserLocationAnnotationView.h"
 #import "MGLAnnotationContainerView.h"
+#import "MGLApplication_Private.h"
+#import <os/signpost.h>
 
 #include <mbgl/util/size.hpp>
+
 
 namespace mbgl {
     class Map;
@@ -46,11 +49,13 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 - (void)didFailToLoadImage:(nonnull NSString *)imageName;
 - (BOOL)shouldRemoveStyleImage:(nonnull NSString *)imageName;
 
+- (CLLocationDistance)metersPerPointAtLatitude:(CLLocationDegrees)latitude zoomLevel:(double)zoomLevel;
+
 /** Triggers another render pass even when it is not necessary. */
 - (void)setNeedsRerender;
 
 /// Synchronously render a frame of the map.
-- (void)renderSync;
+- (BOOL)renderSync;
 
 - (nonnull mbgl::Renderer *)renderer;
 
@@ -63,11 +68,15 @@ FOUNDATION_EXTERN MGL_EXPORT MGLExceptionName const _Nonnull MGLUnderlyingMapUna
 /** Returns an instance of MGLMapView implementation. Used for integration testing. */
 - (nonnull MGLMapViewImpl *) viewImpl;
 
-- (void)pauseRendering:(nonnull NSNotification *)notification;
-- (void)resumeRendering:(nonnull NSNotification *)notification;
+- (void)accessibilityPostNotification:(UIAccessibilityNotifications)notification argument:(__nullable id)argument;
+
 @property (nonatomic, nonnull) MGLUserLocationAnnotationView *userLocationAnnotationView;
 @property (nonatomic, nonnull) MGLAnnotationContainerView *annotationContainerView;
 @property (nonatomic, readonly) BOOL enablePresentsWithTransaction;
+@property (nonatomic, assign) BOOL needsDisplayRefresh;
+
+@property (nonatomic, readonly, nonnull) os_log_t log;
+@property (nonatomic, readonly) os_signpost_id_t signpost;
 
 - (BOOL) _opaque;
 

@@ -243,6 +243,7 @@ MGL_EXPORT
  */
 @property (readonly, copy, nullable) NSString *name;
 
+
 #pragma mark Managing Sources
 
 /**
@@ -264,6 +265,13 @@ MGL_EXPORT
 @property (nonatomic, assign) BOOL performsPlacementTransitions;
 
 /**
+A set containing user-specified source layer identifiers for point features available for accessibility. The features should have a `MGLVectorTileSource` and belong to a source layer. The point features must have a `name` attribute that matches those specified by <a href="https://www.mapbox.com/vector-tiles/mapbox-streets-v8/#overview">Mapbox Streets</a> source and belong to a `MGLVectorStyleLayer`.
+ 
+This set does not include Mapbox Streets source identifiers, which are included by default.
+*/
+@property (nonatomic) NSSet <NSString *> *accessiblePlaceSourceLayerIdentifiers;
+
+/**
  Returns a source with the given identifier in the current style.
 
  @note Source identifiers are not guaranteed to exist across styles or different
@@ -271,7 +279,7 @@ MGL_EXPORT
     style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids source identifer name changes that will occur in the default
+    approach also avoids source identifier name changes that will occur in the default
     style’s sources over time.
 
  @return An instance of a concrete subclass of `MGLSource` associated with the
@@ -304,7 +312,7 @@ MGL_EXPORT
     style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids source identifer name changes that will occur in the default
+    approach also avoids source identifier name changes that will occur in the default
     style’s sources over time.
 
  @param source The source to remove from the current style.
@@ -319,7 +327,7 @@ MGL_EXPORT
  style URL to an explicitly versioned style using a convenience method like
  `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
  inspectable in Interface Builder, or a manually constructed `NSURL`. This
- approach also avoids source identifer name changes that will occur in the default
+ approach also avoids source identifier name changes that will occur in the default
  style’s sources over time.
 
  @param source The source to remove from the current style.
@@ -330,7 +338,6 @@ MGL_EXPORT
  an `NSError` object describing the problem.
  */
 - (BOOL)removeSource:(MGLSource *)source error:(NSError * __nullable * __nullable)outError;
-
 
 #pragma mark Managing Style Layers
 
@@ -348,7 +355,7 @@ MGL_EXPORT
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
  @return An instance of a concrete subclass of `MGLStyleLayer` associated with
@@ -361,7 +368,7 @@ MGL_EXPORT
  Adds a new layer on top of existing layers.
 
  @note Adding the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @note Layers should be added in
@@ -378,7 +385,7 @@ MGL_EXPORT
  Inserts a new layer into the style at the given index.
 
  @note Adding the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @note Layers should be added in
@@ -401,11 +408,11 @@ MGL_EXPORT
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
     Inserting the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @param layer The layer to insert.
@@ -426,11 +433,11 @@ MGL_EXPORT
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
     Inserting the same layer instance more than once will result in a
-    `MGLRedundantLayerException`. Reusing the same layer identifer, even with
+    `MGLRedundantLayerException`. Reusing the same layer identifier, even with
     different layer instances, will also result in an exception.
 
  @param layer The layer to insert.
@@ -451,7 +458,7 @@ MGL_EXPORT
     the style URL to an explicitly versioned style using a convenience method like
     `+[MGLStyle outdoorsStyleURLWithVersion:]`, `MGLMapView`’s “Style URL”
     inspectable in Interface Builder, or a manually constructed `NSURL`. This
-    approach also avoids layer identifer name changes that will occur in the default
+    approach also avoids layer identifier name changes that will occur in the default
     style’s layers over time.
 
  @param layer The layer object to remove from the map view. This object

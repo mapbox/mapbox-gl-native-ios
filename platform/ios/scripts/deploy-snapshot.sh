@@ -12,6 +12,7 @@ SNAPSHOT_TYPE="snapshot-dynamic"
 
 step "Uploading ${SNAPSHOT_TYPE} build for ${DATE}-${PROJ_VERSION} to s3…"
 
-./platform/ios/scripts/publish.sh "${SNAPSHOT_TYPE}" "${DATE}-${PROJ_VERSION}"
+# TODO: 
+#./platform/ios/scripts/publish.sh "${SNAPSHOT_TYPE}" "${DATE}-${PROJ_VERSION}"
 
 step "Finished deploying ${SNAPSHOT_TYPE} build in $(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds"

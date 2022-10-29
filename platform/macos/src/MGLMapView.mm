@@ -1348,7 +1348,9 @@ public:
     
     MGLMapCamera *camera = [self cameraForCameraOptions:cameraOptions];
     if ([self.camera isEqualToMapCamera:camera]) {
-        completion();
+        if (completion) {
+            completion();
+        }
         return;
     }
 

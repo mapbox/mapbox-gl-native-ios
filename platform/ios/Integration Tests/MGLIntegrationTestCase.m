@@ -11,7 +11,7 @@
     XCTestSuite *newTestSuite = [XCTestSuite testSuiteWithName:defaultTestSuite.name];
 
     BOOL runPendingTests = [[[NSProcessInfo processInfo] environment][@"MAPBOX_RUN_PENDING_TESTS"] boolValue];
-    NSString *accessToken = [[NSProcessInfo processInfo] environment][@"MAPBOX_ACCESS_TOKEN"];
+    NSString *accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
 
     for (XCTest *test in tests) {
 
@@ -38,19 +38,23 @@
     return newTestSuite;
 }
 
+- (void)invokeTest {
+    @autoreleasepool {
+        [super invokeTest];
+    }
+}
+
 - (void)setUp {
     [super setUp];
 
     NSString *accessToken;
 
     if ([self.name containsString:@"🔒"]) {
-        accessToken = [[NSProcessInfo processInfo] environment][@"MAPBOX_ACCESS_TOKEN"];
+        accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
 
         if (!accessToken) {
-            printf("warning: MAPBOX_ACCESS_TOKEN env var is required for test '%s' - trying anyway.\n", self.name.UTF8String);
+            printf("warning: MGLMapboxAccessToken info.plist key is required for test '%s' - trying anyway.\n", self.name.UTF8String);
         }
     }
-
-    [MGLAccountManager setAccessToken:accessToken ?: @"pk.feedcafedeadbeefbadebede"];
 }
 @end
